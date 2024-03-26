@@ -10,7 +10,8 @@
 
 # env
 .env
+chatgpt_api/.env
 
 #node 
 node_modules
-
+backend/node_modules
