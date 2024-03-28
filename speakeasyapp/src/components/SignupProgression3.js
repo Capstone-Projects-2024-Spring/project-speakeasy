@@ -8,6 +8,7 @@ import Clock from './assets/Clock.png';
 const SignupProgression3 = () => {
     const handleSubmit = (event) => {
         event.preventDefault(); // Prevent default form submission behavior
+        navigate('/mainpage');
     };
 
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
@@ -24,7 +25,7 @@ const SignupProgression3 = () => {
                         <option value="30">30</option>
                     </select>
                 </div>
-                <button type="submit"onClick={() => navigate('/mainpage')}>Submit</button> {/* Submit button */}
+                <button type="submit">Submit</button> {/* Submit button */}
             </form>
         </div>
     );

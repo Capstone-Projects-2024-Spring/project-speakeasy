@@ -24,6 +24,8 @@ const Login = () => {
         // Log username and password to the console
         console.log('Username:', username);
         console.log('Password:', password);
+
+        navigate('/mainpage');
     };
 
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
@@ -50,7 +52,7 @@ const Login = () => {
                         required
                     /> {/* Input field for password */}
                 </div>
-                <button type="submit"onClick={() => navigate('/mainpage')}>Log in</button> {/* Submit button */}
+                <button type="submit">Log in</button> {/* Submit button */}
             </form>
             <div> {/* Additional text for navigating to signup page */}
                 <p>Need an account? <Link to="/signup">Sign Up</Link></p> {/* Link to signup page */}

@@ -6,9 +6,9 @@ import Globe from './assets/Globe.png';
 
 // SignupProgression2 component
 const SignupProgression2 = () => {
-
     const handleSubmit = (event) => {
         event.preventDefault(); // Prevent default form submission behavior
+        navigate('/signupProgression3');
     };
 
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
@@ -25,7 +25,7 @@ const SignupProgression2 = () => {
                         <option value="Chinese">Chinese</option> 
                     </select>
                 </div>
-                <button type="submit"onClick={() => navigate('/signupProgression3')}>Submit</button> {/* Submit button */}
+                <button type="submit">Submit</button> {/* Submit button */}
             </form>
         </div>
     );
