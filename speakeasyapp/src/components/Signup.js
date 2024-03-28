@@ -37,11 +37,20 @@ const Signup = () => {
             return; // Exit early if passwords do not match
         }
 
+        const user = {
+            name: name,
+            email: email,
+            password: password,
+        }
+
         // Log form data to the console
         console.log('Name:', name);
         console.log('Email:', email);
-        console.log('Password:', password);
-        console.log('Confirm Password:', confirmPassword);
+        console.log('Password:', password); // MUST HANDLE SECURELY LATER
+
+        // Send to backend
+        Axios.post("http://localhost:3000/user/register", user)
+            .then(res => console.log(res.data));
 
         // On successful signup, navigate to the next step or login page
         navigate('/signupProgression2');
