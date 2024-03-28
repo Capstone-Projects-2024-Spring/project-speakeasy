@@ -29,13 +29,22 @@ const Signup = () => {
     };
 
     // Event handler function to handle form submission
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault(); // Prevent default form submission behavior
+
+        if (password !== confirmPassword) {
+            alert('Passwords do not match.'); // Replace this with a more user-friendly message or state
+            return; // Exit early if passwords do not match
+        }
+
         // Log form data to the console
         console.log('Name:', name);
         console.log('Email:', email);
         console.log('Password:', password);
         console.log('Confirm Password:', confirmPassword);
+
+        // On successful signup, navigate to the next step or login page
+        navigate('/signupProgression2');
     };
 
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
@@ -80,7 +89,7 @@ const Signup = () => {
                         required
                     /> {/* Input field for confirming password */}
                 </div>
-                <button type="submit"onClick={() => navigate('/signupProgression2')}>Sign Up</button> {/* Signup button */}
+                <button type="submit">Sign Up</button> {/* Signup button */}
             </form>
             <div> {/* Additional text for navigating to login page */}
                 <p>Already have an account? <Link to="/">Login</Link></p> {/* Link to login page */}
