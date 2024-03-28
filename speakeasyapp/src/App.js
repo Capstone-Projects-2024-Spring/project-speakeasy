@@ -4,7 +4,6 @@ import Login from './components/Login.js';
 import Signup from './components/Signup.js';
 import About from './components/About.js';
 import MainPage from './components/MainPage.js';
-import Bot from './components/Bot.js';
 import SignupProgression2 from './components/SignupProgression2.js';
 import SignupProgression3 from './components/SignupProgression3.js';
 import Profile from './components/Profile.js';
@@ -55,7 +54,7 @@ const MainPageWithBot = () => {
     return (
         <div className='full-page-container'>
             <MainPage /> {/* Render the MainPage component */}
-            <Bot /> {/* Render the Bot component */}
+             {/* Render the Bot component */}
         </div>
     );
 };
