@@ -43,7 +43,7 @@ router.route('/:id').get(async (req, res) => {
 });
 
 // Update prof
-router.route('/:id').put(async (req, res) => {
+router.route('/update/:id').put(async (req, res) => {
   try {
     const { firstName, lastName, languages, location } = req.body;
     const updatedProfile = await Profile.findByIdAndUpdate(req.params.id, {
@@ -63,7 +63,7 @@ router.route('/:id').put(async (req, res) => {
 });
 
 // Delete profile
-router.route('/:id').delete(async (req, res) => {
+router.route('/delete/:id').delete(async (req, res) => {
   try {
     const deletedProfile = await Profile.findByIdAndDelete(req.params.id);
     if (!deletedProfile) {
