@@ -1,13 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Login from './components/Login';
-import Signup from './components/Signup';
-import About from './components/About';
-import MainPage from './components/MainPage';
-import Bot from './components/Bot';
-import SignupProgression2 from './components/SignupProgression2';
-import SignupProgression3 from './components/SignupProgression3';
-import Profile from './components/Profile';
+import Login from './components/Login.js';
+import Signup from './components/Signup.js';
+import About from './components/About.js';
+import MainPage from './components/MainPage.js';
+import Bot from './components/Bot.js';
+import SignupProgression2 from './components/SignupProgression2.js';
+import SignupProgression3 from './components/SignupProgression3.js';
+import Profile from './components/Profile.js';
 
 const App = () => {
     return (

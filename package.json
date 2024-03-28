@@ -1,6 +1,11 @@
 {
   "dependencies": {
+    "@types/react-router-dom": "^5.3.3",
+    "axios": "^1.6.8",
     "mongodb": "^6.5.0",
-    "mongoose": "^8.2.3"
+    "mongoose": "^8.2.3",
+    "react-router-dom": "^6.22.3",
+    "react-simple-chatbot": "^0.6.1",
+    "web-vitals": "^3.5.2"
   }
 }
