@@ -56,7 +56,7 @@ const SettingsManageCourses = () => {
                                 <h3>Spanish</h3>
                             </div>
                         </div>
-                        <button className='reset-button' type="submit"onClick={() => navigate('/settingsEditDailyGoal')}>Reset</button> {/* Submit button */}
+                        <button className='reset-button' type="submit"onClick={() => navigate('/settingsManageCourses')}>Reset</button> {/* Submit button */}
                     </div>
                     <div className='settings-buttons-container'> {/* Container for settings buttons */}
                         <button className='settings-buttons' type="submit"onClick={() => navigate('/settings')}>Account</button> {/* Account button */}

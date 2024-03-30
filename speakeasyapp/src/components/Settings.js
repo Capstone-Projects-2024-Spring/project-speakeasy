@@ -142,7 +142,7 @@ const SettingsPage = () => {
                                 </div>
                             </div>
                         </form>
-                        <button className='update-button' type="submit"onClick={() => navigate('/settingsEditDailyGoal')}>Update</button> {/* Update button */}
+                        <button className='update-button' type="submit"onClick={() => navigate('/settings')}>Update</button> {/* Update button */}
                     </div>
                     <div className='settings-buttons-container'> {/* Container for settings buttons */}
                         <button className='settings-buttons' type="submit"onClick={() => navigate('/settings')}>Account</button> {/* Account button */}
