@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './styles/MainPage.css'; 
-import './styles/Settings.css'; 
+import './styles/Help.css'; 
 
 import Logo from './assets/Logo.png'; 
 import Help from './assets/Help.png'; 
