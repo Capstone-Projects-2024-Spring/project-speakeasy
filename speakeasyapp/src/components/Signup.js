@@ -32,9 +32,18 @@ const Signup = () => {
     const handleSubmit = async (event) => {
         event.preventDefault(); // Prevent default form submission behavior
 
+        // Check if password matches
         if (password !== confirmPassword) {
             alert('Passwords do not match.'); // Replace this with a more user-friendly message or state
             return; // Exit early if passwords do not match
+        }
+
+        // Check if email already exists
+        const existingUser = await Axios.get("http://localhost:3000/user/checkEmail/$(email)");
+        console.log(existingUser.data);
+        if(existingUser.data && existingUser.data.exists) {
+            alert("Email already exists. Please use a different email.");
+            return;
         }
 
         const user = {
