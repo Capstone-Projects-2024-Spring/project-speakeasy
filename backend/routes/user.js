@@ -64,26 +64,4 @@ router.route('/login').post(async (req, res) => {
   }
 });
 
-router.route('/checkEmail/:email').get(async (req, res) => {
-  const userEmail = req.params.email.trim(); // Trim whitespace from email
-  try {
-      const user = await User.findOne({ email: { $regex: new RegExp('^' + userEmail + '$', 'i') } }); // Case-insensitive query
-      if (user) {
-          console.log("TRUE");
-          res.json({ exists: true }); // Email exists
-      } else {
-        console.log("FALSE");
-          res.json({ exists: false }); // Email doesn't exist
-      }
-  } catch (error) {
-      console.error('Error checking email existence:', error);
-      res.status(500).send('Internal Server Error');
-  }
-});
-
-
-module.exports = router;
-
-
-
 module.exports = router;
