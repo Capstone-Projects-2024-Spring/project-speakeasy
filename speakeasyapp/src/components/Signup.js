@@ -6,14 +6,19 @@ import './styles/LoginSignup.css';
 // Signup component
 const Signup = () => { 
     // State variables & their setter functions using useState hook
-    const [name, setName] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
     // Event handler functions to update state based on input changes
-    const handleNameChange = (event) => {
-        setName(event.target.value);
+    const handleFirstNameChange = (event) => {
+        setFirstName(event.target.value);
+    };
+
+    const handleLastNameChange = (event) => {
+        setLastName(event.target.value);
     };
 
     const handleEmailChange = (event) => {
@@ -47,13 +52,15 @@ const Signup = () => {
         }
 
         const user = {
-            name: name,
+            firstName: firstName,
+            lastName: lastName,
             email: email,
             password: password,
         }
 
         // Log form data to the console
-        console.log('Name:', name);
+        console.log('First Name:', firstName);
+        console.log('Last Name:', lastName);
         console.log('Email:', email);
         console.log('Password:', password); // MUST HANDLE SECURELY LATER
 
@@ -71,12 +78,21 @@ const Signup = () => {
         <div className="signup-container"> {/* Container for Signup form */}
             <h2>Sign Up</h2> {/* Signup heading */}
             <form onSubmit={handleSubmit} className="signup-form"> {/* Signup form */}
-                <div> {/* Form field for name */}
-                    <label>Name:</label> {/* Label for name input */}
+                <div> {/* Form field for first name */}
+                    <label>First Name:</label> {/* Label for name input */}
                     <input
                       type="text"
-                      value={name}
-                      onChange={handleNameChange}
+                      value={firstName}
+                      onChange={handleFirstNameChange}
+                      required
+                    /> {/* Input field for name */}
+                </div>
+                <div> {/* Form field for last name */}
+                    <label>Last Name:</label> {/* Label for name input */}
+                    <input
+                      type="text"
+                      value={lastName}
+                      onChange={handleLastNameChange}
                       required
                     /> {/* Input field for name */}
                 </div>

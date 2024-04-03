@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 router.route('/register').post(async (req, res) => {
     try {
       // Extract user data from request body
-      const { name, email, password } = req.body;
+      const { firstName, lastName, email, password } = req.body;
   
       // Check for existing user with same email
       const existingUser = await User.findOne({ email });
@@ -22,7 +22,8 @@ router.route('/register').post(async (req, res) => {
   
       // Create a new user
       const newUser = new User({
-        name,
+        firstName,
+        lastName,
         email,
         password: hashedPassword
       });
