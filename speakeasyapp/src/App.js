@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import Axios from 'axios';
+import "bootstrap/dist/css/bootstrap.min.css"
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './components/Login.js';
 import Signup from './components/Signup.js';
@@ -7,6 +9,11 @@ import MainPage from './components/MainPage.js';
 import SignupProgression2 from './components/SignupProgression2.js';
 import SignupProgression3 from './components/SignupProgression3.js';
 import Profile from './components/Profile.js';
+import Settings from './components/Settings.js';
+import SettingsEditDailyGoal from './components/SettingsEditDailyGoal.js';
+import SettingsManageCourses from './components/SettingsManageCourses.js';
+import Help from './components/Help.js';
+
 
 const App = () => {
     return (
@@ -24,6 +31,14 @@ const App = () => {
                 <Route path="/signupProgression3" element={<AboutWithSignupProgression3 />} />   
                 {/* Route for the Profile */}
                 <Route path="/profile" element={<Profile />} /> 
+                {/* Route for the Settings Account*/}
+                <Route path="/settings" element={<Settings />} /> 
+                {/* Route for the Settings Edit Daily Goal */}
+                <Route path="/settingsEditDailyGoal" element={<SettingsEditDailyGoal />} />
+                {/* Route for the Settings Manage Courses */}
+                <Route path="/settingsManageCourses" element={<SettingsManageCourses />} />
+                {/* Route for the Help */}
+                <Route path="/help" element={<Help />} /> 
             </Routes>
         </Router>
     );

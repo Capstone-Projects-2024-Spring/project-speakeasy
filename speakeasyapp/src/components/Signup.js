@@ -1,96 +1,123 @@
 import React, { useState } from 'react'; 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Axios from 'axios';
 import './styles/LoginSignup.css'; 
-import { useNavigate } from 'react-router-dom'; 
 
 // Signup component
 const Signup = () => { 
     // State variables & their setter functions using useState hook
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [user, setUser] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+    });
 
     // Event handler functions to update state based on input changes
-    const handleNameChange = (event) => {
-        setName(event.target.value);
-    };
-
-    const handleEmailChange = (event) => {
-        setEmail(event.target.value);
-    };
-
-    const handlePasswordChange = (event) => {
-        setPassword(event.target.value);
-    };
-
-    const handleConfirmPasswordChange = (event) => {
-        setConfirmPassword(event.target.value);
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setUser(prevUser => ({
+            ...prevUser,
+            [name]: value
+        }));
     };
 
     // Event handler function to handle form submission
-    const handleSubmit = (event) => {
-        event.preventDefault(); // Prevent default form submission behavior
-        if (password !== confirmPassword) {
-            alert('Passwords do not match!');
-            return; 
-          }
-        // Log form data to the console
-        console.log('Name:', name);
-        console.log('Email:', email);
-        console.log('Password:', password);
-        console.log('Confirm Password:', confirmPassword);
+    const handleSubmit = async (event) => {
+        event.preventDefault();
 
-        // Navigate to the next signup step after successful validation
-        navigate('/signupProgression2');
+        // Access properties from the user state object
+        if (user.password !== user.confirmPassword) {
+            alert('Passwords do not match.'); // Update to use setErrorMessage
+            return;
+        }
+
+        // Send to backend
+        Axios.post("http://localhost:3000/user/register", {
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            password: user.password,
+        })
+        .then(res => {
+            console.log(res.data);
+            // Optionally clear form and handle success
+            setUser({ firstName: '', lastName: '', email: '', password: '', confirmPassword: ''});
+            navigate('/signupProgression2'); // Navigate on successful signup
+        })
+        .catch(error => {
+            console.log(error);
+            if (error.response) {
+                alert(error.response.data);
+            } else {
+                alert('An error occurred. Please try again.');
+            }
+        });
+
     };
 
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
 
     return (
-        <div className="signup-container"> {/* Container for Signup form */}
-            <h2>Sign Up</h2> {/* Signup heading */}
-            <form onSubmit={handleSubmit} className="signup-form"> {/* Signup form */}
-                <div> {/* Form field for name */}
-                    <label>Name:</label> {/* Label for name input */}
+        <div className="signup-container">
+            <h2>Sign Up</h2>
+            <form onSubmit={handleSubmit} className="signup-form">
+                <div>
+                    <label>First Name:</label>
                     <input
-                      type="text"
-                      value={name}
-                      onChange={handleNameChange}
-                      required
-                    /> {/* Input field for name */}
+                        type="text"
+                        name="firstName"
+                        value={user.firstName}
+                        onChange={handleChange}
+                        required
+                    />
                 </div>
-                <div> {/* Form field for email */}
-                    <label>Email:</label> {/* Label for email input */}
+                <div>
+                    <label>Last Name:</label>
                     <input
-                      type="email"
-                      value={email}
-                      onChange={handleEmailChange}
-                      required
-                    /> {/* Input field for email */}
+                        type="text"
+                        name="lastName"
+                        value={user.lastName}
+                        onChange={handleChange}
+                        required
+                    />
                 </div>
-                <div> {/* Form field for password */}
-                    <label>Password:</label> {/* Label for password input */}
+                <div>
+                    <label>Email:</label>
+                    <input
+                        type="email"
+                        name="email"
+                        value={user.email}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div>
+                    <label>Password:</label>
                     <input
                         type="password"
-                        value={password}
-                        onChange={handlePasswordChange}
+                        name="password"
+                        value={user.password}
+                        onChange={handleChange}
                         required
-                    /> {/* Input field for password */}
+                    />
                 </div>
-                <div> {/* Form field for confirming password */}
-                    <label>Confirm Password:</label> {/* Label for confirming password input */}
+                <div>
+                    <label>Confirm Password:</label>
                     <input
                         type="password"
-                        value={confirmPassword}
-                        onChange={handleConfirmPasswordChange}
+                        name="confirmPassword"
+                        value={user.confirmPassword}
+                        onChange={handleChange}
                         required
-                    /> {/* Input field for confirming password */}
+                    />
                 </div>
-                <button type="submit">Sign Up</button> {/* Signup button */}
+                <button type="submit">Sign Up</button>
+
             </form>
-            <div> {/* Additional text for navigating to login page */}
-                <p>Already have an account? <Link to="/">Login</Link></p> {/* Link to login page */}
+            <div>
+                <p>Already have an account? <Link to="/">Login</Link></p>
             </div>
         </div>
     );

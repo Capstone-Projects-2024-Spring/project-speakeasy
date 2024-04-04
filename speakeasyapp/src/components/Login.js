@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; 
-import './styles/LoginSignup.css'; 
-import { useNavigate } from 'react-router-dom'; 
+import { Link, useNavigate } from 'react-router-dom'; 
+import Axios from 'axios';
+import './styles/LoginSignup.css';
 
 // Login component
 const Login = () => { 
     // State variables & their setter functions using useState hook
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     // Event handler functions to update state based on input changes
-    const handleUsernameChange = (event) => {
-        setUsername(event.target.value);
+    const handleEmailChange = (event) => {
+        setEmail(event.target.value);
     };
 
     const handlePasswordChange = (event) => {
@@ -21,9 +21,21 @@ const Login = () => {
     // Event handler function to handle form submission
     const handleSubmit = (event) => {
         event.preventDefault(); // Prevent default form submission behavior
-        // Log username and password to the console
-        console.log('Username:', username);
+        // Log email and password to the console
+
+        const user = {
+            email: email,
+            password: password,
+        }
+
+        console.log('Email:', email);
         console.log('Password:', password);
+
+        // Send to backend
+        //Axios.post("http://localhost:3000/user/login", user)
+            //.then(res => console.log(res.data));
+
+        navigate('/mainpage');
     };
 
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
@@ -32,14 +44,14 @@ const Login = () => {
         <div className="login-container"> {/* Container for Login form */}
             <h2>Login</h2> {/* Login heading */}
             <form onSubmit={handleSubmit} className="login-form"> {/* Login form */}
-                <div> {/* Form field for username */}
-                    <label>Username:</label> {/* Label for username input */}
+                <div> {/* Form field for email */}
+                    <label>Email:</label> {/* Label for email input */}
                     <input
                         type="text"
-                        value={username}
-                        onChange={handleUsernameChange}
+                        value={email}
+                        onChange={handleEmailChange}
                         required
-                    /> {/* Input field for username */}
+                    /> {/* Input field for email */}
                 </div>
                 <div> {/* Form field for password */}
                     <label>Password:</label> {/* Label for password input */}
@@ -50,7 +62,7 @@ const Login = () => {
                         required
                     /> {/* Input field for password */}
                 </div>
-                <button type="submit"onClick={() => navigate('/mainpage')}>Log in</button> {/* Submit button */}
+                <button type="submit">Log in</button> {/* Submit button */}
             </form>
             <div> {/* Additional text for navigating to signup page */}
                 <p>Need an account? <Link to="/signup">Sign Up</Link></p> {/* Link to signup page */}

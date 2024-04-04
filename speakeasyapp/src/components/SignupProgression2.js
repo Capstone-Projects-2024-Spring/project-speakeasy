@@ -6,6 +6,7 @@ import Globe from './assets/Globe.png';
 
 // SignupProgression2 component
 const SignupProgression2 = () => {
+
     const [selectedLanguage, setSelectedLanguage] = useState('Spanish'); // State to store selected language
 
     const handleSubmit = (event) => {
