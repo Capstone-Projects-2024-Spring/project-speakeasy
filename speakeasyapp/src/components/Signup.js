@@ -54,6 +54,7 @@ const Signup = () => {
                 alert('An error occurred. Please try again.');
             }
         });
+
     };
 
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
@@ -113,6 +114,7 @@ const Signup = () => {
                     />
                 </div>
                 <button type="submit">Sign Up</button>
+
             </form>
             <div>
                 <p>Already have an account? <Link to="/">Login</Link></p>
