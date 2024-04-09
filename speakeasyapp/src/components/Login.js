@@ -31,11 +31,23 @@ const Login = () => {
         console.log('Email:', email);
         console.log('Password:', password);
 
-        // Send to backend
-        //Axios.post("http://localhost:3000/user/login", user)
-            //.then(res => console.log(res.data));
-
-        navigate('/mainpage');
+        // Check backend
+        Axios.post("http://localhost:3000/user/login", user)
+            .then(res => {
+                console.log(res.data);
+                // Optionally clear form and handle success
+                setEmail('');
+                setPassword('');
+                navigate('/mainpage'); // Navigate on successful login
+            })
+            .catch(error => {
+                console.log(error);
+                if (error.response && error.response.status === 400) {
+                    alert('Invalid email or password.');
+                } else {
+                    alert('An error occurred. Please try again.');
+                }
+            });
     };
 
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
