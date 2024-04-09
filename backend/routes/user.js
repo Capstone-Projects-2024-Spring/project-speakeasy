@@ -15,22 +15,18 @@ router.route('/register').post(async (req, res) => {
       if (existingUser) {
         return res.status(400).json('Email already in use');
       }
-  
-      // Hash password
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
-  
+
       // Create a new user
       const newUser = new User({
         firstName,
         lastName,
         email,
-        password: hashedPassword
+        password,
       });
   
       // Save the user to the database
       const savedUser = await newUser.save();
-  
+
       res.json({ message: 'User registered successfully!', user: savedUser }); // Respond with success message and basic user info
     } catch (err) {
       console.error(err);
