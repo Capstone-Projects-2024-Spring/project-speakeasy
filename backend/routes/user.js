@@ -8,28 +8,25 @@ const jwt = require("jsonwebtoken");
 router.route('/register').post(async (req, res) => {
     try {
       // Extract user data from request body
-      const { username, email, password } = req.body;
+      const { firstName, lastName, email, password } = req.body;
   
       // Check for existing user with same email
       const existingUser = await User.findOne({ email });
       if (existingUser) {
         return res.status(400).json('Email already in use');
       }
-  
-      // Hash password
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
-  
+
       // Create a new user
       const newUser = new User({
-        username,
+        firstName,
+        lastName,
         email,
-        password: hashedPassword
+        password,
       });
   
       // Save the user to the database
       const savedUser = await newUser.save();
-  
+
       res.json({ message: 'User registered successfully!', user: savedUser }); // Respond with success message and basic user info
     } catch (err) {
       console.error(err);
@@ -48,7 +45,7 @@ router.route('/login').post(async (req, res) => {
       return res.status(400).json({ message: 'Unable to login: invalid credentials.' });
     }
 
-    const passwordMatch = await bcrypt.compare(password, thisUser.password);
+    passwordMatch = await bcrypt.compare(password, thisUser.password);
 
     if (!passwordMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
@@ -56,7 +53,7 @@ router.route('/login').post(async (req, res) => {
 
     const token = jwt.sign({ userId: thisUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    res.json({ message: 'Successfully logged in.', token, user: { _id: thisUser._id, username: thisUser.username, email: thisUser.email } });
+    res.json({ message: 'Successfully logged in.', token, user: { _id: thisUser._id, name: thisUser.name, email: thisUser.email } });
   } catch (err) {
     console.error(err);
     res.status(500).json('Error: ' + err.message);
