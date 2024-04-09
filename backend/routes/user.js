@@ -49,7 +49,11 @@ router.route('/login').post(async (req, res) => {
       return res.status(400).json({ message: 'Unable to login: invalid credentials.' });
     }
 
-    const passwordMatch = await bcrypt.compare(password, thisUser.password);
+    salt = await bcrypt.genSalt(10);
+    passwords = await bcrypt.hash(password, salt);
+    console.log(passwords);
+    console.log(thisUser.password);
+    passwordMatch = await bcrypt.compare(password, passwords);
 
     if (!passwordMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
