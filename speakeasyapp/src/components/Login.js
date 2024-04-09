@@ -35,8 +35,8 @@ const Login = () => {
         //Axios.post("http://localhost:3000/user/login", user)
             //.then(res => console.log(res.data));
 
-        navigate('/mainpage');
-    };
+        navigate('/mainpage', { state: { email: email } }); // Pass email to MainPage
+        };
 
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
 
