@@ -2,12 +2,12 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './styles/MainPage.css'; 
 
-import Logo from './assets/Logo.png'; 
-import Help from './assets/Help.png'; 
-import Book from './assets/Book.png'; 
-import User from './assets/User.png'; 
-import Settings from './assets/Settings.png'; 
-import Trophy from './assets/Trophy.png'; 
+import Logo from './assets/Logo.png';
+import Help from './assets/Help.png';
+import Book from './assets/Book.png';
+import User from './assets/User.png';
+import Settings from './assets/Settings.png';
+import Trophy from './assets/Trophy.png';
 
 // MainPage component
 const MainPage = () => {
@@ -44,24 +44,24 @@ const MainPage = () => {
                 <div className='lesson-container bottom-section'> {/* Lesson container */}
                     <div className='white-container'> {/* White container for lesson section */}
                         <div className='content-container'> {/* Container for lesson content */}
-                            <h3>Section 1</h3> {/* Section 1 heading */}
+                        <Link to="/section1"><h3>Section 1</h3></Link> {/* This line in MainPage makes Section 1 heading clickable and links to the Section1Page */}
                             <img src={Trophy} alt="Trophy" /> {/* Trophy icon */}
                         </div>
                         <progress value={0.5} /> {/* Progress bar */}
                     </div>
-                    <div className='white-container'> {/* White container for lesson section */}
-                        <div className='content-container'> {/* Container for lesson content */}
-                            <h3>Section 2</h3> {/* Section 2 heading */}
-                            <img src={Trophy} alt="Trophy" /> {/* Trophy icon */}
+                    <div className='white-container'> {/* Additional sections unchanged */}
+                        <div className='content-container'>
+                            <h3>Section 2</h3>
+                            <img src={Trophy} alt="Trophy" />
                         </div>
-                        <progress value={0.5} /> {/* Progress bar */}
+                        <progress value={0.5} />
                     </div>
-                    <div className='white-container'> {/* White container for lesson section */}
-                        <div className='content-container'> {/* Container for lesson content */}
-                            <h3>Section 3</h3> {/* Section 3 heading */}
-                            <img src={Trophy} alt="Trophy" /> {/* Trophy icon */}
+                    <div className='white-container'>
+                        <div className='content-container'>
+                            <h3>Section 3</h3>
+                            <img src={Trophy} alt="Trophy" />
                         </div>
-                        <progress value={0.5} /> {/* Progress bar */}
+                        <progress value={0.5} />
                     </div>
                 </div>
             </div>
