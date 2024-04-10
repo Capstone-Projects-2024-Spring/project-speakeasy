@@ -3,13 +3,11 @@ const bodyParser = require('body-parser'); // You're already using express.json(
 const axios = require('axios');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const User = require('./models/user.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const path = require('path');
-const axios = require('axios'); // Ensure axios is required at the top
-
 require('dotenv').config();
-
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -35,41 +33,43 @@ connection.once('open', () => {
 // Import routers
 const profileRouter = require('./routes/profile');
 const userRouter = require('./routes/user');
-
-// Your existing routes
 app.use('/profile', profileRouter);
 app.use('/user', userRouter);
 
-// New route for chat messages
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Placeholder for integrating with the Gemini API
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
+
+// Endpoint to handle chat messages from the frontend
 app.post('/api/chat', async (req, res) => {
   const { message } = req.body;
   try {
-    // Corrected to use GEMINI_API_URL for the endpoint and GEMINI_API_KEY for the bearer token
-    const response = await axios.post(process.env.GEMINI_API_URL, {
-      // Make sure your request payload here matches the expected structure by the Gemini API
-      prompt: message,
-    }, {
-      headers: {
-        'Authorization': `Bearer ${process.env.GEMINI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    
-    console.log('Request to Gemini API:', req.body);
-    console.log('Response from Gemini API:', response.data);
-    console.error('Error communicating with Gemini API:', error.response ? error.response.data : error);
+      const apiResponse = await axios.post(GEMINI_API_URL, {
+          contents: [
+            { 
+              role: "user",
+              parts: [{ text: message }]
+            }
+          ]
+      }, {
+          headers: {
+              'Content-Type': 'application/json'
+          }
+      });
 
-    
-    res.json(response.data);
+      // Adjust the path to the text in the response according to the actual structure of the Gemini API response
+      const responseText = apiResponse.data.text; // This may need adjustment based on the actual response
+      res.json({ text: responseText });
   } catch (error) {
-    console.error('Error communicating with Gemini API:', error.response ? error.response.data : error);
-    res.status(500).json({ error: 'Failed to fetch response from Gemini API' });
+      console.error('Error calling Gemini API:', error.message);
+      res.status(500).json({ error: "Error processing your message", details: error.message });
   }
 });
 
-
-app.use(express.static(path.join(__dirname, 'public')));
-
+// Redirect for root access, adjust as necessary
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../speakeasyapp/src/components', 'MainPage.js'));
 });
