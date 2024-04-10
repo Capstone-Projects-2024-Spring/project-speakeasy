@@ -21,8 +21,8 @@ const Login = () => {
     // Event handler function to handle form submission
     const handleSubmit = (event) => {
         event.preventDefault(); // Prevent default form submission behavior
-        // Log email and password to the console
 
+        // Log email and password to the console
         const user = {
             email: email,
             password: password,
@@ -49,7 +49,6 @@ const Login = () => {
                 }
             });
             navigate('/mainpage', { state: { email: email } }); // Pass email to MainPage
-
         }
 
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
