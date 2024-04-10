@@ -14,6 +14,7 @@ import Settings from './components/Settings';
 import SettingsEditDailyGoal from './components/SettingsEditDailyGoal';
 import SettingsManageCourses from './components/SettingsManageCourses';
 import Help from './components/Help';
+import Section1Page from './components/Section1Page';
 
 const App = () => {
     return (
@@ -39,6 +40,7 @@ const App = () => {
                 <Route path="/settingsManageCourses" element={<SettingsManageCourses />} />
                 {/* Route for the Help */}
                 <Route path="/help" element={<Help />} /> 
+                <Route path="/section1" element={<Section1Page />} />
             </Routes>
         </Router>
     );
