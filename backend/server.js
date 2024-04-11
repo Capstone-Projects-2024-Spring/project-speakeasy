@@ -75,8 +75,8 @@ const aiController = async (req, res) => {
 
     res.status(200).json({ 
       messages: [
-        { text: botReply.result, sender: "bot" },
-        { text: req.body.prompt, sender: "user" }
+        { text: req.body.prompt, sender: "user" },
+        { text: botReply.result, sender: "bot" }
       ]
     });
   } else {
