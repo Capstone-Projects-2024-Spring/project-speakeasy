@@ -1,6 +1,4 @@
 import React from 'react';
-import ChatBot from 'react-simple-chatbot';
-
 // Steps for the chatbot conversation
 const steps = [
     {
@@ -27,13 +25,7 @@ const theme = {
 
 // Chatbot component
 const Bot = () => (
-    <ChatBot 
-        steps={steps} // Pass the defined steps
-        floating={true} // Enable floating mode
-        floatingStyle={theme} // Apply theme to the floating style
-        bubbleStyle={theme} // Apply theme to the chat bubbles
-        submitButtonStyle={theme} // Apply theme to the submit button
-    />
+    <p>Hello</p>
 );
 
 export default Bot;

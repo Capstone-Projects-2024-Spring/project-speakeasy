@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './styles/Section1Page.css';
 
@@ -8,7 +8,6 @@ import Book from './assets/Book.png';
 import User from './assets/User.png';
 import Settings from './assets/Settings.png';
 
-// Function to send a message to the bot through your backend
 const sendMessageToBot = async (message) => {
   try {
     const response = await fetch('http://localhost:3000/api/chat', {
@@ -16,18 +15,22 @@ const sendMessageToBot = async (message) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({ modelType: "text_only", prompt: message }),
     });
 
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-      
+
     const data = await response.json();
-    return data.text; // Assuming your backend responds with { text: "Bot's response here" }
+    console.log('Data from server:', data);
+    return data.messages;
   } catch (error) {
     console.error('Error sending message to bot:', error);
-    return "Sorry, I'm having trouble understanding you right now.";
+    return [
+      { text: "Sorry, I'm having trouble understanding you right now.", sender: "bot" },
+      { text: message, sender: "user" }
+    ];
   }
 };
 
@@ -38,50 +41,46 @@ const Section1Page = () => {
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (input.trim()) {
-      const userMessage = { text: input, sender: "user" };
-      setMessages(messages => [...messages, userMessage]); // Add user message
-  
-      const botResponse = await sendMessageToBot(input);
-      setMessages(messages => [...messages, { text: botResponse, sender: "bot" }]); // Add bot response
-      setInput(''); // Reset input field after adding both messages
+      const newMessages = await sendMessageToBot(input);
+      setMessages((prevMessages) => [...prevMessages, ...newMessages]);
+      setInput('');
     }
   };
-  
 
-    return (
-        <div className='mainpage-container'>
-            <div className='white-rectangle-container'>
-                <img src={Logo} alt="SpeakEasy" />
-                <h1>Section 1 Chat</h1>
-            </div>
-            <div className='light-orange-rectangle'/>
-            <div className='bottom-container'>
-                <div className='navbar-container bottom-section'>
-                    <ul>
-                        <li><img src={Book} alt="Learn" /><Link to="/mainpage">Learn</Link></li>
-                        <li><img src={User} alt="Profile" /><Link to="/profile">Profile</Link></li>
-                        <li><img src={Settings} alt="Settings" /><Link to="/settings">Settings</Link></li>
-                        <li><img src={Help} alt="Help" /><Link to="/help">Help</Link></li>
-                    </ul>
-                </div>
-                <div className='section1page-container'>
-                    <div className='chat-area'>
-                        <div className='messages-display'>
-                            {messages.map((message, index) => (
-                                <div key={index} className={`message-bubble ${message.sender === 'user' ? 'user-message' : 'received-message'}`}>
-                                    {message.text}
-                                </div>
-                            ))}
-                        </div>
-                        <form onSubmit={handleSendMessage} className='message-input-form'>
-                            <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Type your message here..." />
-                            <button type="submit">Send</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+  return (
+    <div className='mainpage-container'>
+      <div className='white-rectangle-container'>
+        <img src={Logo} alt="SpeakEasy" />
+        <h1>Section 1 Chat</h1>
+      </div>
+      <div className='light-orange-rectangle'/>
+      <div className='bottom-container'>
+        <div className='navbar-container bottom-section'>
+          <ul>
+            <li><img src={Book} alt="Learn" /><Link to="/mainpage">Learn</Link></li>
+            <li><img src={User} alt="Profile" /><Link to="/profile">Profile</Link></li>
+            <li><img src={Settings} alt="Settings" /><Link to="/settings">Settings</Link></li>
+            <li><img src={Help} alt="Help" /><Link to="/help">Help</Link></li>
+          </ul>
         </div>
-    );
+        <div className='section1page-container'>
+          <div className='chat-area'>
+            <div className='messages-display'>
+              {messages.map((message, index) => (
+                <div key={index} className={`message-bubble ${message.sender === 'user' ? 'user-message' : 'received-message'}`}>
+                  {message.text}
+                </div>
+              ))}
+            </div>
+            <form onSubmit={handleSendMessage} className='message-input-form'>
+              <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Type your message here..." />
+              <button type="submit">Send</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Section1Page;
