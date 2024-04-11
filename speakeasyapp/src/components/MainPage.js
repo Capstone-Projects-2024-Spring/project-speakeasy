@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import './styles/MainPage.css';
+import { Link, useLocation } from 'react-router-dom';
+import './styles/MainPage.css'; 
 
 import Logo from './assets/Logo.png';
 import Help from './assets/Help.png';
@@ -11,11 +11,13 @@ import Trophy from './assets/Trophy.png';
 
 // MainPage component
 const MainPage = () => {
+    const location = useLocation();
+    const { email } = location.state || {};
     return (
         <div className='mainpage-container'> {/* Main container */}
             <div className='white-rectangle-container'> {/* Container for top section */}
                 <img src={Logo} alt="SpeakEasy" /> {/* Logo */}
-                <h1>Welcome, _________!</h1> {/* Welcome message */}
+                <h1>Welcome, {email}!</h1> {/* Welcome message */}
             </div>
             <div className='light-orange-rectangle'/>
             <div className='bottom-container'> {/* Container for bottom section */}
@@ -57,6 +59,13 @@ const MainPage = () => {
                     <div className='white-container'>
                         <div className='content-container'>
                             <Link to="/section3"><h3>Role Playing</h3></Link>
+                            <img src={Trophy} alt="Trophy" />
+                        </div>
+                        <progress value={0.5} />
+                    </div>
+                    <div className='white-container'>
+                        <div className='content-container'>
+                            <Link to="/section4"><h3>Vocab Practice</h3></Link>
                             <img src={Trophy} alt="Trophy" />
                         </div>
                         <progress value={0.5} />
