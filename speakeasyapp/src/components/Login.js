@@ -38,7 +38,7 @@ const Login = () => {
                 // Optionally clear form and handle success
                 setEmail('');
                 setPassword('');
-                navigate('/mainpage'); // Navigate on successful login
+                navigate('/mainpage', { firstName: res.data.firstName }); // Navigate on successful login
             })
             .catch(error => {
                 console.log(error);
@@ -48,7 +48,6 @@ const Login = () => {
                     alert('An error occurred. Please try again.');
                 }
             });
-            navigate('/mainpage', { state: { email: email } }); // Pass email to MainPage
         }
 
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
