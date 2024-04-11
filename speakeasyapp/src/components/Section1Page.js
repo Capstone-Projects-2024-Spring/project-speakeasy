@@ -8,7 +8,6 @@ import Book from './assets/Book.png';
 import User from './assets/User.png';
 import Settings from './assets/Settings.png';
 
-// Function to send a message to the bot through your backend
 const sendMessageToBot = async (message) => {
   try {
     const response = await fetch('http://localhost:3000/api/chat', {
@@ -16,7 +15,7 @@ const sendMessageToBot = async (message) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({ modelType: "text_only", prompt: message }),
     });
 
     if (!response.ok) {
@@ -24,10 +23,14 @@ const sendMessageToBot = async (message) => {
     }
 
     const data = await response.json();
-    return data.text;
+    console.log('Data from server:', data);
+    return data.messages;
   } catch (error) {
     console.error('Error sending message to bot:', error);
-    return "Sorry, I'm having trouble understanding you right now.";
+    return [
+      { text: "Sorry, I'm having trouble understanding you right now.", sender: "bot" },
+      { text: message, sender: "user" }
+    ];
   }
 };
 
@@ -38,11 +41,8 @@ const Section1Page = () => {
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (input.trim()) {
-      const userMessage = { text: input, sender: "user" };
-      setMessages(messages => [...messages, userMessage]);
-
-      const botResponse = await sendMessageToBot(input);
-      setMessages(messages => [...messages, { text: botResponse, sender: "bot" }]);
+      const newMessages = await sendMessageToBot(input);
+      setMessages((prevMessages) => [...prevMessages, ...newMessages]);
       setInput('');
     }
   };

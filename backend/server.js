@@ -7,10 +7,12 @@ const User = require('./models/user.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const path = require('path');
+const { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } = require("@google/generative-ai");
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
 
 // Middleware for parsing JSON bodies
 // app.use(bodyParser.json()); // Deprecated, using express.json() instead
@@ -30,6 +32,76 @@ connection.once('open', () => {
   console.log("MongoDB database connection established successfully");
 });
 
+const aiConfig = {
+  gemini: {
+    textOnlyModel: "gemini-pro",
+    apiKey: process.env.GEMINI_API_KEY,
+
+    // Gemini Safety Settings
+    // Explore all Harm categories here -> https://ai.google.dev/api/rest/v1beta/HarmCategory
+    // Explore all threshold categories -> https://ai.google.dev/docs/safety_setting_gemini
+    safetySettings: [
+      {
+        category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+        threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+        threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      },
+      {
+        category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+        threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+      },
+    ],
+  },
+};
+
+const genAI = new GoogleGenerativeAI(aiConfig.gemini.apiKey);
+
+const aiController = async (req, res) => {
+  const modelType = req.body.modelType;
+
+  if (modelType === "text_only") {
+    const botReply = await textOnly(req.body.prompt);
+
+    if (botReply?.Error) {
+      return res.status(404).json({ Error: botReply.Error });
+    }
+
+    res.status(200).json({ 
+      messages: [
+        { text: botReply.result, sender: "bot" },
+        { text: req.body.prompt, sender: "user" }
+      ]
+    });
+  } else {
+    res.status(404).json({ result: "Invalid Model Selected" });
+  }
+};
+
+const textOnly = async (prompt) => {
+  const model = genAI.getGenerativeModel({
+    model: aiConfig.gemini.textOnlyModel,
+    safetySettings: aiConfig.gemini.safetySettings,
+  });
+
+  // prompt is a single string
+  try {
+    const result = await model.generateContent(prompt);
+    const chatResponse = result?.response?.text();
+
+    return { result: chatResponse };
+  } catch (error) {
+    console.error("textOnly | error", error);
+    return { Error: "Uh oh! Caught error while fetching AI response" };
+  }
+};
+
 // Import routers
 const profileRouter = require('./routes/profile');
 const userRouter = require('./routes/user');
@@ -44,30 +116,7 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
 
 // Endpoint to handle chat messages from the frontend
-app.post('/api/chat', async (req, res) => {
-  const { message } = req.body;
-  try {
-      const apiResponse = await axios.post(GEMINI_API_URL, {
-          contents: [
-            { 
-              role: "user",
-              parts: [{ text: message }]
-            }
-          ]
-      }, {
-          headers: {
-              'Content-Type': 'application/json'
-          }
-      });
-
-      // Adjust the path to the text in the response according to the actual structure of the Gemini API response
-      const responseText = apiResponse.data.text; // This may need adjustment based on the actual response
-      res.json({ text: responseText });
-  } catch (error) {
-      console.error('Error calling Gemini API:', error.message);
-      res.status(500).json({ error: "Error processing your message", details: error.message });
-  }
-});
+app.post('/api/chat', aiController);
 
 // Redirect for root access, adjust as necessary
 app.get('/', (req, res) => {
@@ -77,4 +126,4 @@ app.get('/', (req, res) => {
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server running on port: ${PORT}`);
-});
+}); 
