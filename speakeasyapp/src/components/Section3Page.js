@@ -9,49 +9,66 @@ import User from './assets/User.png';
 import Settings from './assets/Settings.png';
 
 const sendMessageToBot = async (message) => {
-  try {
-    const response = await fetch('http://localhost:3000/api/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ modelType: "text_only", prompt: message }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
+    // Prepend the instruction to the message for the AI model
+    const modifiedMessage = `Respond to what I say in spanish ${message}`;
+    
+    try {
+      const response = await fetch('http://localhost:3000/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // Send the modified message to the server
+        body: JSON.stringify({ modelType: "text_only", prompt: modifiedMessage }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+      return data.messages;
+    } catch (error) {
+      console.error('Error sending message to bot:', error);
+      return [
+        { text: "Sorry, I'm having trouble understanding you right now.", sender: "bot" }
+      ];
     }
-
-    const data = await response.json();
-    console.log('Data from server:', data);
-    return data.messages;
-  } catch (error) {
-    console.error('Error sending message to bot:', error);
-    return [
-      { text: "Sorry, I'm having trouble understanding you right now.", sender: "bot" },
-      { text: message, sender: "user" }
-    ];
-  }
-};
-
-const Section1Page = () => {
-  const [messages, setMessages] = useState([{ text: "Hello! what would you like to know?", sender: "bot" }]);
+  };
+  
+const Section3Page = () => {
+  const [messages, setMessages] = useState([{ text: "Welcome to roleplaying conversions will only be in Spanish", sender: "bot" }]);
   const [input, setInput] = useState('');
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (input.trim()) {
-      const newMessages = await sendMessageToBot(input);
-      setMessages((prevMessages) => [...prevMessages, ...newMessages]);
+      const userMessage = { text: input, sender: "user" };
+      
+      // Immediately display the user's message
+      setMessages(prevMessages => [...prevMessages, userMessage]);
+      
+      // Send the message with the instruction to the backend
+      const response = await sendMessageToBot(input);
+      
+      // Now, display only the bot's response, not the prompt
+      const botMessage = response.find(m => m.sender === 'bot');
+      if (botMessage) {
+        setMessages(prevMessages => [...prevMessages, botMessage]);
+      }
+  
+      // Clear the input field
       setInput('');
     }
   };
-
+  
+  
+  
   return (
     <div className='mainpage-container'>
       <div className='white-rectangle-container'>
         <img src={Logo} alt="SpeakEasy" />
-        <h1>Chat Room</h1>
+        <h1>Role Playing</h1>
       </div>
       <div className='light-orange-rectangle'/>
       <div className='bottom-container'>
@@ -83,4 +100,4 @@ const Section1Page = () => {
   );
 };
 
-export default Section1Page;
+export default Section3Page;
