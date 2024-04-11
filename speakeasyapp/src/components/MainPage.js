@@ -63,6 +63,13 @@ const MainPage = () => {
                         </div>
                         <progress value={0.5} />
                     </div>
+                    <div className='white-container'>
+                        <div className='content-container'>
+                            <Link to="/section4"><h3>Vocab Practice</h3></Link>
+                            <img src={Trophy} alt="Trophy" />
+                        </div>
+                        <progress value={0.5} />
+                    </div>
                 </div>
             </div>
         </div>
