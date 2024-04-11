@@ -54,7 +54,6 @@ const Login = () => {
                     alert('An error occurred. Please try again.');
                 }
             });
-            navigate('/mainpage', { state: { email: email } }); // Pass email to MainPage
         }
 
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
