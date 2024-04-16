@@ -1,23 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import './styles/MainPage.css'; 
-
+import './styles/MainPage.css';
 import Logo from './assets/Logo.png';
 import Help from './assets/Help.png';
 import Book from './assets/Book.png';
 import User from './assets/User.png';
 import Settings from './assets/Settings.png';
 import Trophy from './assets/Trophy.png';
+import Axios from 'axios';
 
 // MainPage component
 const MainPage = () => {
     const location = useLocation();
-    const { firstName } = location.state || {};
+    const { email } = location.state || {};
+    const [firstName, setFirstName] = useState('');
+    const userID = localStorage.getItem('userID');
+
+    useEffect(() => {
+        Axios.get(`http://localhost:3000/user/${userID}`)
+        .then(response => {
+            setFirstName(response.data.firstName); // Assuming the first name is in the response
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+        });
+    }, []);
+
     return (
         <div className='mainpage-container'> {/* Main container */}
             <div className='white-rectangle-container'> {/* Container for top section */}
                 <img src={Logo} alt="SpeakEasy" /> {/* Logo */}
-                <h1>Welcome, {firstName}!</h1> {/* Welcome message */}
+                <h1>Welcome, {firstName || "Guest"}!</h1> {/* Welcome message */}
             </div>
             <div className='light-orange-rectangle'/>
             <div className='bottom-container'> {/* Container for bottom section */}
