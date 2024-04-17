@@ -1,18 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'; 
 import './styles/MainPage.css'; 
 import './styles/Settings.css'; 
-
 import Logo from './assets/Logo.png'; 
 import Help from './assets/Help.png'; 
 import Book from './assets/Book.png'; 
 import User from './assets/User.png'; 
 import Settings from './assets/Settings.png'; 
-import SpainFlag from './assets/SpainFlag.png';
+import Axios from 'axios';
 
 // Settings manage courses component
 const SettingsManageCourses = () => {
+    const [user, setUser] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        language: '',
+        dailyTarget: 0,
+    });
+    const userID = localStorage.getItem('userID');
+
+    useEffect(() => {
+        Axios.get(`http://localhost:3000/user/${userID}`)
+        .then(response => {
+            setUser(response.data); // Update the user state with the fetched data
+        })
+        .catch(error => {
+            console.error('Error fetching user data:', error);
+        });
+    }, [userID]);
+
+    const languageToFlag = {
+        Spanish: "spain.png",
+        French: "france.png",
+        English: "united-kingdom.png",
+        Chinese: "china.png",
+        // Add more mappings as necessary
+    };
+
+    const flagSrc = `/assets/Flags/${languageToFlag[user.language] || 'default.png'}`;
 
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
 
@@ -52,8 +79,8 @@ const SettingsManageCourses = () => {
                         <div className='manage-courses'>
                             <div className="course-info">
                                 <h3>Course: </h3>
-                                <img className='spain-flag' src={SpainFlag} alt="SpainFlag" /> {/* SpainFlag icon */}
-                                <h3>Spanish</h3>
+                                <img className='flag-image' src={flagSrc} alt={`${user.language} Flag`} /> {/* Country flag icon */}
+                                <h3>{user.language}</h3>
                             </div>
                         </div>
                         <button className='reset-button' type="submit"onClick={() => navigate('/settingsManageCourses')}>Reset</button> {/* Submit button */}
