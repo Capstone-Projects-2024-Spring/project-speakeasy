@@ -10,7 +10,6 @@ import MaleUser from './assets/MaleUser.png';
 import Search from './assets/Search.png';
 import Fire from './assets/Fire.png';
 import Sleep from './assets/Sleep.png';
-import SpainFlag from './assets/SpainFlag.png';
 import Axios from 'axios';
 
 
@@ -34,6 +33,16 @@ const Profile = () => {
             console.error('Error fetching user data:', error);
         });
     }, [userID]);
+
+    const languageToFlag = {
+        Spanish: "spain.png",
+        French: "france.png",
+        English: "united-kingdom.png",
+        Chinese: "china.png",
+        // Add more mappings as necessary
+    };
+
+    const flagSrc = `/Flags/${languageToFlag[user.language] || 'default.png'}`;
 
     return (
         <div className='mainpage-container'> {/* Main container */}
@@ -71,7 +80,7 @@ const Profile = () => {
                                 <h3>{user.firstName} {user.lastName}</h3>
                                 <h4>{user.email}</h4>
                                 <h4>Currently Studying: {user.language}</h4>
-                                <img src={SpainFlag} alt="Spain" /> {/* Spain flag igon*/}
+                                <img src={flagSrc} alt={`${user.language} Flag`} /> {/* Country flag icon*/}
                             </div>
                             <h3>Badges</h3> {/* Badges heading */}
                             <div className='profile-orange-rectangle'> {/* Container for the first badge */}
