@@ -11,15 +11,19 @@ import Axios from 'axios';
 
 // MainPage component
 const MainPage = () => {
-    const location = useLocation();
-    const { email } = location.state || {};
-    const [firstName, setFirstName] = useState('');
+    const [user, setUser] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        language: '',
+        dailyTarget: 0,
+    });
     const userID = localStorage.getItem('userID');
 
     useEffect(() => {
         Axios.get(`http://localhost:3000/user/${userID}`)
         .then(response => {
-            setFirstName(response.data.firstName); // Assuming the first name is in the response
+            setUser(response.data); // Update the user state with the fetched data
         })
         .catch(error => {
             console.error('Error fetching user data:', error);
@@ -30,7 +34,7 @@ const MainPage = () => {
         <div className='mainpage-container'> {/* Main container */}
             <div className='white-rectangle-container'> {/* Container for top section */}
                 <img src={Logo} alt="SpeakEasy" /> {/* Logo */}
-                <h1>Welcome, {firstName || "Guest"}!</h1> {/* Welcome message */}
+                <h1>Welcome, {user.firstName || "Guest"}!</h1> {/* Welcome message */}
             </div>
             <div className='light-orange-rectangle'/>
             <div className='bottom-container'> {/* Container for bottom section */}
