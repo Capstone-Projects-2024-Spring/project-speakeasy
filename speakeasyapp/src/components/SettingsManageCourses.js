@@ -39,7 +39,7 @@ const SettingsManageCourses = () => {
         // Add more mappings as necessary
     };
 
-    const flagSrc = `/assets/Flags/${languageToFlag[user.language] || 'default.png'}`;
+    const flagSrc = `/Flags/${languageToFlag[user.language] || 'default.png'}`;
 
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
 
