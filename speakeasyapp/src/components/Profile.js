@@ -85,15 +85,15 @@ const Profile = () => {
                             <h3>Badges</h3> {/* Badges heading */}
                             <div className='profile-orange-rectangle'> {/* Container for the first badge */}
                                 <img src={Fire} alt="Fire" /> {/* Fire icon */}
-                                <h5>{user.name} is currently on a 100 day streak!</h5> {/* Badge description */}
+                                <h5>{user.firstName} is currently on a 100 day streak!</h5> {/* Badge description */}
                             </div>
                             <div className='profile-orange-rectangle'> {/* Container for the second badge */}
                                 <img src={Sleep} alt="Sleep" /> {/* Sleep icon */}
-                                <h5>{user.name} frequently learns past 7PM!</h5> {/* Badge description */}
+                                <h5>{user.firstName} frequently learns past 7PM!</h5> {/* Badge description */}
                             </div>
                             <div className='profile-orange-rectangle'> {/* Container for the third badge */}
                                 <img src={Search} alt="Search" /> {/* Search icon */}
-                                <h5>{user.name} has searched over 500 words!</h5> {/* Badge description */}
+                                <h5>{user.firstName} has searched over 500 words!</h5> {/* Badge description */}
                             </div>
 
                         </div>
