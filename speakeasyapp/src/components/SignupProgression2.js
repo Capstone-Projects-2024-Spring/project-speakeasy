@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import './styles/MainPage.css';  
 import Axios from 'axios';
@@ -7,7 +7,7 @@ import Globe from './assets/Globe.png';
 
 // SignupProgression2 component
 const SignupProgression2 = () => {
-    const [selectedLanguage, setSelectedLanguage] = useState('Spanish'); // State to store selected language
+    const [selectedLanguage, setSelectedLanguage] = useState('English'); // State to store selected language
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
 
     const handleSubmit = async (event) => {
@@ -33,7 +33,6 @@ const SignupProgression2 = () => {
             alert('Failed to update language. Please try again.');
         });
     };
-
 
     return (
         <div className="i-want-to-learn-container">
