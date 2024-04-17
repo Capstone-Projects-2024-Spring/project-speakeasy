@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 router.route('/register').post(async (req, res) => {
     try {
       // Extract user data from request body
-      const { firstName, lastName, email, password } = req.body;
+      const { firstName, lastName, email, password, language, time } = req.body;
   
       // Check for existing user with same email
       const existingUser = await User.findOne({ email });
@@ -64,13 +64,37 @@ router.route('/:userID').get(async (req, res) => {
   try {
       // Extract the userID from the URL parameters
       const { userID } = req.params;
-      console.log(req.params.userID);
+
       // Find the user in the database by their ID
       const user = await User.findById(userID);
 
       // If user is found, send back the first name
       if (user) {
-          res.json({ firstName: user.firstName });
+          res.json(user);
+      } else {
+          res.status(404).json({ message: 'User not found' });
+      }
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Error fetching user data' });
+  }
+});
+
+router.route('/:userID/update').put(async (req, res) => {
+  try {
+      const { userID } = req.params;
+      const { language, dailyTarget } = req.body;
+
+      // Find the user in the database by their ID
+      const user = await User.findById(userID);
+
+      if (user) {
+          // Update the language
+          if (language) user.language = language;
+          // Update the daily time target if provided
+          if (dailyTarget) user.dailyTarget = dailyTarget;
+          await user.save();
+          res.send({ message: 'Language updated successfully', user });
       } else {
           res.status(404).json({ message: 'User not found' });
       }

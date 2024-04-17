@@ -27,6 +27,14 @@ const userSchema = new Schema({
       type: String,
       required: true,
       minlength: 8 // Enforce a minimum password length for security
+    },
+    language: {
+      type: String,
+      default: 'English' // Starting language
+    },
+    dailyTarget: {
+      type: Number,
+      default: 10 // Daily target time in minutes, default 10 minutes
     }
 }, {
     timestamps: true
