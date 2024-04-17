@@ -70,7 +70,7 @@ router.route('/:userID').get(async (req, res) => {
 
       // If user is found, send back the first name
       if (user) {
-          res.json({ firstName: user.firstName });
+          res.json(user);
       } else {
           res.status(404).json({ message: 'User not found' });
       }
