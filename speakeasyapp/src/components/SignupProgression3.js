@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import './styles/MainPage.css';  
 import Axios from 'axios';
-
 import Clock from './assets/Clock.png';
 
 // SignupProgression3 component
