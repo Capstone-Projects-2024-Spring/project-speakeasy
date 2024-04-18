@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import './styles/MainPage.css';  
 import Axios from 'axios';
-
 import Globe from './assets/Globe.png';
 
 // SignupProgression2 component
@@ -13,7 +12,7 @@ const SignupProgression2 = () => {
     const handleSubmit = async (event) => {
         event.preventDefault(); // Prevent default form submission behavior
         const userID = localStorage.getItem('userID'); // Get the user ID from localStorage
-
+        console.log("Language changed to:", event.target.value);
         if (!userID) {
             alert('User ID not found. Please sign in again.');
             navigate('/'); // Redirect to the home page or sign in page
@@ -22,7 +21,7 @@ const SignupProgression2 = () => {
 
         // Perform the PUT request to update the user's selected language
         Axios.put(`http://localhost:3000/user/${userID}/update`, {
-            language: selectedLanguage
+            languages: [selectedLanguage]
         })
         .then(res => {
             console.log('Language updated successfully:', res.data);
