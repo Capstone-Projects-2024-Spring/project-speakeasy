@@ -6,13 +6,14 @@ import Globe from './assets/Globe.png';
 
 // SignupProgression2 component
 const SignupProgression2 = () => {
-    const [selectedLanguage, setSelectedLanguage] = useState('English'); // State to store selected language
+    const [selectedLanguage, setSelectedLanguage] = useState('Spanish'); // State to store selected language
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
 
     const handleSubmit = async (event) => {
         event.preventDefault(); // Prevent default form submission behavior
         const userID = localStorage.getItem('userID'); // Get the user ID from localStorage
-        console.log("Language changed to:", event.target.value);
+        console.log("Submitting with Language:", selectedLanguage);
+        
         if (!userID) {
             alert('User ID not found. Please sign in again.');
             navigate('/'); // Redirect to the home page or sign in page

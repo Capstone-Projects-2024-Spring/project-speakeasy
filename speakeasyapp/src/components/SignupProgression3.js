@@ -8,6 +8,7 @@ import Clock from './assets/Clock.png';
 const SignupProgression3 = () => {
     const [selectedDailyTarget, setSelectedDailyTarget] = useState('10'); // State to store selected time
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
+    console.log("Submitting with Daily Target:", selectedDailyTarget);
 
     const handleSubmit = async (event) => {
         event.preventDefault(); // Prevent default form submission behavior
