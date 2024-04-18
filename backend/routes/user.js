@@ -9,7 +9,7 @@ const jwt = require("jsonwebtoken");
 router.route('/register').post(async (req, res) => {
     try {
       // Extract user data from request body
-      const { firstName, lastName, email, password, language, dailyTarget } = req.body;
+      const { firstName, lastName, email, password, languages, dailyTarget } = req.body;
   
       // Check for existing user with same email
       const existingUser = await User.findOne({ email });
@@ -21,7 +21,7 @@ router.route('/register').post(async (req, res) => {
       const newProfile = new Profile({
           firstName,
           lastName,
-          language,
+          languages,
           dailyTarget
       });
 
@@ -96,8 +96,8 @@ router.route('/:userID').get(async (req, res) => {
 router.route('/:userID/update').put(async (req, res) => {
   try {
       const { userID } = req.params;
-      const { language, dailyTarget } = req.body;
-
+      const { languages, dailyTarget } = req.body;
+console.log(languages);
       // Find the user in the database by their ID
       const user = await User.findById(userID).populate('profile');
 
@@ -107,11 +107,11 @@ router.route('/:userID/update').put(async (req, res) => {
       if (user.profile) {
           const profile = user.profile;
           // Update the language if provided
-          if (language) profile.language = language;
+          if (languages) profile.languages = languages;
           // Update the daily time target if provided
           if (dailyTarget) profile.dailyTarget = dailyTarget;
           await profile.save();
-          res.send({ message: 'Language updated successfully', user });
+          res.send({ message: 'Languages updated successfully', user });
       } else {
           res.status(404).json({ message: 'Profile not found for this user' });
       }
