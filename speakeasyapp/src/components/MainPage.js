@@ -96,6 +96,13 @@ const MainPage = () => {
                         </div>
                         <progress value={0.5} />
                     </div>
+                    <div className='white-container'>
+                        <div className='content-container'>
+                            <Link to="/section5"><h3>Assessments</h3></Link>
+                            <img src={Trophy} alt="Trophy" />
+                        </div>
+                        <progress value={0.5} />
+                    </div>
                 </div>
             </div>
         </div>
