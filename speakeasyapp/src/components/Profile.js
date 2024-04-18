@@ -18,8 +18,7 @@ const Profile = () => {
     const [user, setUser] = useState({
         firstName: '',
         lastName: '',
-        email: '',
-        language: '',
+        languages: [],
         dailyTarget: 0,
     });
     const userID = localStorage.getItem('userID');
@@ -30,7 +29,7 @@ const Profile = () => {
             setUser(response.data); // Update the user state with the fetched data
         })
         .catch(error => {
-            console.error('Error fetching user data:', error);
+            console.error('Error fetching profile data:', error);
         });
     }, [userID]);
 
@@ -42,7 +41,7 @@ const Profile = () => {
         // Add more mappings as necessary
     };
 
-    const flagSrc = `/Flags/${languageToFlag[user.language] || 'default.png'}`;
+    const flagSrc = `/Flags/${languageToFlag[user.languages[0]] || 'default.png'}`;
 
     return (
         <div className='mainpage-container'> {/* Main container */}
@@ -79,8 +78,8 @@ const Profile = () => {
                                 <img src={MaleUser} alt="User" /> {/* Male user icon */}
                                 <h3>{user.firstName} {user.lastName}</h3>
                                 <h4>{user.email}</h4>
-                                <h4>Currently Studying: {user.language}</h4>
-                                <img src={flagSrc} alt={`${user.language} Flag`} /> {/* Country flag icon*/}
+                                <h4>Currently Studying: {user.languages[0]}</h4>
+                                <img src={flagSrc} alt={`${user.languages[0]} Flag`} /> {/* Country flag icon*/}
                             </div>
                             <h3>Badges</h3> {/* Badges heading */}
                             <div className='profile-orange-rectangle'> {/* Container for the first badge */}
