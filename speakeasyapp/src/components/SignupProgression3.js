@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import './styles/MainPage.css';  
 import Axios from 'axios';
-
 import Clock from './assets/Clock.png';
 
 // SignupProgression3 component
 const SignupProgression3 = () => {
     const [selectedDailyTarget, setSelectedDailyTarget] = useState('10'); // State to store selected time
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
+    console.log("Submitting with Daily Target:", selectedDailyTarget);
 
     const handleSubmit = async (event) => {
         event.preventDefault(); // Prevent default form submission behavior
