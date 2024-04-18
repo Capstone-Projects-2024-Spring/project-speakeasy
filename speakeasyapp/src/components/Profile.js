@@ -43,6 +43,12 @@ const Profile = () => {
 
     const flagSrc = `/Flags/${languageToFlag[user.languages[0]] || 'default.png'}`;
 
+    const handleLogout = () => {
+        localStorage.removeItem('userID');
+        // Redirect to login route
+        window.location.href = '/';
+    };
+
     return (
         <div className='mainpage-container'> {/* Main container */}
             <div className='white-rectangle-container'> {/* Container for top section */}
@@ -69,6 +75,7 @@ const Profile = () => {
                             <img src={Help} alt="Help" /> {/* Help icon */}
                             <Link to="/help">Help</Link> {/* Help link */}
                         </li>
+                        <li><button onClick={handleLogout}>Log Out</button></li> {/* Log out button */}
                     </ul>
                 </div>
                 <div className='profile-container bottom-section'> {/* Profile container */}

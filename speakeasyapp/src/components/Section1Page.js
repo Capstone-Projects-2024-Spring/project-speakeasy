@@ -47,6 +47,12 @@ const Section1Page = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('userID');
+    // Redirect to login route
+    window.location.href = '/';
+  };
+
   return (
     <div className='mainpage-container'>
       <div className='white-rectangle-container'>
@@ -61,6 +67,7 @@ const Section1Page = () => {
             <li><img src={User} alt="Profile" /><Link to="/profile">Profile</Link></li>
             <li><img src={Settings} alt="Settings" /><Link to="/settings">Settings</Link></li>
             <li><img src={Help} alt="Help" /><Link to="/help">Help</Link></li>
+            <li><button onClick={handleLogout}>Log Out</button></li>
           </ul>
         </div>
         <div className='section1page-container'>

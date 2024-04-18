@@ -12,6 +12,12 @@ import Settings from './assets/Settings.png';
 // Help page component
 const HelpPage = () => {
 
+    const handleLogout = () => {
+        localStorage.removeItem('userID');
+        // Redirect to login route
+        window.location.href = '/';
+    };
+    
     return (
         <div className='mainpage-container'> {/* Main container */}
             <div className='white-rectangle-container'> {/* Container for top section */}
@@ -38,6 +44,7 @@ const HelpPage = () => {
                             <img src={Help} alt="Help" /> {/* Help icon */}
                             <Link to="/help">Help</Link> {/* Help link */}
                         </li>
+                        <li><button onClick={handleLogout}>Log Out</button></li> {/* Log out button */}
                     </ul>
                 </div>
                 <div className='help-container bottom-section'> {/* Help container */}
