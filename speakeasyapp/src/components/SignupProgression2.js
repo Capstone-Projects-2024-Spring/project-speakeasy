@@ -1,20 +1,38 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import './styles/MainPage.css';  
+import Axios from 'axios';
 
 import Globe from './assets/Globe.png';
 
 // SignupProgression2 component
 const SignupProgression2 = () => {
-    const [selectedLanguage, setSelectedLanguage] = useState('Spanish'); // State to store selected language
-
-    const handleSubmit = (event) => {
-        event.preventDefault(); // Prevent default form submission behavior
-        console.log('Selected Language:', selectedLanguage);  // Log selected language
-        navigate('/signupProgression3'); // Navigate to next step (replace with actual URL)
-    };
-
+    const [selectedLanguage, setSelectedLanguage] = useState('English'); // State to store selected language
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
+
+    const handleSubmit = async (event) => {
+        event.preventDefault(); // Prevent default form submission behavior
+        const userID = localStorage.getItem('userID'); // Get the user ID from localStorage
+
+        if (!userID) {
+            alert('User ID not found. Please sign in again.');
+            navigate('/'); // Redirect to the home page or sign in page
+            return;
+        }
+
+        // Perform the PUT request to update the user's selected language
+        Axios.put(`http://localhost:3000/user/${userID}/update`, {
+            language: selectedLanguage
+        })
+        .then(res => {
+            console.log('Language updated successfully:', res.data);
+            navigate('/signupProgression3'); // Navigate to the next step
+        })
+        .catch(error => {
+            console.error('Failed to update language:', error);
+            alert('Failed to update language. Please try again.');
+        });
+    };
 
     return (
         <div className="i-want-to-learn-container">

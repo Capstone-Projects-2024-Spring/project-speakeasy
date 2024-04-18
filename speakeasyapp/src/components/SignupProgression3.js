@@ -1,20 +1,38 @@
 import React, { useState } from 'react'; 
 import { useNavigate } from 'react-router-dom'; 
 import './styles/MainPage.css';  
+import Axios from 'axios';
 
 import Clock from './assets/Clock.png';
 
 // SignupProgression3 component
 const SignupProgression3 = () => {
-    const [selectedTime, setSelectedTime] = useState('10'); // State to store selected time
-
-    const handleSubmit = (event) => {
-        event.preventDefault(); // Prevent default form submission behavior
-        console.log('Selected Time:', selectedTime); // Log selected time
-        navigate('/mainpage'); // Navigate to the main page
-    };
-
+    const [selectedDailyTarget, setSelectedDailyTarget] = useState('10'); // State to store selected time
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
+
+    const handleSubmit = async (event) => {
+        event.preventDefault(); // Prevent default form submission behavior
+        const userID = localStorage.getItem('userID'); // Get the user ID from localStorage
+
+        if (!userID) {
+            alert('User ID not found. Please sign in again.');
+            navigate('/'); // Redirect to the home page or sign in page
+            return;
+        }
+
+        // Perform the PUT request to update the user's selected language
+        Axios.put(`http://localhost:3000/user/${userID}/update`, {
+            dailyTarget: selectedDailyTarget
+        })
+        .then(res => {
+            console.log('Daily target updated successfully:', res.data);
+            navigate('/mainpage'); // Navigate to the next step
+        })
+        .catch(error => {
+            console.error('Failed to update daily target:', error);
+            alert('Failed to update daily target. Please try again.');
+        });
+    };
 
     return (
         <div className="how-many-mins-container"> {/* Container for How Many Mins form */}
@@ -23,8 +41,8 @@ const SignupProgression3 = () => {
                 <div className='select-container'> 
                     <img src={Clock} alt="Time" /> {/* Clock icon */}
                     <select
-                    value={selectedTime}
-                    onChange={(event) => setSelectedTime(event.target.value)}> {/* Time dropdown */}
+                    value={selectedDailyTarget}
+                    onChange={(event) => setSelectedDailyTarget(event.target.value)}> {/* Time dropdown */}
                         <option value="10">10</option> 
                         <option value="20">20</option>
                         <option value="30">30</option>

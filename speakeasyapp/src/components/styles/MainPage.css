@@ -77,6 +77,14 @@ body {
     margin-right: 10px; /* Add right margin */
 }
 
+.navbar-container button {
+    padding: 10px; /* Add padding to buttons */
+    color: red; /* Set text color of buttons */
+    border: none; /* Remove border from buttons */
+    border-radius: 10px; /* Add border radius to buttons */
+    cursor: pointer; /* Set cursor to pointer on hover */
+}
+
 /* Lesson section */
 
 .lesson-container {

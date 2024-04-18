@@ -21,8 +21,8 @@ const Login = () => {
     // Event handler function to handle form submission
     const handleSubmit = (event) => {
         event.preventDefault(); // Prevent default form submission behavior
-        // Log email and password to the console
 
+        // Log email and password to the console
         const user = {
             email: email,
             password: password,
@@ -38,7 +38,13 @@ const Login = () => {
                 // Optionally clear form and handle success
                 setEmail('');
                 setPassword('');
-                navigate('/mainpage'); // Navigate on successful login
+                if(res.data && res.data.user._id) {
+                    localStorage.setItem('userID', res.data.user._id);
+                    console.log('Login successful, userID stored in localStorage.');
+                    navigate('/mainpage'); // Navigate on successful login
+                } else {
+                    console.error('Login response did not include userID.');
+                }
             })
             .catch(error => {
                 console.log(error);
@@ -48,7 +54,7 @@ const Login = () => {
                     alert('An error occurred. Please try again.');
                 }
             });
-    };
+        }
 
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
 

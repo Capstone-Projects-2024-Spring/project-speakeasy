@@ -16,6 +16,7 @@ import Help from './components/Help.js';
 import Section1Page from './components/Section1Page.js';
 import Section2Page from './components/Section2Page.js';
 import Section3Page from './components/Section3Page.js';
+import Section4Page from './components/Section4Page.js';
 
 const App = () => {
     return (
@@ -44,6 +45,7 @@ const App = () => {
                 <Route path="/section1" element={<Section1Page />} />
                 <Route path="/section2" element={<Section2Page />} />
                 <Route path="/section3" element={<Section3Page />} />
+                <Route path="/section4" element={<Section4Page />} />
             </Routes>
         </Router>
     );
