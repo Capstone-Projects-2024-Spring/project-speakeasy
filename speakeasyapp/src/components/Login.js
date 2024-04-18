@@ -38,9 +38,11 @@ const Login = () => {
                 // Optionally clear form and handle success
                 setEmail('');
                 setPassword('');
+                
                 if(res.data && res.data.user._id) {
                     localStorage.setItem('userID', res.data.user._id);
-                    console.log('Login successful, userID stored in localStorage.');
+                    localStorage.setItem('loginTime', new Date().getTime());
+                    console.log('Login successful, userID and login time stored in localStorage.');
                     navigate('/mainpage'); // Navigate on successful login
                 } else {
                     console.error('Login response did not include userID.');

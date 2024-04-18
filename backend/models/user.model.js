@@ -35,7 +35,7 @@ const userSchema = new Schema({
     dailyTarget: {
       type: Number,
       default: 10 // Daily target time in minutes, default 10 minutes
-    }
+    },
 }, {
     timestamps: true
 });

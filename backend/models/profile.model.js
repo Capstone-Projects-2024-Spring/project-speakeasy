@@ -13,7 +13,7 @@ const profileSchema = new Schema({
   },
   languages: {
     type: [String],
-    required: true // must have initial language, i.e. array length of 1.
+    required: true
   },
   location: {
     city: String,
