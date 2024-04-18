@@ -4,18 +4,6 @@ const bcrypt = require('bcrypt');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-    firstName: {
-        type: String,
-        required: true,
-        trim: true,
-        minlength: 1
-    },
-    lastName: {
-      type: String,
-      required: true,
-      trim: true,
-      minlength: 1
-    },
     email: {
       type: String,
       required: true,
@@ -28,14 +16,14 @@ const userSchema = new Schema({
       required: true,
       minlength: 8 // Enforce a minimum password length for security
     },
-    language: {
-      type: String,
-      default: 'English' // Starting language
+    profile: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Profile'
     },
-    dailyTarget: {
-      type: Number,
-      default: 10 // Daily target time in minutes, default 10 minutes
-    }
+    /*history: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'History'
+    }*/
 }, {
     timestamps: true
 });
