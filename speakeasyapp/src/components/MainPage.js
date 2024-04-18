@@ -47,7 +47,7 @@ const MainPage = () => {
         <div className='mainpage-container'> {/* Main container */}
             <div className='white-rectangle-container'> {/* Container for top section */}
                 <img src={Logo} alt="SpeakEasy" /> {/* Logo */}
-                <h1>Welcome, {user.firstName || "Guest"} {progressPercentage}!</h1> {/* Welcome message */}
+                <h1>Welcome, {user.firstName || "Guest"}!</h1> {/* Welcome message */}
             </div>
             <div className='light-orange-rectangle'/>
             <div className='bottom-container'> {/* Container for bottom section */}
@@ -69,6 +69,10 @@ const MainPage = () => {
                             <img src={Help} alt="Help" /> {/* Help icon */}
                             <Link to="/help">Help</Link> {/* Help link */}
                         </li>
+                            <p>Progress</p>
+                        <li> 
+                            <progress value={progressPercentage} max="100"/>
+                        </li>
                     </ul>
                 </div>
                 <div className='lesson-container bottom-section'> {/* Lesson container */}
@@ -77,28 +81,24 @@ const MainPage = () => {
                         <Link to="/section1"><h3>Chat Room</h3></Link> {/* This line in MainPage makes Section 1 heading clickable and links to the Section1Page */}
                             <img src={Trophy} alt="Trophy" /> {/* Trophy icon */}
                         </div>
-                        <progress value={progressPercentage} max="100"/> {/* Progress bar */}
                     </div>
                     <div className='white-container'> {/* Additional sections unchanged */}
                         <div className='content-container'>
                             <Link to="/section2"><h3>Translator</h3></Link>
                             <img src={Trophy} alt="Trophy" />
                         </div>
-                        <progress value={progressPercentage} max="100"/>
                     </div>
                     <div className='white-container'>
                         <div className='content-container'>
                             <Link to="/section3"><h3>Role Playing</h3></Link>
                             <img src={Trophy} alt="Trophy" />
                         </div>
-                        <progress value={progressPercentage} max="100"/>
                     </div>
                     <div className='white-container'>
                         <div className='content-container'>
                             <Link to="/section4"><h3>Vocab Practice</h3></Link>
                             <img src={Trophy} alt="Trophy" />
                         </div>
-                        <progress value={progressPercentage} max="100"/>
                     </div>
                 </div>
             </div>
