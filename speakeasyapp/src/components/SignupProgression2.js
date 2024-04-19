@@ -46,7 +46,8 @@ const SignupProgression2 = () => {
                     >
                         <option value="Spanish">Spanish</option> 
                         <option value="French">French</option>
-                        <option value="Chinese">Chinese</option> 
+                        <option value="Italian">Italian </option> 
+                        <option value="German">German </option> 
                     </select>
                 </div>
                 <button type="submit">Submit</button> {/* Submit button */}
