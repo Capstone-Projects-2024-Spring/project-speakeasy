@@ -38,6 +38,8 @@ const Profile = () => {
         French: "france.png",
         English: "united-kingdom.png",
         Chinese: "china.png",
+        Italian: "italy.png",
+        German: "germany.png",
         // Add more mappings as necessary
     };
 
