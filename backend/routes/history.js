@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const History = require('../models/history.model'); // Assuming you have a History model
+const History = require('../models/history.model');
 
 // Endpoint to add a new history entry
 router.post('/add', async (req, res) => {
