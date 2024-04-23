@@ -2,18 +2,18 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import './styles/MainPage.css';  
 import Axios from 'axios';
-
 import Globe from './assets/Globe.png';
 
 // SignupProgression2 component
 const SignupProgression2 = () => {
-    const [selectedLanguage, setSelectedLanguage] = useState('English'); // State to store selected language
+    const [selectedLanguage, setSelectedLanguage] = useState('Spanish'); // State to store selected language
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
 
     const handleSubmit = async (event) => {
         event.preventDefault(); // Prevent default form submission behavior
         const userID = localStorage.getItem('userID'); // Get the user ID from localStorage
-
+        console.log("Submitting with Language:", selectedLanguage);
+        
         if (!userID) {
             alert('User ID not found. Please sign in again.');
             navigate('/'); // Redirect to the home page or sign in page
@@ -22,7 +22,7 @@ const SignupProgression2 = () => {
 
         // Perform the PUT request to update the user's selected language
         Axios.put(`http://localhost:3000/user/${userID}/update`, {
-            language: selectedLanguage
+            languages: [selectedLanguage]
         })
         .then(res => {
             console.log('Language updated successfully:', res.data);
@@ -46,7 +46,8 @@ const SignupProgression2 = () => {
                     >
                         <option value="Spanish">Spanish</option> 
                         <option value="French">French</option>
-                        <option value="Chinese">Chinese</option> 
+                        <option value="Italian">Italian </option> 
+                        <option value="German">German </option> 
                     </select>
                 </div>
                 <button type="submit">Submit</button> {/* Submit button */}

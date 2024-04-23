@@ -5,19 +5,24 @@ const Schema = mongoose.Schema;
 const profileSchema = new Schema({
   firstName: {
     type: String,
-    required: true
+    required: true,
+    trim: true,
+    minlength: 1
   },
   lastName: {
     type: String,
-    required: true
+    required: true,
+    trim: true,
+    minlength: 1
   },
   languages: {
     type: [String],
-    required: true
+    required: true, // must have initial language, i.e. array length of 1.
+    default: ['English'] // Starting language
   },
-  location: {
-    city: String,
-    country: String
+  dailyTarget: {
+    type: Number,
+    default: 10 // Daily target time in minutes, default 10 minutes
   }
 }, {
   timestamps: true

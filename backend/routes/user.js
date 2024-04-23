@@ -1,5 +1,7 @@
 const router = require('express').Router();
-let User = require('../models/user.model');
+const User = require('../models/user.model');
+const Profile = require('../models/profile.model');
+const History = require('../models/history.model');
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 
@@ -8,7 +10,7 @@ const jwt = require("jsonwebtoken");
 router.route('/register').post(async (req, res) => {
     try {
       // Extract user data from request body
-      const { firstName, lastName, email, password, language, time } = req.body;
+      const { firstName, lastName, email, password, languages, dailyTarget } = req.body;
   
       // Check for existing user with same email
       const existingUser = await User.findOne({ email });
@@ -16,12 +18,32 @@ router.route('/register').post(async (req, res) => {
         return res.status(400).json('Email already in use');
       }
 
+      // Create a profile
+      const newProfile = new Profile({
+          firstName,
+          lastName,
+          languages,
+          dailyTarget
+      });
+
+      // Create a history
+      const newHistory = new History({
+        chatbot: [],
+        translator: [],
+        roleplaying: [],
+        vocabulary: []
+      });
+
+      // Save the profile to the database
+      const profile = await newProfile.save();
+      const history = await newHistory.save();
+
       // Create a new user
       const newUser = new User({
-        firstName,
-        lastName,
         email,
         password,
+        profile: profile._id,  // Link to the profile document
+        history: history._id,  // Link to the history document
       });
   
       // Save the user to the database
@@ -66,42 +88,62 @@ router.route('/:userID').get(async (req, res) => {
       const { userID } = req.params;
 
       // Find the user in the database by their ID
-      const user = await User.findById(userID);
+      const user = await User.findById(userID).populate('profile');
 
-      // If user is found, send back the first name
-      if (user) {
-          res.json(user);
-      } else {
-          res.status(404).json({ message: 'User not found' });
-      }
+      if (!user)
+        return res.status(404).json({ message: 'User not found' });
+
+      // Check if the user has a linked profile
+      if (user.profile)
+          res.json(user.profile);
+      else
+          res.status(404).json({ message: 'Profile not found for this user' });
   } catch (err) {
       console.error(err);
-      res.status(500).json({ message: 'Error fetching user data' });
+      res.status(500).json({ message: 'Error fetching profile data' });
   }
 });
 
 router.route('/:userID/update').put(async (req, res) => {
   try {
       const { userID } = req.params;
-      const { language, dailyTarget } = req.body;
+      const { languages, dailyTarget } = req.body;
 
       // Find the user in the database by their ID
-      const user = await User.findById(userID);
+      const user = await User.findById(userID).populate('profile');
 
-      if (user) {
-          // Update the language
-          if (language) user.language = language;
+      if (!user)
+        return res.status(404).json({ message: 'User not found' });
+
+      if (user.profile) {
+          const profile = user.profile;
+          // Update the language if provided
+          if (languages) profile.languages = languages;
           // Update the daily time target if provided
-          if (dailyTarget) user.dailyTarget = dailyTarget;
-          await user.save();
-          res.send({ message: 'Language updated successfully', user });
+          if (dailyTarget) profile.dailyTarget = dailyTarget;
+          await profile.save();
+          res.send({ message: 'Languages updated successfully', user });
       } else {
-          res.status(404).json({ message: 'User not found' });
+          res.status(404).json({ message: 'Profile not found for this user' });
       }
   } catch (err) {
       console.error(err);
-      res.status(500).json({ message: 'Error fetching user data' });
+      res.status(500).json({ message: 'Error fetching profile data' });
   }
 });
+
+// History route file
+router.get('/:userId/history', async (req, res) => {
+  try {
+      const user = await User.findById(req.params.userId).populate('history');
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+      res.json({ profile: user.profile, history: user.history });
+  } catch (error) {
+      res.status(500).json({ message: 'Error fetching user profile and history', error: error.message });
+  }
+});
+
 
 module.exports = router;
