@@ -63,7 +63,7 @@ const SettingsPage = () => {
         <div className='mainpage-container'> {/* Main container */}
             <div className='white-rectangle-container'> {/* Container for top section */}
                 <img src={Logo} alt="SpeakEasy" /> {/* Logo */}
-                <h1>Welcome, _________!</h1> {/* Welcome message */}
+                <h1>Settings</h1> {/* Settings message */}
             </div>
             <div className='light-orange-rectangle'/>
             <div className='bottom-container'> {/* Container for bottom section */}
