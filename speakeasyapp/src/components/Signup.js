@@ -44,7 +44,13 @@ const Signup = () => {
             console.log(res.data);
             // Optionally clear form and handle success
             setUser({ firstName: '', lastName: '', email: '', password: '', confirmPassword: ''});
-            navigate('/signupProgression2'); // Navigate on successful signup
+            if(res.data && res.data.user._id) {
+                localStorage.setItem('userID', res.data.user._id);
+                console.log('Login successful, userID stored in localStorage.');
+                navigate('/signupProgression2'); // Navigate on successful signup
+            } else {
+                console.error('Login response did not include userID.');
+            }
         })
         .catch(error => {
             console.log(error);

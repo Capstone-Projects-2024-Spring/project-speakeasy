@@ -13,7 +13,10 @@ import Settings from './components/Settings.js';
 import SettingsEditDailyGoal from './components/SettingsEditDailyGoal.js';
 import SettingsManageCourses from './components/SettingsManageCourses.js';
 import Help from './components/Help.js';
-
+import Section1Page from './components/Section1Page.js';
+import Section2Page from './components/Section2Page.js';
+import Section3Page from './components/Section3Page.js';
+import Section4Page from './components/Section4Page.js';
 
 const App = () => {
     return (
@@ -39,10 +42,15 @@ const App = () => {
                 <Route path="/settingsManageCourses" element={<SettingsManageCourses />} />
                 {/* Route for the Help */}
                 <Route path="/help" element={<Help />} /> 
+                <Route path="/section1" element={<Section1Page />} />
+                <Route path="/section2" element={<Section2Page />} />
+                <Route path="/section3" element={<Section3Page />} />
+                <Route path="/section4" element={<Section4Page />} />
             </Routes>
         </Router>
     );
 };
+
 
 /* Component for the login page */
 const AboutWithLogin = () => {
@@ -69,8 +77,7 @@ const MainPageWithBot = () => {
     return (
         <div className='full-page-container'>
             <MainPage /> {/* Render the MainPage component */}
-             {/* Render the Bot component */}
-        </div>
+                    </div>
     );
 };
 
