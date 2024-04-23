@@ -153,7 +153,6 @@ const Section5Page = () => {
                   {message.text}
                 </div>
               ))}
-            </div>
             {questions.length > 0 && currentQuestionIndex < questions.length ? (
               <Assessment
                 questions={questions}
@@ -163,6 +162,7 @@ const Section5Page = () => {
                 onFinishAssessment={handleFinishAssessment}
               />
             ) : null}
+            </div>
             <form onSubmit={handleSendMessage} className='message-input-form'>
               <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Type your answer here..." />
               <button type="submit">Send</button>

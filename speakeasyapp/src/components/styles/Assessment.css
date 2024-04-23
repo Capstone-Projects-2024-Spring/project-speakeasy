@@ -1,5 +1,6 @@
 .assessment-container {
     margin-top: 20px;
+    overflow-y: auto; /* Add overflow-y to make the assessment scrollable */
 }
   
 .assessment-question {
