@@ -75,8 +75,8 @@ const MainPage = () => {
                             <img src={Help} alt="Help" /> {/* Help icon */}
                             <Link to="/help">Help</Link> {/* Help link */}
                         </li>
+                            <p>Daily Goal:</p>
                         <li> 
-                            <p>Progress</p>
                             <progress value={progressPercentage} max="100"/>
                         </li>
                         <li>
