@@ -75,9 +75,9 @@ const MainPage = () => {
                             <img src={Help} alt="Help" /> {/* Help icon */}
                             <Link to="/help">Help</Link> {/* Help link */}
                         </li>
-                        <li> 
-                            <p>Progress</p>
-                            <progress value={progressPercentage} max="100"/>
+                        <li className="Progress section"> 
+                            <p className="Progress">Progress</p>
+                            <progress className="ProgressBar" value={progressPercentage} max="100"/>
                         </li>
                         <li>
                             <button onClick={handleLogout}>Log Out</button> {/* Logout button */}
@@ -88,33 +88,27 @@ const MainPage = () => {
                     <div className='white-container'> {/* White container for lesson section */}
                         <div className='content-container'> {/* Container for lesson content */}
                         <Link to="/section1"><h3>Chat Room</h3></Link> {/* This line in MainPage makes Section 1 heading clickable and links to the Section1Page */}
-                            <img src={Trophy} alt="Trophy" /> {/* Trophy icon */}
                         </div>
                     </div>
                     <div className='white-container'> {/* Additional sections unchanged */}
                         <div className='content-container'>
                             <Link to="/section2"><h3>Translator</h3></Link>
-                            <img src={Trophy} alt="Trophy" />
                         </div>
                     </div>
                     <div className='white-container'>
                         <div className='content-container'>
                             <Link to="/section3"><h3>Role Playing</h3></Link>
-                            <img src={Trophy} alt="Trophy" />
                         </div>
                     </div>
                     <div className='white-container'>
                         <div className='content-container'>
                             <Link to="/section4"><h3>Vocab Practice</h3></Link>
-                            <img src={Trophy} alt="Trophy" />
                         </div>
                     </div>
                     <div className='white-container'>
                         <div className='content-container'>
                             <Link to="/section5"><h3>Assessments</h3></Link>
-                            <img src={Trophy} alt="Trophy" />
                         </div>
-                        <progress value={0.5} />
                     </div>
                 </div>
             </div>
