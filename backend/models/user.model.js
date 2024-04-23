@@ -20,6 +20,10 @@ const userSchema = new Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Profile'
     },
+    dailyTarget: {
+      type: Number,
+      default: 10 // Daily target time in minutes, default 10 minutes
+    },
     history: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'History'
