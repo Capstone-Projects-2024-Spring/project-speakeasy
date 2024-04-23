@@ -1,15 +1,14 @@
-const express = require('express');
-const router = express.Router();
+const router = require('express').Router();
 const History = require('../models/history.model');
 const User = require('../models/user.model');
 
 // Endpoint to add a new history entry for a specific user
-router.post('/add/:userId', async (req, res) => {
+router.post('/add/:userID', async (req, res) => {
     const { userID } = req.params;
     const { chatbot, translator, roleplaying, vocabulary } = req.body;
-    console.log("POO");
+
     try {
-        const user = await User.findOne({ userID });
+        const user = await User.findOne({ _id: userID }).populate('history');;
         if (!user)
             return res.status(404).json({ message: 'User not found' });
 
@@ -23,7 +22,6 @@ router.post('/add/:userId', async (req, res) => {
                 interactions: messages.map(msg => ({
                     name: msg.name,
                     message: msg.message,
-                    timestamp: msg.timestamp || new Date()
                 })),
                 timestamp: new Date()  // Timestamp for the session
             };
