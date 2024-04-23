@@ -12,6 +12,11 @@ const messageSchema = new Schema({
         type: String,
         required: true
     },
+});
+
+// Define a session schema for groups of messages
+const sessionSchema = new Schema({
+    interactions: [messageSchema],  // Array of message subdocuments
     timestamp: {
         type: Date,
         default: Date.now
@@ -19,14 +24,13 @@ const messageSchema = new Schema({
 });
 
 const historySchema = new Schema({
-    chatbot: [messageSchema],
-    translator: [messageSchema],
-    roleplaying: [messageSchema],
-    vocabulary: [messageSchema]
+    chatbot: [sessionSchema],
+    translator: [sessionSchema],
+    roleplaying: [sessionSchema],
+    vocabulary: [sessionSchema]
 }, {
     timestamps: true
 });
-
 
 const History = mongoose.model('History', historySchema);
 

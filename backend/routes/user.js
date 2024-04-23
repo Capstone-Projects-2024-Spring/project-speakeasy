@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const User = require('../models/user.model');
 const Profile = require('../models/profile.model');
+const History = require('../models/history.model');
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 
@@ -17,7 +18,7 @@ router.route('/register').post(async (req, res) => {
         return res.status(400).json('Email already in use');
       }
 
-      // First, create a profile
+      // Create a profile
       const newProfile = new Profile({
           firstName,
           lastName,
@@ -25,14 +26,24 @@ router.route('/register').post(async (req, res) => {
           dailyTarget
       });
 
+      // Create a history
+      const newHistory = new History({
+        chatbot: [],
+        translator: [],
+        roleplaying: [],
+        vocabulary: []
+      });
+
       // Save the profile to the database
       const profile = await newProfile.save();
+      const history = await newHistory.save();
 
       // Create a new user
       const newUser = new User({
         email,
         password,
-        profile: profile._id  // Link to the profile document
+        profile: profile._id,  // Link to the profile document
+        history: history._id,  // Link to the history document
       });
   
       // Save the user to the database
@@ -97,7 +108,7 @@ router.route('/:userID/update').put(async (req, res) => {
   try {
       const { userID } = req.params;
       const { languages, dailyTarget } = req.body;
-console.log(languages);
+
       // Find the user in the database by their ID
       const user = await User.findById(userID).populate('profile');
 
@@ -120,5 +131,19 @@ console.log(languages);
       res.status(500).json({ message: 'Error fetching profile data' });
   }
 });
+
+// History route file
+router.get('/:userId/history', async (req, res) => {
+  try {
+      const user = await User.findById(req.params.userId).populate('history');
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+      res.json({ profile: user.profile, history: user.history });
+  } catch (error) {
+      res.status(500).json({ message: 'Error fetching user profile and history', error: error.message });
+  }
+});
+
 
 module.exports = router;
