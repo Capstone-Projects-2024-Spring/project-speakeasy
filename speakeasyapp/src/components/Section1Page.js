@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './styles/Section1Page.css';
-
 import Logo from './assets/Logo.png';
 import Help from './assets/Help.png';
 import Book from './assets/Book.png';
 import User from './assets/User.png';
 import Settings from './assets/Settings.png';
 
-const sendMessageToBot = async (message) => {
+const sendMessageToBot = async (message, userID) => {
   try {
     const response = await fetch('http://localhost:3000/api/chat', {
       method: 'POST',
@@ -24,6 +23,26 @@ const sendMessageToBot = async (message) => {
 
     const data = await response.json();
     console.log('Data from server:', data);
+
+    // Ensure data.messages is defined and correctly structured
+    if (data.messages) {
+      const historyResponse = await fetch(`http://localhost:3000/history/add/${userID}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chatbot: data.messages.map(msg => ({ name: msg.sender === "user" ? "User" : "Chatbot", message: msg.text }))
+        })
+      });
+
+    if (!historyResponse.ok)
+      throw new Error('Failed to update history');
+
+      const historyData = await historyResponse.json();
+      console.log('History updated:', historyData);
+    }
+
     return data.messages;
   } catch (error) {
     console.error('Error sending message to bot:', error);
@@ -40,8 +59,9 @@ const Section1Page = () => {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
+    const userID = localStorage.getItem('userID');
     if (input.trim()) {
-      const newMessages = await sendMessageToBot(input);
+      const newMessages = await sendMessageToBot(input, userID);
       setMessages((prevMessages) => [...prevMessages, ...newMessages]);
       setInput('');
     }

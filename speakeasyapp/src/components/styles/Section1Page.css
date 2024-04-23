@@ -93,19 +93,6 @@
     bottom: 0;
 }
 
-.user-message::after {
-    left: 60px; /* Adjusts the speech tail to appear on the left for user messages */
-    border-width: 10px 10px 10px 0;
-    border-style: solid;
-    border-color: transparent #fff transparent transparent;
-}
-.received-message::after {
-    left: -100px; /* Adjusts the speech tail to appear on the right for received messages */
-    border-width: 10px 0 10px 10px;
-    border-style: solid;
-    border-color: transparent transparent transparent #ddd;
-}
-
 /* Center the back button within the white-rectangle-container */
 .white-rectangle-container img[alt="Back"] {
     margin-right: auto;

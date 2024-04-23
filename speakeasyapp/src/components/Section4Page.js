@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './styles/Section1Page.css';
 import FlashcardList from './FlashcardList.js';
-
+import Axios from 'axios';
 import Logo from './assets/Logo.png';
 import Help from './assets/Help.png';
 import Book from './assets/Book.png';
 import User from './assets/User.png';
 import Settings from './assets/Settings.png';
 
-const sendMessageToBot = async (message) => {
+const sendMessageToBot = async (message, language) => {
     // Prepend the instruction to the message for the AI model
-    const modifiedMessage = `Create 10 simple one word vocabulary in Spanish with its English meaning only in format "spanish word - english word", numbered${message}`;
+    const modifiedMessage = `Create 10 simple one word vocabulary in ${language} with its English meaning only in format "${language} word - english word", numbered${message}`;
 
     try {
         const response = await fetch('http://localhost:3000/api/chat', {
@@ -38,6 +38,24 @@ const sendMessageToBot = async (message) => {
 };
 
   const Section4Page = () => {
+    const [user, setUser] = useState({
+        firstName: '',
+        lastName: '',
+        languages: [],
+        dailyTarget: 0,
+    });
+    const userID = localStorage.getItem('userID');
+    
+    useEffect(() => {
+        Axios.get(`http://localhost:3000/user/${userID}`)
+        .then(response => {
+            setUser(response.data); // Update the user state with the fetched data
+        })
+        .catch(error => {
+            console.error('Error fetching profile data:', error);
+        });
+    }, [userID]);
+
       const [messages, setMessages] = useState([{ text: "Welcome to Vocab Practice", sender: "bot" }]);
       const [input, setInput] = useState('');
       const [flashcardsData, setFlashcardsData] = useState([]); // State to hold flashcards
@@ -51,7 +69,7 @@ const sendMessageToBot = async (message) => {
             setMessages(prevMessages => [...prevMessages, userMessage]);
 
             // Send the message with the instruction to the backend
-            const response = await sendMessageToBot(input);
+              const response = await sendMessageToBot(input, user.languages[0]);
 
             // Now, display only the bot's response, not the prompt
             const botMessage = response.find(m => m.sender === 'bot');

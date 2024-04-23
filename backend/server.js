@@ -105,8 +105,10 @@ const textOnly = async (prompt) => {
 // Import routers
 const profileRouter = require('./routes/profile');
 const userRouter = require('./routes/user');
+const historyRouter = require('./routes/history');
 app.use('/profile', profileRouter);
 app.use('/user', userRouter);
+app.use('/history', historyRouter);
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
