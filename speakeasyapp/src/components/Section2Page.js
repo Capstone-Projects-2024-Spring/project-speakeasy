@@ -9,7 +9,7 @@ import User from './assets/User.png';
 import Settings from './assets/Settings.png';
 
 
-const sendMessageToBot = async (message, language) => {
+const sendMessageToBot = async (message, language, userID) => {
  
 
   
@@ -31,6 +31,27 @@ const sendMessageToBot = async (message, language) => {
       }
   
       const data = await response.json();
+      console.log('Data from server:', data);
+
+      // Ensure data.messages is defined and correctly structured
+      if (data.messages) {
+        const historyResponse = await fetch(`http://localhost:3000/history/add/${userID}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            chatbot: data.messages.map(msg => ({ name: msg.sender === "user" ? "User" : "Chatbot", message: msg.text }))
+          })
+        });
+  
+        if (!historyResponse.ok)
+          throw new Error('Failed to update history');
+  
+        const historyData = await historyResponse.json();
+        console.log('History updated:', historyData);
+      }
+
       return data.messages;
     } catch (error) {
       console.error('Error sending message to bot:', error);
@@ -71,7 +92,7 @@ useEffect(() => {
       setMessages(prevMessages => [...prevMessages, userMessage]);
       
       // Send the message with the instruction to the backend
-      const response = await sendMessageToBot(input, user.languages[0]);
+      const response = await sendMessageToBot(input, user.languages[0], userID);
       
       // Now, display only the bot's response, not the prompt
       const botMessage = response.find(m => m.sender === 'bot');
