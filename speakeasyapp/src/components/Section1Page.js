@@ -86,24 +86,24 @@ const Section1Page = () => {
   };
 
   const sendAudioToServer = async (audioBlob) => {
-    const formData = new FormData();
-    formData.append('audio', audioBlob);
-  
-    try {
-      const response = await fetch('http://localhost:3000/api/speech-to-text', {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await response.json();
-      if (data.transcript) {
-        const userID = localStorage.getItem('userID');
-        const newMessages = await sendMessageToBot(data.transcript, userID);
-        setMessages((prevMessages) => [...prevMessages, ...newMessages]);
-      }
-    } catch (error) {
-      console.error('Error sending audio to server:', error);
+  const formData = new FormData();
+  formData.append('audio', audioBlob);
+
+  try {
+    const response = await fetch('http://localhost:3000/api/speech-to-text', {
+      method: 'POST',
+      body: formData,
+    });
+    const data = await response.json();
+    if (data.transcript) {
+      const userID = localStorage.getItem('userID');
+      const newMessages = await sendMessageToBot(data.transcript, userID);
+      setMessages((prevMessages) => [...prevMessages, ...newMessages]);
     }
-  };
+  } catch (error) {
+    console.error('Error sending audio to server:', error);
+  }
+};
 
 
   const handleSendMessage = async (e) => {
