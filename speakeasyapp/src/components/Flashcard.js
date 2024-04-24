@@ -12,10 +12,6 @@ export default function Flashcard({ flashcard }) {
     function setMaxHeight() {
         const frontHeight = frontEl.current.getBoundingClientRect().height; // Get the height of the front element
         const backHeight = backEl.current.getBoundingClientRect().height; // Get the height of the back element
-        
-        console.log('Front Height:', frontHeight); 
-        console.log('Back Height:', backHeight); 
-
         setHeight(Math.max(frontHeight, backHeight, 100)); // Set the height of the flashcard to the maximum of the front height, back height, or a minimum height of 100px
     }
 
@@ -26,7 +22,7 @@ export default function Flashcard({ flashcard }) {
     }, [spanish, english]); // Update effect dependencies to use spanish and english
 
     return (
-        <div className={`card ${flip ? 'flip' : ''}`} style={{ height: height }} onClick={() => setFlip(!flip)}>
+        <div className={`card ${flip ? 'flip' : ''}`} style={{ height: height }} onClick={() => setFlip(!flip)} data-testid="flashcard" >
         <div className="front" ref={frontEl}>
             {spanish} {/* Spanish word on the front */}
         </div>

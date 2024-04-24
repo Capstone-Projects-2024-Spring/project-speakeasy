@@ -65,8 +65,9 @@ const Login = () => {
             <h2>Login</h2> {/* Login heading */}
             <form onSubmit={handleSubmit} className="login-form"> {/* Login form */}
                 <div> {/* Form field for email */}
-                    <label>Email:</label> {/* Label for email input */}
+                    <label htmlFor="email">Email:</label> {/* Label for email input */}
                     <input
+                        id="email"
                         type="text"
                         value={email}
                         onChange={handleEmailChange}
@@ -74,8 +75,9 @@ const Login = () => {
                     /> {/* Input field for email */}
                 </div>
                 <div> {/* Form field for password */}
-                    <label>Password:</label> {/* Label for password input */}
+                <label htmlFor="password">Password:</label> {/* Label for password input */}
                     <input
+                        id="password"
                         type="password"
                         value={password}
                         onChange={handlePasswordChange}
