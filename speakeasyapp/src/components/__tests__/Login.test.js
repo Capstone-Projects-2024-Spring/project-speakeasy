@@ -4,11 +4,6 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import Login from '../Login'; 
 
 describe('Login Component', () => {
-    
-    afterEach(() => {
-        jest.clearAllMocks();
-        localStorage.clear();
-    });
 
     test('renders login form elements', () => {
         render(<Router><Login /></Router>);

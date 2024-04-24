@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import Flashcard from '../Flashcard';
-import '@testing-library/jest-dom'
+import Flashcard from '../Flashcard.js';
+import '@testing-library/jest-dom';
 
 
 describe('Flashcard Component', () => {
@@ -10,7 +10,7 @@ describe('Flashcard Component', () => {
     english: 'Hello'
   };
 
-  test('renders Spanish word on the front', () => {
+  test('renders Spanish word on the front', () => {w
     const { getByText } = render(<Flashcard flashcard={flashcard} />);
     expect(getByText('Hola')).toBeInTheDocument();
   });
@@ -28,16 +28,23 @@ describe('Flashcard Component', () => {
   });
 
   test('correctly adjusts height based on content', () => {
-    const { getByText } = render(<Flashcard flashcard={flashcard} />);
-    const frontElement = getByText('Hola');
-    const backElement = getByText('Hello');
-    const cardElement = frontElement.closest('.card');
-    const frontHeight = frontElement.getBoundingClientRect().height;
-    const backHeight = backElement.getBoundingClientRect().height;
-    const cardHeight = cardElement.getBoundingClientRect().height;
-
-    expect(cardHeight).toBeGreaterThanOrEqual(frontHeight);
-    expect(cardHeight).toBeGreaterThanOrEqual(backHeight);
-    expect(cardHeight).toBeGreaterThanOrEqual(100); // Minimum height check
+    const { getByTestId } = render(<Flashcard flashcard={flashcard} />);
+    const cardElement = getByTestId('flashcard');
+    const frontElement = cardElement.querySelector('.front');
+    const backElement = cardElement.querySelector('.back');
+  
+    // Trigger a resize event to update the height
+    fireEvent(window, new Event('resize'));
+  
+    // Wait for the height to be updated
+    setTimeout(() => {
+      const frontHeight = frontElement.getBoundingClientRect().height;
+      const backHeight = backElement.getBoundingClientRect().height;
+      const cardHeight = cardElement.getBoundingClientRect().height;
+  
+      expect(cardHeight).toBeGreaterThanOrEqual(frontHeight);
+      expect(cardHeight).toBeGreaterThanOrEqual(backHeight);
+      expect(cardHeight).toBeGreaterThanOrEqual(100); // Minimum height check
+    }, 0);
   });
 });

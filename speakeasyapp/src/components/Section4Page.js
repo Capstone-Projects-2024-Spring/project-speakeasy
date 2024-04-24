@@ -61,29 +61,29 @@ const sendMessageToBot = async (message, language) => {
       const [flashcardsData, setFlashcardsData] = useState([]); // State to hold flashcards
 
       const handleSendMessage = async (e) => {
-          e.preventDefault();
-          if (input.trim()) {
-            const userMessage = { text: input, sender: "user" };
-
-            // Immediately display the user's message
-            setMessages(prevMessages => [...prevMessages, userMessage]);
-
-            // Send the message with the instruction to the backend
-              const response = await sendMessageToBot(input, user.languages[0]);
-
-            // Now, display only the bot's response, not the prompt
-            const botMessage = response.find(m => m.sender === 'bot');
-            if (botMessage) {
-                setMessages(prevMessages => [...prevMessages, botMessage]);
-                const flashcards = botMessage.text.split('\n').map(item => {
-                  const [spanish, english] = item.split(' - ');
-                  return { spanish: spanish.trim(), english: english.trim() };
-                });
-                setFlashcardsData(flashcards); // Set flashcardsData state
-            }
-            // Clear the input field
-            setInput('');
+        e.preventDefault();
+        if (input.trim()) {
+          const userMessage = { text: input, sender: "user" };
+      
+          // Immediately display the user's message
+          setMessages(prevMessages => [...prevMessages, userMessage]);
+      
+          // Send the message with the instruction to the backend
+          const response = await sendMessageToBot(input, user.languages[0]);
+      
+          // Now, display only the bot's response, not the prompt
+          const botMessage = response.find(m => m.sender === 'bot');
+          if (botMessage) {
+            setMessages(prevMessages => [...prevMessages, botMessage]);
+            const flashcards = botMessage.text.split('\n').map((item, index) => {
+              const [spanish, english] = item.split(' - ');
+              return { id: index, spanish: spanish.trim(), english: english.trim() };
+            });
+            setFlashcardsData(flashcards); // Set flashcardsData state
           }
+          // Clear the input field
+          setInput('');
+        }
       };
 
     const handleLogout = () => {
