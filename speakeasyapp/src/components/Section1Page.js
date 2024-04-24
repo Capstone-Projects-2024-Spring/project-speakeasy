@@ -36,8 +36,8 @@ const sendMessageToBot = async (message, userID) => {
         })
       });
 
-      if (!historyResponse.ok)
-        throw new Error('Failed to update history');
+    if (!historyResponse.ok)
+      throw new Error('Failed to update history');
 
       const historyData = await historyResponse.json();
       console.log('History updated:', historyData);
