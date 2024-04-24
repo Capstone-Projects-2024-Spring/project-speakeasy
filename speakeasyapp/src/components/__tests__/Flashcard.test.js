@@ -10,7 +10,7 @@ describe('Flashcard Component', () => {
     english: 'Hello'
   };
 
-  test('renders Spanish word on the front', () => {w
+  test('renders Spanish word on the front', () => {
     const { getByText } = render(<Flashcard flashcard={flashcard} />);
     expect(getByText('Hola')).toBeInTheDocument();
   });
