@@ -12,6 +12,10 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const speech = require('@google-cloud/speech');
+const speechClient = new speech.SpeechClient();
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
 
 
 // Middleware for parsing JSON bodies
@@ -32,6 +36,42 @@ connection.once('open', () => {
   console.log("MongoDB database connection established successfully");
 });
 
+// Endpoint to receive audio file and convert to text
+app.post('/api/speech-to-text', upload.single('audio'), async (req, res) => {
+  const endpoint = 'https://speech.googleapis.com/v1p1beta1/speech:recognize'
+  if (!req.file) {
+      return res.status(400).send('No file uploaded.');
+  }
+
+  const audioBytes = req.file.buffer.toString('base64');
+  const audio = {
+      content: audioBytes,
+  };
+  const config = {
+      encoding: 'LINEAR16', // Update according to the audio format
+      sampleRateHertz: 16000, // Update according to your audio's sample rate
+      languageCode: 'en-US', // Update according to your audio's language
+  };
+  const request = {
+      audio: audio,
+      config: config,
+  };
+
+  try {
+      const [response] = await speechClient.recognize(request);
+      const transcription = response.results
+          .map(result => result.alternatives[0].transcript)
+          .join('\n');
+      res.status(200).json({ transcript: transcription });
+  } catch (error) {
+    console.error('Error processing speech to text:', error);
+    if (error.response) {
+        console.log(error.response.data);
+    }
+    res.status(500).json({ error: error.message });
+  }
+});
+ 
 const aiConfig = {
   gemini: {
     textOnlyModel: "gemini-pro",
@@ -105,10 +145,8 @@ const textOnly = async (prompt) => {
 // Import routers
 const profileRouter = require('./routes/profile');
 const userRouter = require('./routes/user');
-const historyRouter = require('./routes/history');
 app.use('/profile', profileRouter);
 app.use('/user', userRouter);
-app.use('/history', historyRouter);
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
