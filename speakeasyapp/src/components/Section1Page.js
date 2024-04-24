@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './styles/Section1Page.css';
 import Logo from './assets/Logo.png';
@@ -56,6 +56,55 @@ const sendMessageToBot = async (message, userID) => {
 const Section1Page = () => {
   const [messages, setMessages] = useState([{ text: "Hello! what would you like to know?", sender: "bot" }]);
   const [input, setInput] = useState('');
+  const [isRecording, setIsRecording] = useState(false);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+  const startRecording = () => {
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+      mediaRecorderRef.current = new MediaRecorder(stream);
+      mediaRecorderRef.current.start();
+      audioChunksRef.current = [];
+  
+      mediaRecorderRef.current.addEventListener('dataavailable', event => {
+        audioChunksRef.current.push(event.data);
+      });
+  
+      mediaRecorderRef.current.addEventListener('stop', () => {
+        const audioBlob = new Blob(audioChunksRef.current);
+        sendAudioToServer(audioBlob);
+      });
+  
+      setIsRecording(true);
+    }).catch(error => console.error('Error accessing media devices.', error));
+  };
+  
+  const stopRecording = () => {
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+
+  const sendAudioToServer = async (audioBlob) => {
+    const formData = new FormData();
+    formData.append('audio', audioBlob);
+  
+    try {
+      const response = await fetch('http://localhost:3000/api/speech-to-text', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await response.json();
+      if (data.transcript) {
+        const userID = localStorage.getItem('userID');
+        const newMessages = await sendMessageToBot(data.transcript, userID);
+        setMessages((prevMessages) => [...prevMessages, ...newMessages]);
+      }
+    } catch (error) {
+      console.error('Error sending audio to server:', error);
+    }
+  };
+
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -100,9 +149,12 @@ const Section1Page = () => {
               ))}
             </div>
             <form onSubmit={handleSendMessage} className='message-input-form'>
-              <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Type your message here..." />
-              <button type="submit">Send</button>
-            </form>
+             <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Type your message here..." />
+             <button type="submit">Send</button>
+             <button type="button" onClick={isRecording ? stopRecording : startRecording}>
+               {isRecording ? 'Stop Recording' : 'Start Recording'}
+             </button>
+           </form>
           </div>
         </div>
       </div>

@@ -38,35 +38,35 @@ connection.once('open', () => {
 
 // Endpoint to receive audio file and convert to text
 app.post('/api/speech-to-text', upload.single('audio'), async (req, res) => {
-  const endpoint = 'https://speech.googleapis.com/v1p1beta1/speech:recognize'
+const endpoint = 'https://speech.googleapis.com/v1p1beta1/speech:recognize'
   if (!req.file) {
-      return res.status(400).send('No file uploaded.');
+    return res.status(400).send('No file uploaded.');
   }
 
   const audioBytes = req.file.buffer.toString('base64');
   const audio = {
-      content: audioBytes,
+    content: audioBytes,
   };
   const config = {
-      encoding: 'LINEAR16', // Update according to the audio format
-      sampleRateHertz: 16000, // Update according to your audio's sample rate
-      languageCode: 'en-US', // Update according to your audio's language
+    encoding: 'LINEAR16', // Update according to the audio format
+    sampleRateHertz: 16000, // Update according to your audio's sample rate
+    languageCode: 'en-US', // Update according to your audio's language
   };
   const request = {
-      audio: audio,
-      config: config,
+    audio: audio,
+    config: config,
   };
 
   try {
-      const [response] = await speechClient.recognize(request);
-      const transcription = response.results
-          .map(result => result.alternatives[0].transcript)
-          .join('\n');
-      res.status(200).json({ transcript: transcription });
+    const [response] = await speechClient.recognize(request);
+    const transcription = response.results
+      .map(result => result.alternatives[0].transcript)
+      .join('\n');
+    res.status(200).json({ transcript: transcription });
   } catch (error) {
     console.error('Error processing speech to text:', error);
     if (error.response) {
-        console.log(error.response.data);
+      console.log(error.response.data);
     }
     res.status(500).json({ error: error.message });
   }
