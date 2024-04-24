@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom'; 
+import { Link, useNavigate } from 'react-router-dom';
 import './styles/MainPage.css'; 
 import './styles/Settings.css'; 
 import Logo from './assets/Logo.png'; 
@@ -16,7 +15,7 @@ const SettingsManageCourses = () => {
         firstName: '',
         lastName: '',
         email: '',
-        language: '',
+        languages: [],
         dailyTarget: 0,
     });
     const userID = localStorage.getItem('userID');
@@ -36,18 +35,25 @@ const SettingsManageCourses = () => {
         French: "france.png",
         English: "united-kingdom.png",
         Chinese: "china.png",
+        Italian: "italy.png",
+    German: "germany.png",
         // Add more mappings as necessary
     };
 
-    const flagSrc = `/Flags/${languageToFlag[user.language] || 'default.png'}`;
+    const flagSrc = user.languages.length > 0 ? `Flags/${languageToFlag[user.languages[0]] || 'default.png'}` : '';
 
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
+
+    const handleLogout = () => {
+        localStorage.removeItem('userID');
+        window.location.href = '/';
+      };
 
     return (
         <div className='mainpage-container'> {/* Main container */}
             <div className='white-rectangle-container'> {/* Container for top section */}
                 <img src={Logo} alt="SpeakEasy" /> {/* Logo */}
-                <h1>Welcome, _________!</h1> {/* Welcome message */}
+                <h1>Welcome, {user.firstName || "Guest"}!</h1> {/* Welcome message */}
             </div>
             <div className='light-orange-rectangle'/>
             <div className='bottom-container'> {/* Container for bottom section */}
@@ -69,6 +75,7 @@ const SettingsManageCourses = () => {
                             <img src={Help} alt="Help" /> {/* Help icon */}
                             <Link to="/help">Help</Link> {/* Help link */}
                         </li>
+                        <li><button onClick={handleLogout}>Log Out</button></li>
                     </ul>
                 </div>
                 <div className='settings-container bottom-section'> {/* Settings container */}
@@ -79,10 +86,11 @@ const SettingsManageCourses = () => {
                         <div className='manage-courses'>
                             <div className="course-info">
                                 <h3>Course: </h3>
-                                <img className='flag-image' src={flagSrc} alt={`${user.language} Flag`} /> {/* Country flag icon */}
-                                <h3>{user.language}</h3>
+                                    {flagSrc && <img className='flag-image' src={flagSrc} alt={`${user.languages[0]} Flag`} />}
+                                <h3>{user.languages[0]}</h3>
                             </div>
                         </div>
+                        <p></p>
                         <button className='reset-button' type="submit"onClick={() => navigate('/settingsManageCourses')}>Reset</button> {/* Submit button */}
                     </div>
                     <div className='settings-buttons-container'> {/* Container for settings buttons */}

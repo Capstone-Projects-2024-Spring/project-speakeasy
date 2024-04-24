@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom'; 
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom'; 
 import './styles/MainPage.css'; 
-import './styles/Settings.css'; 
+import './styles/Settings.css';
+import Axios from 'axios';
+
 
 import Logo from './assets/Logo.png'; 
 import Help from './assets/Help.png'; 
@@ -18,6 +19,25 @@ const SettingsPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [user, setUser] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        language: '',
+        dailyTarget: 0,
+      });
+    
+      const userID = localStorage.getItem('userID');
+    
+      useEffect(() => {
+        Axios.get(`http://localhost:3000/user/${userID}`)
+          .then(response => {
+            setUser(response.data);
+          })
+          .catch(error => {
+            console.error('Error fetching user data:', error);
+          });
+      }, [userID]);
 
     // Event handler functions to update state based on input changes
     const handleUsernameChange = (event) => {
@@ -63,7 +83,7 @@ const SettingsPage = () => {
         <div className='mainpage-container'> {/* Main container */}
             <div className='white-rectangle-container'> {/* Container for top section */}
                 <img src={Logo} alt="SpeakEasy" /> {/* Logo */}
-                <h1>Welcome, _________!</h1> {/* Welcome message */}
+                <h1>Welcome, {user.firstName || "Guest"}!</h1> {/* Welcome message */}
             </div>
             <div className='light-orange-rectangle'/>
             <div className='bottom-container'> {/* Container for bottom section */}
