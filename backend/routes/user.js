@@ -132,18 +132,4 @@ router.route('/:userID/update').put(async (req, res) => {
   }
 });
 
-// History route file
-router.get('/:userId/history', async (req, res) => {
-  try {
-      const user = await User.findById(req.params.userId).populate('history');
-      if (!user) {
-          return res.status(404).json({ message: 'User not found' });
-      }
-      res.json({ profile: user.profile, history: user.history });
-  } catch (error) {
-      res.status(500).json({ message: 'Error fetching user profile and history', error: error.message });
-  }
-});
-
-
 module.exports = router;

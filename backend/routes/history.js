@@ -41,13 +41,35 @@ router.post('/add/:userID', async (req, res) => {
 });
 
 // Endpoint to retrieve history for a specific user
-router.get('/user/:userId', async (req, res) => {
+router.get('/retrieve/:userID', async (req, res) => {
+    const { userID } = req.params;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
     try {
-        const histories = await History.find({ userId: req.params.userId });
+        // Find the user by ID and populate the history
+        const user = await User.findById(userID).populate({
+            path: 'history',  // assuming 'history' is the field name in the User model
+            options: {
+                sort: { createdAt: -1 },  // Sort by creation date descending
+                skip: skip,
+                limit: limit
+            }
+        });
+        
+        if (!user)
+            return res.status(404).json({ message: 'User not found' });
+
         if (!histories.length) {
             return res.status(404).json({ message: 'No history found for this user' });
         }
-        res.json(histories);
+        res.json({
+            page,
+            limit,
+            total: histories.length,
+            data: histories
+        });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching history', error: error.message });
     }
