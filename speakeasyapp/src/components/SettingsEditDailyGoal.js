@@ -33,10 +33,26 @@ const SettingsEditDailyGoal = () => {
           });
       }, [userID]);
 
-    // Event handler function to handle form submission
-    const handleSubmit = (event) => {
-        event.preventDefault(); // Prevent default form submission behavior
-    };
+      const [selectedDailyTarget, setSelectedDailyTarget] = useState(user.dailyTarget);
+
+      const handleSubmit = (event) => {
+        event.preventDefault();
+        Axios.put(`http://localhost:3000/user/${userID}/update`, {
+          dailyTarget: parseInt(selectedDailyTarget),
+        })
+          .then((response) => {
+            console.log('Daily target updated successfully:', response.data);
+            setUser((prevUser) => ({
+              ...prevUser,
+              dailyTarget: parseInt(selectedDailyTarget),
+            }));
+            // Optionally, you can show a success message or redirect to another page
+          })
+          .catch((error) => {
+            console.error('Error updating daily target:', error);
+            // Optionally, you can show an error message
+          });
+      };
 
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
 
@@ -82,13 +98,14 @@ const SettingsEditDailyGoal = () => {
                         <h3>How many minutes a day?</h3> {/* How Many Mins heading */}
                         <div className='select-container'> 
                             <img className='clock' src={Clock} alt="Time" /> {/* Clock icon */}
-                            <select> {/* Time dropdown */}
+                            <select value={selectedDailyTarget}
+              onChange={(event) => setSelectedDailyTarget(event.target.value)}> {/* Time dropdown */}
                                 <option value="10">10</option> 
                                 <option value="20">20</option>
                                 <option value="30">30</option>
                             </select>
                         </div>
-                        <button className='edit-daily-goal-button' type="submit"onClick={() => navigate('/settingsEditDailyGoal')}>Submit</button> {/* Submit button */}
+                        <button className='edit-daily-goal-button' type="submit"onClick={handleSubmit}>Submit</button> {/* Submit button */}
                     </div>
                     <div className='settings-buttons-container'> {/* Container for settings buttons */}
                         <button className='settings-buttons' type="submit"onClick={() => navigate('/settings')}>Account</button> {/* Account button */}

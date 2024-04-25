@@ -106,29 +106,29 @@ router.route('/:userID').get(async (req, res) => {
 
 router.route('/:userID/update').put(async (req, res) => {
   try {
-      const { userID } = req.params;
-      const { languages, dailyTarget } = req.body;
+    const { userID } = req.params;
+    const { languages, dailyTarget } = req.body;
 
-      // Find the user in the database by their ID
-      const user = await User.findById(userID).populate('profile');
+    // Find the user in the database by their ID
+    const user = await User.findById(userID).populate('profile');
 
-      if (!user)
-        return res.status(404).json({ message: 'User not found' });
+    if (!user)
+      return res.status(404).json({ message: 'User not found' });
 
-      if (user.profile) {
-          const profile = user.profile;
-          // Update the language if provided
-          if (languages) profile.languages = languages;
-          // Update the daily time target if provided
-          if (dailyTarget) profile.dailyTarget = dailyTarget;
-          await profile.save();
-          res.send({ message: 'Languages updated successfully', user });
-      } else {
-          res.status(404).json({ message: 'Profile not found for this user' });
-      }
+    if (user.profile) {
+      const profile = user.profile;
+      // Update the language if provided
+      if (languages) profile.languages = languages;
+      // Update the daily time target if provided
+      if (dailyTarget) profile.dailyTarget = dailyTarget;
+      await profile.save();
+      res.send({ message: 'Languages updated successfully', user });
+    } else {
+      res.status(404).json({ message: 'Profile not found for this user' });
+    }
   } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Error fetching profile data' });
+    console.error(err);
+    res.status(500).json({ message: 'Error fetching profile data' });
   }
 });
 

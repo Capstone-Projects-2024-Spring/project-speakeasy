@@ -19,28 +19,28 @@ const SettingsManageCourses = () => {
         dailyTarget: 0,
     });
     const userID = localStorage.getItem('userID');
+    const [currentLanguage, setCurrentLanguage] = useState('');
+    const [selectedLanguage, setSelectedLanguage] = useState('');
 
     useEffect(() => {
-        Axios.get(`http://localhost:3000/user/${userID}`)
-        .then(response => {
-            setUser(response.data); // Update the user state with the fetched data
+      Axios.get(`http://localhost:3000/user/${userID}`)
+        .then((response) => {
+          setUser(response.data);
+          setCurrentLanguage(response.data.languages[0] || '');
         })
-        .catch(error => {
-            console.error('Error fetching user data:', error);
+        .catch((error) => {
+          console.error('Error fetching user data:', error);
         });
     }, [userID]);
-
+  
     const languageToFlag = {
-        Spanish: "spain.png",
-        French: "france.png",
-        English: "united-kingdom.png",
-        Chinese: "china.png",
-        Italian: "italy.png",
-    German: "germany.png",
-        // Add more mappings as necessary
+      Spanish: 'spain.png',
+      French: 'france.png',
+      Italian: 'italy.png',
+      German: 'germany.png',
     };
 
-    const flagSrc = user.languages.length > 0 ? `Flags/${languageToFlag[user.languages[0]] || 'default.png'}` : '';
+    const flagSrc = languageToFlag[currentLanguage] || 'default.png';
 
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
 
@@ -48,60 +48,112 @@ const SettingsManageCourses = () => {
         localStorage.removeItem('userID');
         window.location.href = '/';
       };
+      
+    const handleLanguageChange = (event) => {
+        setSelectedLanguage(event.target.value);
+      };
+    
+      
+    const handleSubmit = (event) => {
+      event.preventDefault();
+      Axios.put(`http://localhost:3000/user/${userID}/update`, {
+        languages: [selectedLanguage],
+      })
+        .then((response) => {
+          console.log('Language updated successfully:', response.data);
+          setUser((prevUser) => ({
+            ...prevUser,
+            languages: [selectedLanguage],
+          }));
+          setCurrentLanguage(selectedLanguage);
+        })
+        .catch((error) => {
+          console.error('Error updating language:', error);
+        });
+    };
 
     return (
-        <div className='mainpage-container'> {/* Main container */}
-            <div className='white-rectangle-container'> {/* Container for top section */}
-                <img src={Logo} alt="SpeakEasy" /> {/* Logo */}
-                <h1>Welcome, {user.firstName || "Guest"}!</h1> {/* Welcome message */}
-            </div>
-            <div className='light-orange-rectangle'/>
-            <div className='bottom-container'> {/* Container for bottom section */}
-                <div className='navbar-container bottom-section'> {/* Navbar container */}
-                    <ul>
-                        <li>
-                            <img src={Book} alt="Learn" /> {/* Learn icon */}
-                            <Link to="/mainpage">Learn</Link> {/* Learn link */}
-                        </li>
-                        <li>
-                            <img src={User} alt="Profile" /> {/* Profile icon */}
-                            <Link to="/profile">Profile</Link> {/* Profile link */}
-                        </li>
-                        <li>
-                            <img src={Settings} alt="Settings" /> {/* Settings icon */}
-                            <Link to="/settings">Settings</Link> {/* Settings link */}
-                        </li>
-                        <li>
-                            <img src={Help} alt="Help" /> {/* Help icon */}
-                            <Link to="/help">Help</Link> {/* Help link */}
-                        </li>
-                        <li><button onClick={handleLogout}>Log Out</button></li>
-                    </ul>
-                </div>
-                <div className='settings-container bottom-section'> {/* Settings container */}
-                    <div className='left-of-settings-buttons-container'>
-                        <div className='manage-courses-label'>
-                            <h2>Manage Courses</h2>
-                        </div>
-                        <div className='manage-courses'>
-                            <div className="course-info">
-                                <h3>Course: </h3>
-                                    {flagSrc && <img className='flag-image' src={flagSrc} alt={`${user.languages[0]} Flag`} />}
-                                <h3>{user.languages[0]}</h3>
-                            </div>
-                        </div>
-                        <p></p>
-                        <button className='reset-button' type="submit"onClick={() => navigate('/settingsManageCourses')}>Reset</button> {/* Submit button */}
-                    </div>
-                    <div className='settings-buttons-container'> {/* Container for settings buttons */}
-                        <button className='settings-buttons' type="submit"onClick={() => navigate('/settings')}>Account</button> {/* Account button */}
-                        <button className='settings-buttons' type="submit"onClick={() => navigate('/settingsEditDailyGoal')}>Edit Daily Goals</button> {/* Edit Daily Goals button */}
-                        <button className='settings-buttons' type="submit"onClick={() => navigate('/settingsManageCourses')}>Manage Courses</button> {/* Manage Courses button */}
-                    </div>
-                </div>
-            </div>
+    <div className="mainpage-container">
+      <div className="white-rectangle-container">
+        <img src={Logo} alt="SpeakEasy" />
+        <h1>Welcome, {user.firstName || 'Guest'}!</h1>
+      </div>
+      <div className="light-orange-rectangle" />
+      <div className="bottom-container">
+        <div className="navbar-container bottom-section">
+          <ul>
+            <li>
+              <img src={Book} alt="Learn" />
+              <Link to="/mainpage">Learn</Link>
+            </li>
+            <li>
+              <img src={User} alt="Profile" />
+              <Link to="/profile">Profile</Link>
+            </li>
+            <li>
+              <img src={Settings} alt="Settings" />
+              <Link to="/settings">Settings</Link>
+            </li>
+            <li>
+              <img src={Help} alt="Help" />
+              <Link to="/help">Help</Link>
+            </li>
+            <li>
+              <button onClick={handleLogout}>Log Out</button>
+            </li>
+          </ul>
         </div>
-    );
+        <div className="settings-container bottom-section">
+          <div className="left-of-settings-buttons-container">
+            <div className="manage-courses-label">
+              <h2>Manage Courses</h2>
+            </div>
+            <div className="manage-courses">
+              <div className="course-info">
+                <h3>Current Language: </h3>
+                <img className="flag-image" src={`Flags/${flagSrc}`} alt={`${currentLanguage} Flag`} />
+                <h3>{currentLanguage}</h3>
+              </div>
+            </div>
+            <div className="select-container">
+              <h3>Select New Language:</h3>
+              <select value={selectedLanguage} onChange={handleLanguageChange}>
+                <option value="">Choose a language</option>
+                <option value="Spanish">Spanish</option>
+                <option value="French">French</option>
+                <option value="Italian">Italian</option>
+                <option value="German">German</option>
+              </select>
+            </div>
+            <button className="edit-daily-goal-button" type="submit" onClick={handleSubmit}>Update Language</button>
+          </div>
+          <div className="settings-buttons-container">
+            <button
+              className="settings-buttons"
+              type="submit"
+              onClick={() => navigate('/settings')}
+            >
+              Account
+            </button>
+            <button
+              className="settings-buttons"
+              type="submit"
+              onClick={() => navigate('/settingsEditDailyGoal')}
+            >
+              Edit Daily Goals
+            </button>
+            <button
+              className="settings-buttons"
+              type="submit"
+              onClick={() => navigate('/settingsManageCourses')}
+            >
+              Manage Courses
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default SettingsManageCourses;

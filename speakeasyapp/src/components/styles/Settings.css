@@ -66,6 +66,17 @@ button:hover {
     flex: 1; /* Add flex by 1 */
 }
 
+.manage-courses-submit-button {
+    padding: 10px; /* Add padding to buttons */
+    background-color: #f7bc75; /* Set background color of buttons */
+    color: #fff; /* Set text color of buttons */
+    border: none; /* Remove border from buttons */
+    border-radius: 10px; /* Add border radius to buttons */
+    cursor: pointer; /* Set cursor to pointer on hover */
+    display: flex; /* Add flex */
+    flex: 1; /* Add flex by 1 */
+}
+
 .clock {
     width: 60px; /* Adjust width of image */
     height: auto; /* Auto-adjust height of image */
