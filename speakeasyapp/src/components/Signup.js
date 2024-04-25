@@ -46,6 +46,7 @@ const Signup = () => {
             setUser({ firstName: '', lastName: '', email: '', password: '', confirmPassword: ''});
             if(res.data && res.data.user._id) {
                 localStorage.setItem('userID', res.data.user._id);
+                localStorage.setItem('loginTime', new Date().getTime());
                 console.log('Login successful, userID stored in localStorage.');
                 navigate('/signupProgression2'); // Navigate on successful signup
             } else {
