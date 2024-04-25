@@ -63,6 +63,8 @@ const Section1Page = () => {
   const audioContextRef = useRef(null);
   const audioInputRef = useRef(null);
 
+
+
   useEffect(() => {
     const loadWorkletModule = async () => {
       try {
