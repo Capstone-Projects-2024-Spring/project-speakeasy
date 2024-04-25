@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './styles/Section1Page.css';
 import Logo from './assets/Logo.png';
@@ -36,8 +36,8 @@ const sendMessageToBot = async (message, userID) => {
         })
       });
 
-    if (!historyResponse.ok)
-      throw new Error('Failed to update history');
+      if (!historyResponse.ok)
+        throw new Error('Failed to update history');
 
       const historyData = await historyResponse.json();
       console.log('History updated:', historyData);
@@ -59,52 +59,106 @@ const Section1Page = () => {
   const [isRecording, setIsRecording] = useState(false);
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
-  const startRecording = () => {
-    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-      mediaRecorderRef.current = new MediaRecorder(stream);
-      mediaRecorderRef.current.start();
-      audioChunksRef.current = [];
-  
-      mediaRecorderRef.current.addEventListener('dataavailable', event => {
-        audioChunksRef.current.push(event.data);
-      });
-  
-      mediaRecorderRef.current.addEventListener('stop', () => {
-        const audioBlob = new Blob(audioChunksRef.current);
-        sendAudioToServer(audioBlob);
-      });
-  
+  const processorRef = useRef(null);
+  const audioContextRef = useRef(null);
+  const audioInputRef = useRef(null);
+
+  useEffect(() => {
+    const loadWorkletModule = async () => {
+      try {
+        await audioContextRef.current.audioWorklet.addModule('./worklets/recorderWorkletProcessor.js');
+      } catch (error) {
+        console.error('Error loading worklet module:', error);
+      }
+    };
+
+    if (audioContextRef.current) {
+      loadWorkletModule();
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (isRecording) {
+        stopRecording();
+      }
+    };
+  }, [isRecording]);
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      navigator.mediaDevices.getUserMedia({ audio: true })
+         .then(stream => {
+          // You now have the media stream
+        })
+        .catch(error => {
+        console.error('Error accessing the microphone:', error);
+        });
+
+      audioContextRef.current = new window.AudioContext();
+      await audioContextRef.current.audioWorklet.addModule('speakeasyapp/src/components/recorderWorkletProcessor.js');
+
+      audioContextRef.current.resume();
+
+      audioInputRef.current = audioContextRef.current.createMediaStreamSource(stream);
+
+      processorRef.current = new AudioWorkletNode(audioContextRef.current, 'recorder.worklet');
+      processorRef.current.connect(audioContextRef.current.destination);
+      audioContextRef.current.resume();
+
+      audioInputRef.current.connect(processorRef.current);
+
+      processorRef.current.port.onmessage = (event) => {
+        const audioData = event.data;
+        sendAudioToServer(audioData);
+      };
+
       setIsRecording(true);
-    }).catch(error => console.error('Error accessing media devices.', error));
+    } catch (error) {
+      console.error('Error accessing media devices:', error);
+      if (error.name === 'NotAllowedError') {
+        alert('Microphone access was denied. Please allow access and try again.');
+      } else if (error.name === 'NotFoundError') {
+        alert('No microphone devices found. Please connect a microphone and try again.');
+      } else {
+        alert('Failed to access microphone. Please refresh the page or try a different browser.');
+      }
+    }
   };
-  
+
   const stopRecording = () => {
-    if (mediaRecorderRef.current) {
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
+    if (processorRef.current) {
+      processorRef.current.disconnect();
     }
+    if (audioInputRef.current) {
+      audioInputRef.current.disconnect();
+    }
+    if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+      audioContextRef.current.close();
+    }
+    setIsRecording(false);
   };
 
-  const sendAudioToServer = async (audioBlob) => {
-  const formData = new FormData();
-  formData.append('audio', audioBlob);
+  const sendAudioToServer = async (audioData) => {
+    const formData = new FormData();
+    formData.append('audio', new Blob([audioData], { type: 'audio/webm' }));
 
-  try {
-    const response = await fetch('http://localhost:3000/api/speech-to-text', {
-      method: 'POST',
-      body: formData,
-    });
-    const data = await response.json();
-    if (data.transcript) {
-      const userID = localStorage.getItem('userID');
-      const newMessages = await sendMessageToBot(data.transcript, userID);
-      setMessages((prevMessages) => [...prevMessages, ...newMessages]);
+    try {
+      const response = await fetch('http://localhost:3000/api/speech-to-text', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await response.json();
+      if (data.transcript) {
+        const userID = localStorage.getItem('userID');
+        const newMessages = await sendMessageToBot(data.transcript, userID);
+        setMessages((prevMessages) => [...prevMessages, ...newMessages]);
+      }
+    } catch (error) {
+      console.error('Error sending audio to server:', error);
     }
-  } catch (error) {
-    console.error('Error sending audio to server:', error);
-  }
-};
-
+  };
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -128,7 +182,7 @@ const Section1Page = () => {
         <img src={Logo} alt="SpeakEasy" />
         <h1>Chat Room</h1>
       </div>
-      <div className='light-orange-rectangle'/>
+      <div className='light-orange-rectangle' />
       <div className='bottom-container'>
         <div className='navbar-container bottom-section'>
           <ul>
@@ -149,12 +203,12 @@ const Section1Page = () => {
               ))}
             </div>
             <form onSubmit={handleSendMessage} className='message-input-form'>
-             <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Type your message here..." />
-             <button type="submit">Send</button>
-             <button type="button" onClick={isRecording ? stopRecording : startRecording}>
-               {isRecording ? 'Stop Recording' : 'Start Recording'}
-             </button>
-           </form>
+              <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Type your message here..." />
+              <button type="submit">Send</button>
+              <button type="button" onClick={isRecording ? stopRecording : startRecording}>
+                {isRecording ? 'Stop Recording' : 'Start Recording'}
+              </button>
+            </form>
           </div>
         </div>
       </div>

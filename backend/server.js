@@ -14,8 +14,39 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const speech = require('@google-cloud/speech');
 const speechClient = new speech.SpeechClient();
-const multer = require('multer');
-const upload = multer({ storage: multer.memoryStorage() });
+process.env.GOOGLE_APPLICATION_CREDENTIALS = "./SpeakeasyServiceAccount.json";
+
+// Require necessary modules
+const multer = require('multer'); // for handling multipart/form-data (file uploads)
+const storage = multer.memoryStorage(); // store files in memory
+const upload = multer({ storage: storage });
+
+app.post('/api/speech-to-text', upload.single('audio'), async (req, res) => {
+    const audioBytes = req.file.buffer.toString('base64');
+    const audio = {
+        content: audioBytes,
+    };
+
+    const request = {
+        audio: audio,
+        config: {
+            encoding: 'LINEAR16', // Ensure this matches the encoding from the client
+            sampleRateHertz: 16000, // Ensure this matches the sample rate from the client
+            languageCode: 'en-US', // Adjust language code as needed
+        },
+    };
+
+    try {
+        const [response] = await speechClient.recognize(request);
+        const transcription = response.results
+            .map(result => result.alternatives[0].transcript)
+            .join('\n');
+        res.send({ transcript: transcription });
+    } catch (err) {
+        console.error('ERROR:', err);
+        res.status(500).send({ error: err.message });
+    }
+});
 
 
 // Middleware for parsing JSON bodies
@@ -36,42 +67,6 @@ connection.once('open', () => {
   console.log("MongoDB database connection established successfully");
 });
 
-// Endpoint to receive audio file and convert to text
-app.post('/api/speech-to-text', upload.single('audio'), async (req, res) => {
-const endpoint = 'https://speech.googleapis.com/v1p1beta1/speech:recognize'
-  if (!req.file) {
-    return res.status(400).send('No file uploaded.');
-  }
-
-  const audioBytes = req.file.buffer.toString('base64');
-  const audio = {
-    content: audioBytes,
-  };
-  const config = {
-    encoding: 'LINEAR16', // Update according to the audio format
-    sampleRateHertz: 16000, // Update according to your audio's sample rate
-    languageCode: 'en-US', // Update according to your audio's language
-  };
-  const request = {
-    audio: audio,
-    config: config,
-  };
-
-  try {
-    const [response] = await speechClient.recognize(request);
-    const transcription = response.results
-      .map(result => result.alternatives[0].transcript)
-      .join('\n');
-    res.status(200).json({ transcript: transcription });
-  } catch (error) {
-    console.error('Error processing speech to text:', error);
-    if (error.response) {
-      console.log(error.response.data);
-    }
-    res.status(500).json({ error: error.message });
-  }
-});
- 
 const aiConfig = {
   gemini: {
     textOnlyModel: "gemini-pro",
