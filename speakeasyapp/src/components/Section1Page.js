@@ -91,42 +91,47 @@ const Section1Page = () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       navigator.mediaDevices.getUserMedia({ audio: true })
-         .then(stream => {
-          // You now have the media stream
-        })
-        .catch(error => {
-        console.error('Error accessing the microphone:', error);
-        });
+       .then(stream => {
+        // Handle the stream, e.g., by passing it to the Google API
+       })
+       .catch(error => {
+         console.error('Error accessing the microphone:', error);
+         if (error.name === 'AbortError') {
+          alert('Microphone access was aborted by the system. Please check your microphone settings and permissions.');
+        }
+     });
 
       audioContextRef.current = new window.AudioContext();
       await audioContextRef.current.audioWorklet.addModule('speakeasyapp/src/components/recorderWorkletProcessor.js');
-
+  
       audioContextRef.current.resume();
-
+  
       audioInputRef.current = audioContextRef.current.createMediaStreamSource(stream);
-
       processorRef.current = new AudioWorkletNode(audioContextRef.current, 'recorder.worklet');
       processorRef.current.connect(audioContextRef.current.destination);
       audioContextRef.current.resume();
-
+  
       audioInputRef.current.connect(processorRef.current);
-
+  
       processorRef.current.port.onmessage = (event) => {
         const audioData = event.data;
         sendAudioToServer(audioData);
       };
-
+  
       setIsRecording(true);
     } catch (error) {
       console.error('Error accessing media devices:', error);
+      console.log('Error Name:', error.name);  // This will print the error name to the console
+    
       if (error.name === 'NotAllowedError') {
         alert('Microphone access was denied. Please allow access and try again.');
       } else if (error.name === 'NotFoundError') {
         alert('No microphone devices found. Please connect a microphone and try again.');
       } else {
-        alert('Failed to access microphone. Please refresh the page or try a different browser.');
+        alert('Failed to access microphone. Please refresh the page or try a different browser.Error Name:' + error.name);
       }
     }
+    
   };
 
   const stopRecording = () => {
