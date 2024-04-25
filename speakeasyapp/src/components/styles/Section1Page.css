@@ -72,15 +72,23 @@
     background-color: #ffffff; /* Background color for user messages */
     align-self: flex-start; /* Aligns user messages to the left */
     margin-left: 200px; /* Ensures some spacing from the left edge */
-    display: flex; /* Ensures the message bubble utilizes flex display */
+    position: relative; /* Allows absolute positioning inside it */
 }
 /* Style for messages received (from others/bot) */
 .received-message {
     background-color: #b3b3b3; /* Background color for received (bot) messages */
     align-self: flex-end; /* Aligns received messages to the right */
     margin-right: 300px; /* Ensures some spacing from the right edge */
-    display: flex; /* Ensures the message bubble utilizes flex display */
 }
+/* Style for timestamp above messages */
+.timestamp {
+    text-align: right;
+    font-size: 0.75em; /* Smaller font size */
+    color: #666; /* Lighter text color for less emphasis */
+    margin-bottom: 5px; /* Space between timestamp and message */
+    position: absolute; /* Position absolutely within user-message */
+}
+
 
 
 /* Styles for the tail of the speech bubbles */

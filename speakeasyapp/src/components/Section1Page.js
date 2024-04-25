@@ -10,7 +10,7 @@ import Settings from './assets/Settings.png';
 const Section1Page = () => {
   const [messages, setMessages] = useState([{ text: "Hello! what would you like to know?", sender: "bot" }]);
   const [input, setInput] = useState('');
-  const [lastDisplayedDate, setLastDisplayedDate] = useState(null);
+  let lastDisplayedDate = null;
 
   useEffect(() => {
     const userID = localStorage.getItem('userID');
@@ -127,20 +127,28 @@ const Section1Page = () => {
         <div className='section1page-container'>
           <div className='chat-area'>
             <div className='messages-display'>
-              {messages.map((session, index) => (
-                <div key={index}>
-                  <h3>Session Timestamp: {new Date(session.timestamp).toLocaleString()}</h3>
-                  {Array.isArray(session.interactions) ? (
-                    session.interactions.map((interaction, idx) => (
-                      <div key={idx} className={`message-bubble ${idx % 2 === 0 ? 'user-message' : 'received-message'}`}>
-                        {interaction.message}
-                      </div>
-                    ))
-                  ) : (
-                    <div>No interactions found in this session.</div>
-                  )}
-                </div>
-              ))}
+              {messages.map((session, index) => {
+                const currentDate = new Date(session.timestamp);
+                const dateStr = currentDate.toDateString();
+                const timeStr = currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const displayTimestamp = lastDisplayedDate !== dateStr ? `${dateStr} ${timeStr}` : timeStr;
+                lastDisplayedDate = dateStr;  // Update lastDisplayedDate locally without causing re-render
+
+                return (
+                  <div key={index}>
+                    <h3 className="timestamp">{displayTimestamp}</h3> {/* Session timestamp above the chatbox */}
+                    {Array.isArray(session.interactions) ? (
+                      session.interactions.map((interaction, idx) => (
+                        <div key={idx} className={`message-bubble ${idx % 2 === 0 ? 'user-message' : 'received-message'}`}>
+                          {interaction.message}
+                        </div>
+                      ))
+                    ) : (
+                      <div>No interactions found in this session.</div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
             <form onSubmit={handleSendMessage} className='message-input-form'>
               <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Type your message here..." />
