@@ -41,7 +41,7 @@ const sendMessageToBot = async (message, language, userID) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            chatbot: data.messages.map(msg => ({ name: msg.sender === "user" ? "User" : "Chatbot", message: msg.text }))
+            translator: data.messages.map(msg => ({ name: msg.sender === "user" ? "User" : "Chatbot", message: msg.text }))
           })
         });
   
