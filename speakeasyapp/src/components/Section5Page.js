@@ -11,16 +11,12 @@ import Settings from './assets/Settings.png';
 
 const sendMessageToBot = async (message) => {
   // Prepend the instruction to the message for the AI model
-  const modifiedMessage = `Have this instruction in the beginning: "Select the correct Spanish word or phrase." 
-  Add delimiter ";".
-  Create Spanish multiple choice assessment that has 5 questions to test Spanish with the format 
-  "English phrase, with Spanish phrase multiple choice"
-  Each question should start with a number followed by a dot and a space, like "1. ".
-  Each option should start with a lowercase letter followed by a closing parenthesis and a space, like "a) ", "b) ", etc.
-  After the last option of each question add the delimiter ";".
-  There should be no extra characters or special formatting between the question number and the question text, or between the options.
-  Questions and options should be separated by a newline character.
-  
+  const modifiedMessage = `
+    The Spanish test should have 5 question multiple choice assessments that asks for translations with 3 options.
+    Each questions should start and end with "**". 
+    Here's an example: "Translate this sentence into Spanish: I am studying Spanish". 
+    Have each option start with a letter like this "A."
+    Provide the answer to each question at the end capitalized.
   ${message}`;
 
   try {
@@ -59,49 +55,52 @@ const Section5Page = () => {
     sendMessageToBot("Start the assessment");
   }, []);
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (input.trim()) {
-      const userMessage = { text: input, sender: "user" };
-      setMessages((prevMessages) => [...prevMessages, userMessage]);
-  
-      // Send the user's response to the bot
-      const response = await sendMessageToBot(input);
-  
-      // Process the bot's response
-      if (response && response.length > 0) {
-        const botMessage = response.find((m) => m.sender === "bot");
-        if (botMessage) {
-          setMessages((prevMessages) => [...prevMessages, botMessage]);
-          // Extract questions and options from the bot's response
-          const newQuestions = response
-            .filter((m) => m.sender === "bot")
-            .map((m) => {
-              // Split the message by ';' to separate questions and options
-              const questionData = m.text.split(";");
-              // Extract the question from the first element
-              const question = questionData.shift(); // Remove the question from the array
-              // Extract options from the remaining elements
-              const options = questionData.map(option => option.trim());
-              // Return an object representing the question and its options
-              console.log("questions",question);
-              console.log("options", options);
-              return {
-                question: question,
-                options: options,
-              };
+const handleSendMessage = async (e) => {
+  e.preventDefault();
+  if (input.trim()) {
+    const userMessage = { text: input, sender: "user" };
+    setMessages((prevMessages) => [...prevMessages, userMessage]);
 
-            });
-          // Update the questions state with the new questions
-          setQuestions(newQuestions);
-        }
+    // Send the user's response to the bot
+    const response = await sendMessageToBot(input);
+
+    // Process the bot's response
+    if (response && response.length > 0) {
+      const botMessage = response.find((m) => m.sender === "bot");
+      if (botMessage) {
+        setMessages((prevMessages) => [...prevMessages, botMessage]);
+        // Extract questions and options from the bot's response
+        const newQuestions = response
+          .filter((m) => m.sender === "bot")
+          .map((m) => {
+            const matches = m.text.match(/\*\*(.*?)\*\*([^*]+)/g);
+            if (matches) {
+              const questions = matches.map((match) => {
+                const questionMatch = match.match(/\*\*(.*?)\*\*/);
+                const optionsMatch = match.match(/[A-Z]\..*?(\.|$)/g);
+                if (questionMatch && optionsMatch) {
+                  const question = questionMatch[1];
+                  const options = optionsMatch.map((option) => option.trim());
+                  console.log("question", question, "options", options)
+                  return { question, options };
+                }
+                return null;
+              }).filter(Boolean);
+              return questions;
+            }
+            return [];
+          })
+          .flat(); // Flatten the array of arrays into a single array
+        // Update the questions state with the new questions
+        setQuestions(newQuestions);
       }
-  
-      // Clear the input field
-      setInput("");
     }
-  };   
 
+    // Clear the input field
+    setInput("");
+  }
+};
+     
   const handleLogout = () => {
     localStorage.removeItem('userID');
     // Redirect to the login route
@@ -110,13 +109,12 @@ const Section5Page = () => {
 
   const handleAnswerClick = (option) => {
     // Handle the user's answer selection
-    // You can update state or perform any necessary action here
+    // Needs to check correct answer against selected option
     console.log("Selected option:", option);
   };
 
   const handleNextQuestion = () => {
     // Handle moving to the next question
-    // You can update state or perform any necessary action here
     console.log("Moving to the next question");
     setCurrentQuestionIndex(prevIndex => prevIndex + 1);
   };
