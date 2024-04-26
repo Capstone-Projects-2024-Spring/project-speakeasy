@@ -39,6 +39,9 @@ const MainPage = () => {
             const timeDifference = (currentTime - parseInt(loginTime)) / 60000;
             const progress = (timeDifference / user.dailyTarget) * 100;
 
+            console.log(progress);
+            console.log(timeDifference)
+
             setProgressPercentage(progress);
         }
     }, [user.dailyTarget]);
