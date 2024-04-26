@@ -33,7 +33,7 @@ const SettingsEditDailyGoal = () => {
           });
       }, [userID]);
 
-      const [selectedDailyTarget, setSelectedDailyTarget] = useState(user.dailyTarget);
+      const [selectedDailyTarget, setSelectedDailyTarget] = useState(user.dailyTarget.toString());
 
       const handleSubmit = (event) => {
         event.preventDefault();

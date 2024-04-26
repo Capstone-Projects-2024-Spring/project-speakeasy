@@ -8,6 +8,7 @@ const Login = () => {
     // State variables & their setter functions using useState hook
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     // Event handler functions to update state based on input changes
     const handleEmailChange = (event) => {
@@ -51,10 +52,10 @@ const Login = () => {
             .catch(error => {
                 console.log(error);
                 if (error.response && error.response.status === 400) {
-                    alert('Invalid email or password.');
-                } else {
-                    alert('An error occurred. Please try again.');
-                }
+                    setErrorMessage('Invalid email or password.');
+                  } else {
+                    setErrorMessage('An error occurred. Please try again.');
+                  }
             });
         }
 
@@ -63,6 +64,7 @@ const Login = () => {
     return (
         <div className="login-container"> {/* Container for Login form */}
             <h2>Login</h2> {/* Login heading */}
+            {errorMessage && <p className="error-message">{errorMessage}</p>}
             <form onSubmit={handleSubmit} className="login-form"> {/* Login form */}
                 <div> {/* Form field for email */}
                     <label htmlFor="email">Email:</label> {/* Label for email input */}

@@ -115,9 +115,10 @@ const SettingsPage = () => {
                         </div>
                         <form onSubmit={handleSubmit} className="update-form"> {/* Login form */}
                             <div className='field'> {/* Form field for name */}
-                                <label>Name:</label> {/* Label for name input */}
+                            <label htmlFor="name">Name:</label> {/* Label for name input */}
                                 <div className='input'>
                                     <input
+                                        id="name"
                                         type="text"
                                         value={name}
                                         onChange={handleNameChange}
@@ -126,9 +127,10 @@ const SettingsPage = () => {
                                 </div>
                             </div>
                             <div className='field'> {/* Form field for username */}
-                                <label>Username:</label> {/* Label for username input */}
+                            <label htmlFor="username">Username:</label> {/* Label for username input */}
                                 <div className='input'>
                                     <input
+                                        id="username"
                                         type="username"
                                         value={username}
                                         onChange={handleUsernameChange}
@@ -137,9 +139,10 @@ const SettingsPage = () => {
                                 </div>
                             </div>
                             <div className='field'> {/* Form field for email */}
-                                <label>Email:</label> {/* Label for email input */}
+                            <label htmlFor="email">Email:</label> {/* Label for email input */}
                                 <div className='input'>
                                     <input
+                                        id="email"
                                         type="email"
                                         value={email}
                                         onChange={handleEmailChange}
@@ -148,9 +151,10 @@ const SettingsPage = () => {
                                 </div>
                             </div>
                             <div className='field'> {/* Form field for password */}
-                                <label>Password:</label> {/* Label for password input */}
+                            <label htmlFor="password">Password:</label> {/* Label for password input */}
                                 <div className='input'>
                                     <input
+                                        id="password"
                                         type="password"
                                         value={password}
                                         onChange={handlePasswordChange}
@@ -159,9 +163,10 @@ const SettingsPage = () => {
                                 </div>
                             </div>
                             <div className='field'> {/* Form field for confirming password */}
-                                <label>Confirm Password:</label> {/* Label for confirming password input */}
+                            <label htmlFor="confirmPassword">Confirm Password:</label> {/* Label for confirming password input */}
                                 <div className='input'>
                                     <input
+                                        id="confirmPassword"
                                         type="password"
                                         value={confirmPassword}
                                         onChange={handleConfirmPasswordChange}
