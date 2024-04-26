@@ -22,8 +22,10 @@ const storage = multer.memoryStorage(); // store files in memory
 const upload = multer({ storage: storage });
 
 app.post('/api/speech-to-text', upload.single('audio'), async (req, res) => {
-    const audioBytes = req.file.buffer.toString('base64');
-    const audio = {
+  const apiKey = process.env.TTS_API_KEY
+  const endpoint =`https://speech.googleapis.com/v1p1beta1/speech:recognize?key=${apiKey}`;
+  const audioBytes = req.file.buffer.toString('base64');
+  const audio = {
         content: audioBytes,
     };
 
