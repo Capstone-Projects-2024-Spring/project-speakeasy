@@ -32,6 +32,31 @@ connection.once('open', () => {
   console.log("MongoDB database connection established successfully");
 });
 
+app.post("/synthesize"), async(req, res) => {
+  const text = req.body.text
+  const apiKey = ""
+  const endpoint = 'https://texttospeech.googleapis.com/v1beta1/text:synthesize?key'
+  const payload = {
+    "audioConfig": {
+      "audioEncoding": "LINEAR16",
+      "effectsProfileId": [
+        "small-bluetooth-speaker-class-device"
+      ],
+      "pitch": 0,
+      "speakingRate": 1
+    },
+    "input": {
+      "text": "Google Cloud Text-to-Speech enables developers to synthesize natural-sounding speech with 100+ voices, available in multiple languages and variants. It applies DeepMind’s groundbreaking research in WaveNet and Google’s powerful neural networks to deliver the highest fidelity possible. As an easy-to-use API, you can create lifelike interactions with your users, across many applications and devices."
+    },
+    "voice": {
+      "languageCode": "en-US",
+      "name": "en-US-Studio-O"
+    }
+  }
+}
+
+
+
 const aiConfig = {
   gemini: {
     textOnlyModel: "gemini-pro",
