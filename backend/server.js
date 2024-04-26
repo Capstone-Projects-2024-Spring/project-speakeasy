@@ -22,6 +22,7 @@ const storage = multer.memoryStorage(); // store files in memory
 const upload = multer({ storage: storage });
 
 app.post('/api/speech-to-text', upload.single('audio'), async (req, res) => {
+  console.log("Received audio file for speech-to-text");
     const audioBytes = req.file.buffer.toString('base64');
     const audio = {
         content: audioBytes,

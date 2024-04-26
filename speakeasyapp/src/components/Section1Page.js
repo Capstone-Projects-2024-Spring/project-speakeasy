@@ -82,59 +82,75 @@ const Section1Page = () => {
   useEffect(() => {
     return () => {
       if (isRecording) {
+        console.log("Component unmounting, stopping recording...");
         stopRecording();
       }
     };
   }, [isRecording]);
 
   const startRecording = async () => {
+    console.log("Starting recording...");
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      navigator.mediaDevices.getUserMedia({ audio: true })
-       .then(stream => {
-        // Handle the stream, e.g., by passing it to the Google API
-       })
-       .catch(error => {
-         console.error('Error accessing the microphone:', error);
-         if (error.name === 'AbortError') {
-          alert('Microphone access was aborted by the system. Please check your microphone settings and permissions.');
+        if (!audioContextRef.current || audioContextRef.current.state === 'closed') {
+            audioContextRef.current = new window.AudioContext();
         }
-     });
 
-      audioContextRef.current = new window.AudioContext();
-      await audioContextRef.current.audioWorklet.addModule('speakeasyapp/src/components/recorderWorkletProcessor.js');
-  
-      audioContextRef.current.resume();
-  
-      audioInputRef.current = audioContextRef.current.createMediaStreamSource(stream);
-      processorRef.current = new AudioWorkletNode(audioContextRef.current, 'recorder.worklet');
-      processorRef.current.connect(audioContextRef.current.destination);
-      audioContextRef.current.resume();
-  
-      audioInputRef.current.connect(processorRef.current);
-  
-      processorRef.current.port.onmessage = (event) => {
-        const audioData = event.data;
-        sendAudioToServer(audioData);
+        // Ensuring the worklet module is loaded
+        await audioContextRef.current.audioWorklet.addModule('/recorderWorkletProcessor.js')
+            .catch(e => {
+                console.error('Failed to load audio worklet module:', e);
+                throw new Error('Failed to load audio worklet module');
+            });
+
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        console.log("Stream captured", stream);
+        audioInputRef.current = audioContextRef.current.createMediaStreamSource(stream);
+        processorRef.current = new AudioWorkletNode(audioContextRef.current, 'recorder.worklet');
+        processorRef.current.connect(audioContextRef.current.destination);
+        audioInputRef.current.connect(processorRef.current);
+
+        processorRef.current.port.onmessage = (event) => {
+          if (event.data.audioBlob) {
+              console.log("Received audio Blob from worklet:", event.data.audioBlob.size);
+              sendAudioToServer(event.data.audioBlob);
+          } else {
+              console.log("Received message from worklet, but no audio Blob found:", event.data);
+          }
       };
-  
-      setIsRecording(true);
+      
+      
+      
+
+        setIsRecording(true);
     } catch (error) {
-      console.error('Error accessing media devices:', error);
-      console.log('Error Name:', error.name);  // This will print the error name to the console
-    
-      if (error.name === 'NotAllowedError') {
-        alert('Microphone access was denied. Please allow access and try again.');
-      } else if (error.name === 'NotFoundError') {
-        alert('No microphone devices found. Please connect a microphone and try again.');
-      } else {
-        alert('Failed to access microphone. Please refresh the page or try a different browser.Error Name:' + error.name);
-      }
+        console.error('Error accessing media devices or loading worklet module:', error);
+        handleError(error);
     }
-    
+};
+
+
+  const handleError = (error) => {
+    console.log('Error Name:', error.name);
+    alert(`Error encountered: ${error.message}`);
+    switch (error.name) {
+      case 'NotAllowedError':
+        alert('Microphone access was denied. Please allow access and try again.');
+        break;
+      case 'NotFoundError':
+        alert('No microphone devices found. Please connect a microphone and try again.');
+        break;
+      case 'AbortError':
+        alert('Microphone access was aborted by the system. Please check your microphone settings and permissions.');
+        break;
+      default:
+        alert('Failed to access microphone. Please refresh the page or try a different browser. Error Name: ' + error.name);
+        break;
+    }
   };
+  
 
   const stopRecording = () => {
+    console.log("Stopping recording...");
     if (processorRef.current) {
       processorRef.current.disconnect();
     }
@@ -147,25 +163,33 @@ const Section1Page = () => {
     setIsRecording(false);
   };
 
-  const sendAudioToServer = async (audioData) => {
+
+  
+  const sendAudioToServer = async (audioBlob) => {
+    if (!audioBlob.size) {
+        console.error("Received empty audio Blob.");
+        return;
+    }
     const formData = new FormData();
-    formData.append('audio', new Blob([audioData], { type: 'audio/webm' }));
+    formData.append('audio', audioBlob);
 
     try {
-      const response = await fetch('http://localhost:3000/api/speech-to-text', {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await response.json();
-      if (data.transcript) {
-        const userID = localStorage.getItem('userID');
-        const newMessages = await sendMessageToBot(data.transcript, userID);
-        setMessages((prevMessages) => [...prevMessages, ...newMessages]);
-      }
+        const response = await fetch('http://localhost:3000/api/speech-to-text', {
+            method: 'POST',
+            body: formData,
+        });
+        const data = await response.json();
+        if (data.transcript) {
+            console.log("Transcription received:", data.transcript);
+            const userID = localStorage.getItem('userID');
+            const newMessages = await sendMessageToBot(data.transcript, userID);
+            setMessages((prevMessages) => [...prevMessages, ...newMessages]);
+        }
     } catch (error) {
-      console.error('Error sending audio to server:', error);
+        console.error('Error sending audio to server:', error);
     }
-  };
+};
+
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
