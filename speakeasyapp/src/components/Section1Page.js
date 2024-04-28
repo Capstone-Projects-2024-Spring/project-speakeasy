@@ -68,7 +68,8 @@ const Section1Page = () => {
   useEffect(() => {
     const loadWorkletModule = async () => {
       try {
-        await audioContextRef.current.audioWorklet.addModule('./worklets/recorderWorkletProcessor.js');
+        await audioContextRef.current.audioWorklet.addModule('/recorderWorkletProcessor.js');
+        console.log('Worklet module loaded successfully');
       } catch (error) {
         console.error('Error loading worklet module:', error);
       }
@@ -86,14 +87,19 @@ const Section1Page = () => {
         stopRecording();
       }
     };
-  }, [isRecording]);
+  }, []);
 
   const startRecording = async () => {
     console.log("Starting recording...");
     try {
-        if (!audioContextRef.current || audioContextRef.current.state === 'closed') {
-            audioContextRef.current = new window.AudioContext();
+      if (!audioContextRef.current || audioContextRef.current.state === 'closed') {
+        try {
+          audioContextRef.current = new window.AudioContext();
+          console.log('Audio context created');
+        } catch (error) {
+          console.error('Error creating audio context:', error);
         }
+      }
 
         // Ensuring the worklet module is loaded
         await audioContextRef.current.audioWorklet.addModule('/recorderWorkletProcessor.js')
@@ -105,11 +111,16 @@ const Section1Page = () => {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         console.log("Stream captured", stream);
         audioInputRef.current = audioContextRef.current.createMediaStreamSource(stream);
+        
         processorRef.current = new AudioWorkletNode(audioContextRef.current, 'recorder.worklet');
+        console.log('Processor connected to audio context output');
         processorRef.current.connect(audioContextRef.current.destination);
+        console.log('Audio input connected to worklet');
         audioInputRef.current.connect(processorRef.current);
 
+        console.log('Audio stream connected to processor');
         processorRef.current.port.onmessage = (event) => {
+          console.log('Processor connected to audio context output');
           if (event.data.audioBlob) {
               console.log("Received audio Blob from worklet:", event.data.audioBlob.size);
               sendAudioToServer(event.data.audioBlob);
@@ -158,38 +169,36 @@ const Section1Page = () => {
       audioInputRef.current.disconnect();
     }
     if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+      console.log('Closing audio context');
       audioContextRef.current.close();
     }
     setIsRecording(false);
   };
 
-
   
   const sendAudioToServer = async (audioBlob) => {
+    console.log('Received audio Blob:', audioBlob); // Add this line
     if (!audioBlob.size) {
-        console.error("Received empty audio Blob.");
-        return;
+      console.error("Received empty audio Blob.");
+      return;
     }
     const formData = new FormData();
     formData.append('audio', audioBlob);
-
+  
     try {
-        const response = await fetch('http://localhost:3000/api/speech-to-text', {
-            method: 'POST',
-            body: formData,
-        });
-        const data = await response.json();
-        if (data.transcript) {
-            console.log("Transcription received:", data.transcript);
-            const userID = localStorage.getItem('userID');
-            const newMessages = await sendMessageToBot(data.transcript, userID);
-            setMessages((prevMessages) => [...prevMessages, ...newMessages]);
-        }
+      const response = await fetch('http://localhost:3000/api/speech-to-text', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await response.json();
+      if (data.transcript) {
+        setInput(data.transcript); // Update the input state with the transcribed text
+      }
     } catch (error) {
-        console.error('Error sending audio to server:', error);
+      console.error('Error sending audio to server:', error);
     }
-};
-
+  };
+  
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -200,6 +209,7 @@ const Section1Page = () => {
       setInput('');
     }
   };
+  
 
   const handleLogout = () => {
     localStorage.removeItem('userID');

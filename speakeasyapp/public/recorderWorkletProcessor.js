@@ -14,23 +14,25 @@ class RecordingWorkletProcessor extends AudioWorkletProcessor {
     startRecording() {
       this.recording = true;
       this.chunks = [];
+      console.log('start audio context');
     }
   
     stopRecording() {
       this.recording = false;
       console.log(`Created Blob size: ${audioBlob.size}`);
-
+    
       if (this.chunks.length > 0) {
-          console.log(`Stopping recording, processing ${this.chunks.length} chunks of audio data`);
-          const mergedBuffers = this.mergeBuffers(this.chunks, this.chunks.length * this.chunks[0].length);
-          const audioBuffer = this.floatTo16BitPCM(mergedBuffers);
-          const audioBlob = new Blob([audioBuffer], { type: 'audio/wav' });
-          this.port.postMessage({ audioBlob: audioBlob });  // Send the audio blob to the main thread
+        console.log(`Stopping recording, processing ${this.chunks.length} chunks of audio data`);
+        const mergedBuffers = this.mergeBuffers(this.chunks, this.chunks.length * this.chunks[0].length);
+        const audioBuffer = this.floatTo16BitPCM(mergedBuffers);
+        const audioBlob = new Blob([audioBuffer], { type: 'audio/wav' });
+        console.log('Audio Blob created:', audioBlob); // Add this line
+        this.port.postMessage({ audioBlob: audioBlob });  // Send the audio blob to the main thread
       } else {
-          console.log("No audio data to process.");
+        console.log("No audio data to process.");
       }
       this.chunks = [];
-  }
+    }
   
   floatTo16BitPCM(input) {
       var buffer = new ArrayBuffer(input.length * 2); // each sample is 2 bytes
@@ -45,17 +47,20 @@ class RecordingWorkletProcessor extends AudioWorkletProcessor {
   
   process(inputs, outputs, parameters) {
     if (this.recording) {
-        console.log("Processing audio data...");
-        const input = inputs[0];
-        const channel = input[0]; // assuming mono audio
-        if (channel.length > 0) {
-            console.log(`Received ${channel.length} samples`);
+      const input = inputs[0];
+      for (let channel = 0; channel < input.length; channel++) {
+        const inputChannel = input[channel];
+        if (inputChannel.length > 0) {
+          console.log(`Received ${inputChannel.length} samples on channel ${channel}`);
+        } else {
+          console.log(`No audio data received on channel ${channel}`);
         }
-        this.chunks.push(new Float32Array(channel)); // Make sure to copy the data
-        return true;
+        this.chunks.push(new Float32Array(inputChannel)); // Make sure to copy the data
+      }
+      return true;
     }
-    return false; // Returning false when not recording ensures the processor isn't needlessly called
-}
+    return false;
+  }
 
   }
   
