@@ -7,6 +7,7 @@ import Help from './assets/Help.png';
 import Book from './assets/Book.png';
 import User from './assets/User.png';
 import Settings from './assets/Settings.png';
+<<<<<<< HEAD
 
 const sendMessageToBot = async (message, language) => {
   const modifiedMessage = `Respond to what I say in ${language} as if we are having a conversation ${message} in the end have the english translations in parentheses`;
@@ -67,6 +68,18 @@ const Section3Page = () => {
   const userID = localStorage.getItem('userID');
 
   useEffect(() => {
+=======
+  
+const Section3Page = () => {
+  const [messages, setMessages] = useState([{ text: "Welcome to roleplaying! Let me know what you want to roleplay to get started.", sender: "bot" }]);
+  const [input, setInput] = useState('');
+  let lastDisplayedDate = null;
+  const userID = localStorage.getItem('userID');
+
+  useEffect(() => {
+    if (userID)
+      fetchHistory(userID);
+>>>>>>> bc252c1ea6116a144306bf97d347571098e36912
     Axios.get(`http://localhost:3000/user/${userID}`)
     .then(response => {
         setUser(response.data);
@@ -74,15 +87,52 @@ const Section3Page = () => {
     .catch(error => {
         console.error('Error fetching profile data:', error);
     });
+<<<<<<< HEAD
   }, [userID]);
 
   const [messages, setMessages] = useState([{ text: "Welcome to roleplaying", sender: "bot", audioUrl: null }]);
   const [input, setInput] = useState('');
   const [audioPlayer, setAudioPlayer] = useState(null);
+=======
+  }, []);
+
+  const [user, setUser] = useState({
+    firstName: '',
+    lastName: '',
+    languages: [],
+    dailyTarget: 0,
+  });
+
+  const fetchHistory = async (userID) => {
+    const feature = 'roleplaying';
+    try {
+      const response = await fetch(`http://localhost:3000/history/retrieve/${userID}/${feature}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch chat history');
+      }
+      const data = await response.json();
+      if (data && data.length > 0) {
+        setMessages(data);
+      } else {
+        console.error('No chat history available:', data);
+        setMessages([]); // This ensures the message "No chat history found" is shown
+      }
+    } catch (error) {
+      console.error('Error fetching chat history:', error);
+      setMessages([]); // Set to empty array on error to prevent .map() issues
+    }
+  };
+>>>>>>> bc252c1ea6116a144306bf97d347571098e36912
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (input.trim()) {
+<<<<<<< HEAD
       const userMessage = { text: input, sender: "user", audioUrl: null };
       setMessages(prevMessages => [...prevMessages, userMessage]);
 
@@ -95,6 +145,10 @@ const Section3Page = () => {
       }
 
       setInput('');
+=======
+      await sendMessageToBot(input, userID);
+      setInput('');  // Clear the input after sending
+>>>>>>> bc252c1ea6116a144306bf97d347571098e36912
     }
   };
 
@@ -126,6 +180,67 @@ const Section3Page = () => {
     window.location.href = '/';
   };
 
+<<<<<<< HEAD
+=======
+  const sendMessageToBot = async (message, userID, history) => {
+    try {
+      // Fetch the last few messages as context
+      const history = messages.flatMap(session => session.interactions.map(interaction => interaction.message)).slice(-5).join('\n');
+      const prompt = `Given the recent conversation for context: \n${history}\n\n roleplay as the character talking to me but in ${user.languages}, and respond to the last message from the user: ${message} Do not use the context if I ask you to roleplay as something else`;
+
+      const response = await fetch('http://localhost:3000/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // Send the modified message to the server
+        body: JSON.stringify({ modelType: "text_only", prompt: prompt }),
+      });
+  
+      // Fetch history again to update the chat display
+      await fetchHistory(userID);
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+      console.log('Data from server:', data);
+
+      // Ensure data.messages is defined and correctly structured
+      if (data.messages) {
+        const historyResponse = await fetch(`http://localhost:3000/history/add/${userID}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            roleplaying: data.messages.map(msg => ({
+              name: msg.sender === "user" ? "User" : "Chatbot",
+              message: msg.sender === "user" ? message : msg.text }))
+          })
+        });
+  
+        // Fetch history again to update the chat display
+        await fetchHistory(userID);
+
+        if (!historyResponse.ok)
+          throw new Error('Failed to update history');
+  
+        const historyData = await historyResponse.json();
+        console.log('History updated:', historyData);
+      }
+
+      return data.messages;
+    } catch (error) {
+      console.error('Error sending message to bot:', error);
+      return [
+        { text: "Sorry, I'm having trouble understanding you right now.", sender: "bot" }
+      ];
+    }
+  };
+  
+>>>>>>> bc252c1ea6116a144306bf97d347571098e36912
   return (
     <div className='mainpage-container'>
       <div className='white-rectangle-container'>
@@ -145,6 +260,7 @@ const Section3Page = () => {
         </div>
         <div className='section1page-container'>
           <div className='chat-area'>
+<<<<<<< HEAD
             <div className='messages-display'>
               {messages.map((message, index) => (
                 <div key={index} className={`message-bubble ${message.sender === 'user' ? 'user-message' : 'received-message'}`}>
@@ -158,6 +274,31 @@ const Section3Page = () => {
                   )}
                 </div>
               ))}
+=======
+          <div className='messages-display'>
+              {messages.map((session, index) => {
+                const currentDate = new Date(session.timestamp);
+                const dateStr = currentDate.toDateString();
+                const timeStr = currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const displayTimestamp = lastDisplayedDate !== dateStr ? `${dateStr} ${timeStr}` : timeStr;
+                lastDisplayedDate = dateStr;  // Update lastDisplayedDate locally without causing re-render
+
+                return (
+                  <div key={index}>
+                    <h3 className="timestamp">{displayTimestamp}</h3> {/* Session timestamp above the chatbox */}
+                    {Array.isArray(session.interactions) ? (
+                      session.interactions.map((interaction, idx) => (
+                        <div key={idx} className={`message-bubble ${interaction.name === 'User' ? 'user-message' : 'received-message'}`}>
+                          {interaction.message}
+                        </div>
+                      ))
+                    ) : (
+                      <div>No interactions found in this session.</div>
+                    )}
+                  </div>
+                );
+              })}
+>>>>>>> bc252c1ea6116a144306bf97d347571098e36912
             </div>
             <form onSubmit={handleSendMessage} className='message-input-form'>
               <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Type your message here..." />

@@ -1,69 +1,68 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './styles/Section1Page.css';
+import Axios from 'axios';
 import Logo from './assets/Logo.png';
 import Help from './assets/Help.png';
 import Book from './assets/Book.png';
 import User from './assets/User.png';
 import Settings from './assets/Settings.png';
 
-const sendMessageToBot = async (message, userID) => {
-  try {
-    const response = await fetch('http://localhost:3000/api/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ modelType: "text_only", prompt: message }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    const data = await response.json();
-    console.log('Data from server:', data);
-
-    // Ensure data.messages is defined and correctly structured
-    if (data.messages) {
-      const historyResponse = await fetch(`http://localhost:3000/history/add/${userID}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          chatbot: data.messages.map(msg => ({ name: msg.sender === "user" ? "User" : "Chatbot", message: msg.text }))
-        })
-      });
-
-    if (!historyResponse.ok)
-      throw new Error('Failed to update history');
-
-      const historyData = await historyResponse.json();
-      console.log('History updated:', historyData);
-    }
-
-    return data.messages;
-  } catch (error) {
-    console.error('Error sending message to bot:', error);
-    return [
-      { text: "Sorry, I'm having trouble understanding you right now.", sender: "bot" },
-      { text: message, sender: "user" }
-    ];
-  }
-};
-
 const Section1Page = () => {
   const [messages, setMessages] = useState([{ text: "Hello! what would you like to know?", sender: "bot" }]);
   const [input, setInput] = useState('');
+  let lastDisplayedDate = null;
+  const userID = localStorage.getItem('userID');
+
+  useEffect(() => {
+    if (userID)
+      fetchHistory(userID);
+    Axios.get(`http://localhost:3000/user/${userID}`)
+    .then(response => {
+        setUser(response.data); // Update the user state with the fetched data
+    })
+    .catch(error => {
+        console.error('Error fetching profile data:', error);
+    });
+  }, []);
+
+  const [user, setUser] = useState({
+    firstName: '',
+    lastName: '',
+    languages: [],
+    dailyTarget: 0,
+  });
+
+  const fetchHistory = async (userID) => {
+    const feature = 'chatbot';
+    try {
+      const response = await fetch(`http://localhost:3000/history/retrieve/${userID}/${feature}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch chat history');
+      }
+      const data = await response.json();
+      if (data && data.length > 0) {
+        setMessages(data);
+      } else {
+        console.error('No chat history available:', data);
+        setMessages([]); // This ensures the message "No chat history found" is shown
+      }
+    } catch (error) {
+      console.error('Error fetching chat history:', error);
+      setMessages([]); // Set to empty array on error to prevent .map() issues
+    }
+  };
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    const userID = localStorage.getItem('userID');
     if (input.trim()) {
-      const newMessages = await sendMessageToBot(input, userID);
-      setMessages((prevMessages) => [...prevMessages, ...newMessages]);
-      setInput('');
+      await sendMessageToBot(input, userID);
+      setInput('');  // Clear the input after sending
     }
   };
 
@@ -71,6 +70,61 @@ const Section1Page = () => {
     localStorage.removeItem('userID');
     // Redirect to login route
     window.location.href = '/';
+  };
+
+  const sendMessageToBot = async (message, userID) => {
+    try {
+      // Fetch the last few messages as context
+      const history = messages.flatMap(session => session.interactions.map(interaction => interaction.message)).slice(-5).join('\n');
+      const prompt = history + "\n\n" + message;
+
+      const response = await fetch('http://localhost:3000/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ modelType: "text_only", prompt: prompt}),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+      console.log('Data from server:', data);
+  
+      // Ensure data.messages is defined and correctly structured
+      if (data.messages) {
+        const historyResponse = await fetch(`http://localhost:3000/history/add/${userID}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            chatbot: data.messages.map(msg => ({
+              name: msg.sender === "user" ? "User" : "Chatbot",
+              message: msg.sender === "user" ? message : msg.text }))
+          })
+        });
+  
+        // Fetch history again to update the chat display
+        await fetchHistory(userID);
+  
+        if (!historyResponse.ok)
+          throw new Error('Failed to update history');
+  
+        const historyData = await historyResponse.json();
+        console.log('History updated:', historyData);
+      }
+  
+      return data.messages;
+    } catch (error) {
+      console.error('Error sending message to bot:', error);
+      return [
+        { text: "Sorry, I'm having trouble understanding you right now.", sender: "bot" },
+        { text: message, sender: "user" }
+      ];
+    }
   };
 
   return (
@@ -93,11 +147,28 @@ const Section1Page = () => {
         <div className='section1page-container'>
           <div className='chat-area'>
             <div className='messages-display'>
-              {messages.map((message, index) => (
-                <div key={index} className={`message-bubble ${message.sender === 'user' ? 'user-message' : 'received-message'}`}>
-                  {message.text}
-                </div>
-              ))}
+              {messages.map((session, index) => {
+                const currentDate = new Date(session.timestamp);
+                const dateStr = currentDate.toDateString();
+                const timeStr = currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const displayTimestamp = lastDisplayedDate !== dateStr ? `${dateStr} ${timeStr}` : timeStr;
+                lastDisplayedDate = dateStr;  // Update lastDisplayedDate locally without causing re-render
+
+                return (
+                  <div key={index}>
+                    <h3 className="timestamp">{displayTimestamp}</h3> {/* Session timestamp above the chatbox */}
+                    {Array.isArray(session.interactions) ? (
+                      session.interactions.map((interaction, idx) => (
+                        <div key={idx} className={`message-bubble ${interaction.name === 'User' ? 'user-message' : 'received-message'}`}>
+                          {interaction.message}
+                        </div>
+                      ))
+                    ) : (
+                      <div>No interactions found in this session.</div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
             <form onSubmit={handleSendMessage} className='message-input-form'>
               <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Type your message here..." />

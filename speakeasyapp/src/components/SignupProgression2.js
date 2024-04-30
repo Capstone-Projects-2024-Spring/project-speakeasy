@@ -7,6 +7,7 @@ import Globe from './assets/Globe.png';
 // SignupProgression2 component
 const SignupProgression2 = () => {
     const [selectedLanguage, setSelectedLanguage] = useState('Spanish'); // State to store selected language
+    const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
 
     const handleSubmit = async (event) => {
@@ -15,7 +16,7 @@ const SignupProgression2 = () => {
         console.log("Submitting with Language:", selectedLanguage);
         
         if (!userID) {
-            alert('User ID not found. Please sign in again.');
+            setErrorMessage('User ID not found. Please sign in again.');
             navigate('/'); // Redirect to the home page or sign in page
             return;
         }
@@ -30,13 +31,14 @@ const SignupProgression2 = () => {
         })
         .catch(error => {
             console.error('Failed to update language:', error);
-            alert('Failed to update language. Please try again.');
+            setErrorMessage('Failed to update language. Please try again.');
         });
     };
 
     return (
         <div className="i-want-to-learn-container">
             <h2>I want to learn...</h2> {/* I Want to Learn heading */}
+            {errorMessage && <p>{errorMessage}</p>}
             <form onSubmit={handleSubmit} className="i-want-to-learn-form"> {/* I Want to Learn form */}
                 <div className='select-container'> 
                     <img src={Globe} alt="Language" /> {/* Language icon */}
