@@ -173,6 +173,8 @@ const Section1Page = () => {
       audioContextRef.current.close();
     }
     setIsRecording(false);
+
+    sendAudioToServer(audioChunksRef.current); 
   };
 
   
@@ -191,8 +193,15 @@ const Section1Page = () => {
         body: formData,
       });
       const data = await response.json();
+      console.log('Response from server:', data);
+      
       if (data.transcript) {
-        setInput(data.transcript); // Update the input state with the transcribed text
+          console.log("Sending transcript to chatbot:", data.transcript);
+          const userID = localStorage.getItem('userID'); // Retrieve user ID
+          const messagesFromBot = await sendMessageToBot(data.transcript, userID);
+          setMessages((prevMessages) => [...prevMessages, ...messagesFromBot]);
+      } else {
+        console.error('Invalid response from server:', data);
       }
     } catch (error) {
       console.error('Error sending audio to server:', error);

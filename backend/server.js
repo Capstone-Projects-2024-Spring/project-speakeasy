@@ -14,14 +14,16 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const speech = require('@google-cloud/speech');
 const speechClient = new speech.SpeechClient();
+const apiKey = process.env.TTS_API_KEY
+const endpoint =`https://speech.googleapis.com/v1p1beta1/speech:recognize?key=${apiKey}`;
 process.env.GOOGLE_APPLICATION_CREDENTIALS = "./SpeakeasyServiceAccount.json";
-
 // Require necessary modules
 const multer = require('multer'); // for handling multipart/form-data (file uploads)
 const storage = multer.memoryStorage(); // store files in memory
 const upload = multer({ storage: storage });
 
 app.post('/api/speech-to-text', upload.single('audio'), async (req, res) => {
+    
     const audioBytes = req.file.buffer.toString('base64');
     const audio = {
         content: audioBytes,
@@ -41,7 +43,18 @@ app.post('/api/speech-to-text', upload.single('audio'), async (req, res) => {
         const transcription = response.results
             .map(result => result.alternatives[0].transcript)
             .join('\n');
-        res.send({ transcript: transcription });
+        console.log('Transcription:', transcription);
+        res.send({transcript, transcription})
+        const botReply = await textOnly(transcription);
+        if (botReply?.Error) {
+          return res.status(404).json({ Error: botReply.Error });
+        }
+        res.status(200).json({
+          messages: [
+            { text: transcription, sender: "user" },
+            { text: botReply.result, sender: "bot" }
+          ]
+        });
     } catch (err) {
         console.error('ERROR:', err);
         res.status(500).send({ error: err.message });
@@ -128,7 +141,7 @@ const textOnly = async (prompt) => {
   try {
     const result = await model.generateContent(prompt);
     const chatResponse = result?.response?.text();
-
+    console.log('Chatbot response:', chatResponse);
     return { result: chatResponse };
   } catch (error) {
     console.error("textOnly | error", error);
