@@ -1,0 +1,260 @@
+.root {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: #ff8a00;
+  overflow: hidden;
+}
+.rectangle1 {
+  position: absolute;
+  left: 2251px;
+  top: 527px;
+  width: 1148px;
+  height: 1626px;
+  border-radius: 100px;
+  background-color: #fff;
+  box-shadow: 0px 4px 4px 0px #00000040;
+}
+.logIn {
+  color: #000;
+  font-size: 80px;
+  font-weight: bold;
+  font-family: Lato, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    'Liberation Sans', sans-serif;
+  position: absolute;
+  left: 2485px;
+  top: 774px;
+  height: 120px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0px 4px 4px #00000040;
+  flex-direction: column;
+}
+.username {
+  color: #0000009e;
+  font-size: 35px;
+  font-family: Lato, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    'Liberation Sans', sans-serif;
+  position: absolute;
+  left: 2507px;
+  top: 1036px; /* Decreased by 30px */
+  width: 632px;
+  height: 145px;
+  text-align: center;
+  align-items: center;
+  flex-direction: column;
+}
+.password {
+  color: #0000009e;
+  font-size: 35px;
+  font-family: Lato, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    'Liberation Sans', sans-serif;
+  position: absolute;
+  left: 2507px;
+  top: 1413px; /* Decreased by 50px */
+  width: 632px;
+  height: 145px;
+  text-align: center;
+  align-items: center;
+  flex-direction: column;
+}
+.line1 {
+  position: relative;
+  left: 2553.8767px;
+  top: 1178.3047px;
+  width: 559.3489px;
+  max-width: 100%;
+  height: 3.3807px;
+  max-height: 100%;
+}
+.line1::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  transform: rotate(0.2439deg);
+  width: 559.3497px;
+  height: 0;
+  border-bottom: solid 1px #000;
+}
+.line2 {
+  position: relative;
+  left: 2546.5488px;
+  top: 1535.4055px;
+  width: 559.3489px;
+  max-width: 100%;
+  height: 3.3807px;
+  max-height: 100%;
+}
+.line2::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  transform: rotate(0.2439deg);
+  width: 559.3497px;
+  height: 0;
+  border-bottom: solid 1px #000;
+}
+.rectangle3 {
+  position: absolute;
+  left: 2592px;
+  top: 1727px;
+  width: 480px;
+  height: 115px;
+  border-radius: 50px;
+  background-color: #f7b567;
+}
+.submit {
+  color: #000;
+  font-size: 40px;
+  font-weight: bold;
+  font-family: Lato, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    'Liberation Sans', sans-serif;
+  position: absolute;
+  left: 2608px;
+  top: 1736px;
+  width: 450px;
+  height: 95px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.user {
+  position: absolute;
+  left: 2556px;
+  top: 1096px;
+  width: 74px;
+  height: 71px;
+  background-image:/* webpackIgnore: true */ url('assets/user.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.lock {
+  position: absolute;
+  left: 2556px;
+  top: 1449px;
+  width: 74px;
+  height: 71px;
+  background-image:/* webpackIgnore: true */ url('assets/lock.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.needAnAccountSignUp {
+  position: absolute;
+  left: 2554px;
+  top: 1875px;
+  width: 543px;
+  height: 55px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0px 4px 4px #00000040;
+  flex-direction: column;
+}
+.labelWrapper {
+  font-size: 40px;
+  font-family: Lato, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    'Liberation Sans', sans-serif;
+  flex-shrink: 1;
+}
+.label {
+  color: #000;
+  font-size: 40px;
+  font-family: Lato, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    'Liberation Sans', sans-serif;
+}
+.label2 {
+  color: #2737ca;
+  font-size: 40px;
+  font-family: Lato, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    'Liberation Sans', sans-serif;
+}
+.frame1 {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1345px;
+  height: 2619px;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: #fff;
+  overflow: hidden;
+}
+.learnAnyLanguageEasilyChatNatu {
+  position: absolute;
+  left: 50%;
+  top: 1211px;
+  width: 697px;
+  height: 1254px;
+  text-align: center;
+  align-items: center;
+  flex-direction: column;
+  transform: translateX(-50%);
+}
+.textBlock {
+  color: #000;
+  font-size: 100px;
+  font-weight: 200;
+  font-family: Lato, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    'Liberation Sans', sans-serif;
+}
+.textBlock2 {
+  margin-top: 0;
+  color: #000;
+  font-size: 100px;
+  font-weight: 200;
+  font-family: Lato, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    'Liberation Sans', sans-serif;
+}
+.textBlock3 {
+  margin-top: 0;
+  color: #000;
+  font-size: 100px;
+  font-weight: 200;
+  font-family: Lato, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    'Liberation Sans', sans-serif;
+}
+.textBlock4 {
+  margin-top: 0;
+  color: #000;
+  font-size: 100px;
+  font-weight: 200;
+  font-family: Lato, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    'Liberation Sans', sans-serif;
+}
+.textBlock5 {
+  margin-top: 0;
+  color: #000;
+  font-size: 100px;
+  font-weight: 200;
+  font-family: Lato, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    'Liberation Sans', sans-serif;
+}
+.screenshot202421At1142 {
+  position: absolute;
+  left: 269px;
+  top: 391px;
+  width: 806px;
+  height: 646px;
+  background-image:/* webpackIgnore: true */ url('assets/screenshot202421At1142.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.rectangle5 {
+  position: absolute;
+  left: 1345px;
+  top: 0;
+  width: 113px;
+  height: 2619px;
+  background-color: #f7bc75;
+}

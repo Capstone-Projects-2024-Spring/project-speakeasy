@@ -1,0 +1,92 @@
+/* Login & signup container*/
+
+body {
+    background-color: orange; /* Set background color */
+}
+
+.login-container, .signup-container, .i-want-to-learn-container, .how-many-mins-container{
+    width: 300px; /* Set width of login and signup containers */
+    padding: 20px; /* Add padding inside the containers */
+    border: 1px solid #ccc; /* Add border around the containers */
+    border-radius: 10px; /* Add border radius to make corners rounded */
+    background-color: white; /* Set background color to white*/
+    position: absolute; /* Position containers absolutely */
+    margin-left: 50px; /* Add left margin*/
+    top: 50%; /* Position containers at the vertical center of the viewport */
+    transform: translateY(-50%); /* Adjust containers position */
+    left: 50%; /* Position containers at the horizontal center of the orange area */
+    justify-content: center; /* Center
+}
+
+.login-container h2, .signup-container h2, .i-want-to-learn-container h2, .how-many-mins-container h2 {
+    text-align: center; /* Center the headings inside the containers */
+}
+
+.login-container form, .signup-container form, .i-want-to-learn-container form, .how-many-mins-container form {
+    display: flex; /* Use flexbox layout for the forms */
+    flex-direction: column; /* Arrange form elements vertically */
+}
+
+.login-container form div, .signup-container form div {
+    display: flex; /* Use flexbox layout for form elements */
+    flex-direction: column; /* Arrange form elements vertically */
+    margin-bottom: 15px; /* Add margin at the bottom of form elements */
+}
+
+.login-form label, .signup-form label {
+    display: block; /* Display labels as blocks */
+    margin-bottom: 5px; /* Add margin at the bottom of labels */
+}
+
+.login-form input, .signup-form input {
+    padding: 10px; /* Add padding to input fields */
+    margin-bottom: 10px; /* Add margin at the bottom of input fields */
+    border: 1px solid #ccc; /* Add border to input fields */
+    border-radius: 10px; /* Add border radius to input fields */
+    flex: 1; /* Allow input fields to grow to fill available space */
+}
+
+.login-form button, .signup-form button, .i-want-to-learn-form button, .how-many-mins-form button {
+    padding: 10px; /* Add padding to buttons */
+    background-color: #f7bc75; /* Set background color of buttons */
+    color: #fff; /* Set text color of buttons */
+    border: none; /* Remove border from buttons */
+    border-radius: 10px; /* Add border radius to buttons */
+    cursor: pointer; /* Set cursor to pointer on hover */
+}
+
+.login-form button:hover, .signup-form button:hover, .i-want-to-learn-container button:hover, .how-many-mins-container button:hover {
+    background-color: lightgray; /* Change background color of buttons on hover */
+}
+
+.signup-link {
+    text-align: center; /* Center align signup link */
+    color: #007bff; /* Set text color of signup link */
+    cursor: pointer; /* Set cursor to pointer on hover */
+}
+
+.login-link:hover, .signup-link:hover {
+    background-color: lightgray; /* Change background color of links on hover */
+    text-decoration: underline; /* Add underline to links on hover */
+}
+
+.select-container {
+    display: flex; /* Use flexbox layout */
+    flex-direction: row; /* Arrange items horizontally */
+    align-items: center; /* Align items vertically */
+    margin-bottom: 10px; /* Add bottom margin */
+}
+
+select {
+    background-color: white; /* Add background color to select component*/
+    height: 35px; /* Add height to select component */
+    border: 1px solid #ccc; /* Add border to select component */
+    border-radius: 10px; /* Add border-radius to corners in select component */
+    flex: 1; /* Allow for select to grow to fill available space */
+}
+
+.i-want-to-learn-container img, .how-many-mins-container img {
+    width: 40px; /* Adjust width of image */
+    height: auto; /* Auto-adjust height of image */
+    margin-right: 5px; /* Add right margin */
+}

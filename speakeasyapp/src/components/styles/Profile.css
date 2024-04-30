@@ -1,0 +1,125 @@
+body {
+    background-color: orange; /* Set background color */
+}
+
+/* Top section */
+
+.white-rectangle-container {
+    height: 150px; /* Set height */
+    background-color: white; /* Set background color */
+    width: 100%; /* Take up full width */
+    display: flex; /* Use flexbox layout */
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+}
+
+.white-rectangle-container h1 {
+    text-align: center; /* Center-align text */
+    flex: 1; /* Take up remaining space */
+}
+
+.white-rectangle-container img {
+    margin-left: 20px; /* Add left margin */
+    max-width: 150px; /* Set maximum width */
+    height: auto; /* Automatically adjust height */
+}
+
+.light-orange-rectangle {
+    width: 100%; /* Take up full width */
+    height: 20px; /* Set height */
+    background-color: #f7bc75; /* Set background color */
+}
+
+/* Navbar */
+
+.bottom-container {
+    display: flex; /* Use flexbox layout */
+    justify-content: space-between; /* Space items evenly */
+    margin-top: 20px; /* Add top margin */
+}
+
+.navbar-container {
+    display: flex; /* Use flexbox layout */
+    flex-direction: column; /* Arrange items vertically */
+    max-width: 150px; /* Set maximum width */
+    margin-left: 20px;  /* Add left margin */
+}
+
+.navbar-container ul {
+    list-style-type: none; /* Remove list bullets */
+    padding: 15px; /* Add padding */
+}
+
+.navbar-container ul li {
+    display: flex; /* Use flexbox layout */
+    align-items: center; /* Align items vertically */
+    margin-bottom: 30px; /* Add bottom margin */
+}
+
+.navbar-container ul li a {
+    text-decoration: none; /* Remove underline from links */
+    color: black; /* Set text color */
+    font-weight: bold; /* Set font weight */
+}
+
+.navbar-container ul li img {
+    width: 40px; /* Set width for icons */
+    height: auto; /* Automatically adjust height */
+    margin-right: 10px; /* Add right margin */
+}
+
+/* Bottom section */
+
+.profile-container {
+    background-color: white; /* Set background color */
+    border-radius: 10px; /* Add border radius */
+    margin-right: 50px; /* Add right margin */
+    margin-top: 10px; /* Add top margin */
+    display: flex; /* Use flexbox layout */
+    flex-direction: column; /* Arrange items vertically */
+    align-items: center; /* Center align items horizontally */
+    margin-bottom: 30px; /* Add bottom margin */
+}
+
+.profile-content-container {
+    display: flex; /* Use flexbox layout */
+    flex-direction: column; /* Arrange items vertically */
+    align-items: center; /* Center align items horizontally */
+    padding: 20px; /* Add padding */
+}
+
+.profile-orange-square {
+    width: 300px; /* Set width */
+    margin-bottom: 10px; /* Add bottom margin */
+    margin-top: 10px; /* Add top margin */
+    background-color: #f7bc75; /* Set background color */
+    border-radius: 10px; /* Add border radius */
+    display: flex; /* Use flexbox layout */
+    flex-direction: column; /* Arrange items vertically */
+    align-items: center; /* Center align items horizontally */
+}
+
+.profile-orange-square h3, .profile-orange-square h4 {
+    margin-bottom: 0px; /* Add bottom margin */
+}
+
+.profile-orange-square img {
+    width: 150px; /* Set the width of the image */
+    height: auto; /* Maintain aspect ratio */
+}
+
+.profile-orange-rectangle {
+    background-color: #f7bc75; /* Set background color */
+    border-radius: 10px; /* Add border radius */
+    width: 300px; /* Set width */
+    display: flex; /* Use flexbox layout */
+    flex-direction: column; /* Arrange items vertically */
+    align-items: center; /* Center align items horizontally */
+    margin-bottom: 20px; /* Add bottom margin */
+}
+
+.profile-orange-rectangle img {
+    margin-top: 20px; /* Add top margin */
+    width: 50px; /* Set the width of the image */
+    height: auto; /* Maintain aspect ratio */
+}

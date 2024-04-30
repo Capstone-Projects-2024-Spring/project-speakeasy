@@ -1,0 +1,104 @@
+.root {
+  position: absolute;
+  left: 969px;
+  top: 775px;
+  width: 898px;
+  height: 926px;
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: 100px;
+  background-color: #fff;
+}
+.rectangle15 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 50px;
+  background-color: #f7b567;
+}
+.ellipse1 {
+  position: absolute;
+  left: 241px;
+  top: 131px;
+  width: 415px;
+  height: 455px;
+  overflow: visible;
+}
+.icon {
+  width: 100%;
+  height: 100%;
+}
+.maleUser {
+  position: absolute;
+  left: 132px;
+  top: 0;
+  width: 634px;
+  height: 682px;
+  background-image:/* webpackIgnore: true */ url('/assets/maleUser.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+.johnDoe {
+  color: #000;
+  font-size: 80px;
+  font-weight: bold;
+  font-family: Lato, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    'Liberation Sans', sans-serif;
+  position: absolute;
+  left: calc(50% - 0.5px);
+  top: 634px;
+  width: 611px;
+  height: 48px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transform: translateX(-50%);
+}
+.johndoeGmailCom {
+  color: #000;
+  font-size: 48px;
+  font-weight: 300;
+  font-family: Lato, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    'Liberation Sans', sans-serif;
+  position: absolute;
+  left: calc(50% - 0.5px);
+  top: 716px;
+  width: 611px;
+  height: 48px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transform: translateX(-50%);
+}
+.c {
+  color: #000;
+  font-size: 48px;
+  font-weight: 300;
+  font-family: Lato, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    'Liberation Sans', sans-serif;
+  position: absolute;
+  left: 192px;
+  top: 798px;
+  width: min-content;
+  height: min-content;
+  text-align: center;
+  align-items: center;
+  white-space: nowrap;
+  flex-direction: column;
+}
+.spainFlag {
+  position: absolute;
+  left: 602px;
+  top: 777px;
+  width: 100px;
+  height: 100px;
+  background-image:/* webpackIgnore: true */ url('/assets/spainFlag.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}

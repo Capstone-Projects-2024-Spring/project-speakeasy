@@ -1,0 +1,17 @@
+# Generated files
+.docusaurus
+
+# Misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# env
+.env
+chatgpt_api/.env
+
+#node 
+node_modules
+backend/node_modules

@@ -1,0 +1,44 @@
+.root {
+  position: absolute;
+  left: 968px;
+  top: 2035px;
+  width: 898px;
+  height: 151px;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.rectangle18 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 50px;
+  background-color: #f7b567;
+}
+.johnFrequentlyLearnsPast7PM {
+  color: #000;
+  font-size: 40px;
+  font-family: Lato, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    'Liberation Sans', sans-serif;
+  position: absolute;
+  left: 20.7127%;
+  right: 14.8107%;
+  top: 34.4371%;
+  bottom: 33.7748%;
+  width: min-content;
+  height: min-content;
+  white-space: nowrap;
+  flex-direction: column;
+}
+.sleep {
+  position: absolute;
+  left: 44px;
+  top: 26px;
+  width: 100px;
+  height: 100px;
+  background-image:/* webpackIgnore: true */ url('/assets/sleep.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
