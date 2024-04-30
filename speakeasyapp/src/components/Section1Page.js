@@ -91,52 +91,64 @@ const Section1Page = () => {
 
   const startRecording = async () => {
     console.log("Starting recording...");
-    try {
-      if (!audioContextRef.current || audioContextRef.current.state === 'closed') {
-        try {
-          audioContextRef.current = new window.AudioContext();
-          console.log('Audio context created');
-        } catch (error) {
-          console.error('Error creating audio context:', error);
-        }
-      }
 
-        // Ensuring the worklet module is loaded
-        await audioContextRef.current.audioWorklet.addModule('/recorderWorkletProcessor.js')
-            .catch(e => {
-                console.error('Failed to load audio worklet module:', e);
-                throw new Error('Failed to load audio worklet module');
-            });
+    if (isRecording) {
+        console.log("Already recording...");
+        return;
+    }
+
+    try {
+        if (!audioContextRef.current) {
+            audioContextRef.current = new window.AudioContext();
+            console.log('Audio context created');
+            await audioContextRef.current.audioWorklet.addModule('/recorderWorkletProcessor.js');
+            console.log('Audio worklet module loaded');
+        }
+
+        if (audioContextRef.current.state === 'closed') {
+            // You typically can't reopen a closed audio context, so this might need careful handling
+            console.error('AudioContext is closed and cannot be reused.');
+            return;
+        }
+
+        if (audioContextRef.current.state === 'suspended') {
+            await audioContextRef.current.resume();
+            console.log('Audio context resumed');
+        }
 
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         console.log("Stream captured", stream);
         audioInputRef.current = audioContextRef.current.createMediaStreamSource(stream);
-        
         processorRef.current = new AudioWorkletNode(audioContextRef.current, 'recorder.worklet');
-        console.log('Processor connected to audio context output');
-        processorRef.current.connect(audioContextRef.current.destination);
-        console.log('Audio input connected to worklet');
         audioInputRef.current.connect(processorRef.current);
-
-        console.log('Audio stream connected to processor');
-        processorRef.current.port.onmessage = (event) => {
-          console.log('Processor connected to audio context output');
-          if (event.data.audioBlob) {
-              console.log("Received audio Blob from worklet:", event.data.audioBlob.size);
-              sendAudioToServer(event.data.audioBlob);
-          } else {
-              console.log("Received message from worklet, but no audio Blob found:", event.data);
-          }
-      };
-      
-      
-      
+        processorRef.current.connect(audioContextRef.current.destination);
+        processorRef.current.port.postMessage({ action: 'start' });
 
         setIsRecording(true);
     } catch (error) {
         console.error('Error accessing media devices or loading worklet module:', error);
         handleError(error);
     }
+};
+
+const stopRecording = () => {
+    console.log("Stopping recording...");
+    if (!isRecording) {
+        console.log("Recording is not active...");
+        return;
+    }
+
+    if (processorRef.current) {
+        processorRef.current.port.postMessage({ action: 'stop' });
+        processorRef.current.disconnect();
+    }
+    if (audioInputRef.current) {
+        audioInputRef.current.disconnect();
+    }
+    if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+        audioContextRef.current.close();
+    }
+    setIsRecording(false);
 };
 
 
@@ -160,25 +172,12 @@ const Section1Page = () => {
   };
   
 
-  const stopRecording = () => {
-    console.log("Stopping recording...");
-    if (processorRef.current) {
-      processorRef.current.disconnect();
-    }
-    if (audioInputRef.current) {
-      audioInputRef.current.disconnect();
-    }
-    if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
-      console.log('Closing audio context');
-      audioContextRef.current.close();
-    }
-    setIsRecording(false);
+  
 
-    sendAudioToServer(audioChunksRef.current); 
-  };
 
   
   const sendAudioToServer = async (audioBlob) => {
+    
     console.log('Received audio Blob:', audioBlob); // Add this line
     if (!audioBlob.size) {
       console.error("Received empty audio Blob.");
@@ -192,20 +191,24 @@ const Section1Page = () => {
         method: 'POST',
         body: formData,
       });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
       console.log('Response from server:', data);
-      
+    
       if (data.transcript) {
-          console.log("Sending transcript to chatbot:", data.transcript);
-          const userID = localStorage.getItem('userID'); // Retrieve user ID
-          const messagesFromBot = await sendMessageToBot(data.transcript, userID);
-          setMessages((prevMessages) => [...prevMessages, ...messagesFromBot]);
+        console.log("Sending transcript to chatbot:", data.transcript);
+        const userID = localStorage.getItem('userID') || 'defaultUserID'; // Provide a default if not found
+        const messagesFromBot = await sendMessageToBot(data.transcript, userID);
+        setMessages((prevMessages) => [...prevMessages, ...messagesFromBot]);
       } else {
         console.error('Invalid response from server:', data);
       }
     } catch (error) {
       console.error('Error sending audio to server:', error);
     }
+    
   };
   
 
