@@ -74,12 +74,16 @@ const Section1Page = () => {
 
   const sendMessageToBot = async (message, userID) => {
     try {
+      // Fetch the last few messages as context
+      const history = messages.flatMap(session => session.interactions.map(interaction => interaction.message)).slice(-5).join('\n');
+      const prompt = history + "\n\n" + message;
+
       const response = await fetch('http://localhost:3000/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ modelType: "text_only", prompt: message}),
+        body: JSON.stringify({ modelType: "text_only", prompt: prompt}),
       });
   
       if (!response.ok) {
@@ -97,7 +101,9 @@ const Section1Page = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            chatbot: data.messages.map(msg => ({ name: msg.sender === "user" ? "User" : "Chatbot", message: msg.text }))
+            chatbot: data.messages.map(msg => ({
+              name: msg.sender === "user" ? "User" : "Chatbot",
+              message: msg.sender === "user" ? message : msg.text }))
           })
         });
   

@@ -74,7 +74,7 @@ const Section2Page = () => {
 
   const sendMessageToBot = async (message, userID) => {
     // Prepend the instruction to the message for the AI model
-    const modifiedMessage = `Translate in simple ${user.languages}: ${message}`;
+    const modifiedMessage = `Translate between English and ${user.languages}: ${message}`;
     
     try {
       const response = await fetch('http://localhost:3000/api/chat', {

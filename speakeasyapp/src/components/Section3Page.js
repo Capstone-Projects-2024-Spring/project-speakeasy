@@ -73,17 +73,18 @@ const Section3Page = () => {
   };
 
   const sendMessageToBot = async (message, userID, history) => {
-    // Prepend the instruction to the message for the AI model
-    const modifiedMessage = `Respond to what I say in ${user.languages} as if we are having a conversation ${message}  in the end have the english translations in parentheses`;
-    
     try {
+      // Fetch the last few messages as context
+      const history = messages.flatMap(session => session.interactions.map(interaction => interaction.message)).slice(-5).join('\n');
+      const prompt = `Given the recent conversation: \n${history}\n\n[Now, as the character, respond to the last message from the user: ${message}]`;
+console.log(prompt)
       const response = await fetch('http://localhost:3000/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         // Send the modified message to the server
-        body: JSON.stringify({ modelType: "text_only", prompt: modifiedMessage }),
+        body: JSON.stringify({ modelType: "text_only", prompt: prompt }),
       });
   
       // Fetch history again to update the chat display
