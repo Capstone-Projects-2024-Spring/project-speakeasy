@@ -77,7 +77,7 @@ const sendMessageToBot = async (message, language, userID) => {
         });
     }, [userID]);
 
-      const [messages, setMessages] = useState([{ text: "Welcome to Vocab Practice", sender: "bot" }]);
+      const [messages, setMessages] = useState([{ text: "Welcome to Vocab Practice! Give me any vocabulary terms you want to start with.", sender: "bot" }]);
       const [input, setInput] = useState('');
       const [flashcardsData, setFlashcardsData] = useState([]); // State to hold flashcards
 

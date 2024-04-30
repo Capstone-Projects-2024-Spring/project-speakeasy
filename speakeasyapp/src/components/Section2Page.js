@@ -9,7 +9,7 @@ import User from './assets/User.png';
 import Settings from './assets/Settings.png';
   
 const Section2Page = () => {
-  const [messages, setMessages] = useState([{ text: "Welcome to translator from english", sender: "bot" }]);
+  const [messages, setMessages] = useState([{ text: "Welcome to translator! Send me anything, and I will translate it back for you.", sender: "bot" }]);
   const [input, setInput] = useState('');
   let lastDisplayedDate = null;
   const userID = localStorage.getItem('userID');
@@ -158,7 +158,7 @@ const Section2Page = () => {
                     <h3 className="timestamp">{displayTimestamp}</h3> {/* Session timestamp above the chatbox */}
                     {Array.isArray(session.interactions) ? (
                       session.interactions.map((interaction, idx) => (
-                        <div key={idx} className={`message-bubble ${idx % 2 === 0 ? 'user-message' : 'received-message'}`}>
+                        <div key={idx} className={`message-bubble ${interaction.name === 'User' ? 'user-message' : 'received-message'}`}>
                           {interaction.message}
                         </div>
                       ))

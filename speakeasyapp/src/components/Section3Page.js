@@ -9,7 +9,7 @@ import User from './assets/User.png';
 import Settings from './assets/Settings.png';
   
 const Section3Page = () => {
-  const [messages, setMessages] = useState([{ text: "Welcome to roleplaying", sender: "bot" }]);
+  const [messages, setMessages] = useState([{ text: "Welcome to roleplaying! Let me know what you want to roleplay to get started.", sender: "bot" }]);
   const [input, setInput] = useState('');
   let lastDisplayedDate = null;
   const userID = localStorage.getItem('userID');
@@ -76,8 +76,8 @@ const Section3Page = () => {
     try {
       // Fetch the last few messages as context
       const history = messages.flatMap(session => session.interactions.map(interaction => interaction.message)).slice(-5).join('\n');
-      const prompt = `Given the recent conversation: \n${history}\n\n[Now, as the character, respond to the last message from the user: ${message}]`;
-console.log(prompt)
+      const prompt = `Given the recent conversation for context: \n${history}\n\n roleplay as the character talking to me but in ${user.languages}, and respond to the last message from the user: ${message} Do not use the context if I ask you to roleplay as something else`;
+
       const response = await fetch('http://localhost:3000/api/chat', {
         method: 'POST',
         headers: {
@@ -162,7 +162,7 @@ console.log(prompt)
                     <h3 className="timestamp">{displayTimestamp}</h3> {/* Session timestamp above the chatbox */}
                     {Array.isArray(session.interactions) ? (
                       session.interactions.map((interaction, idx) => (
-                        <div key={idx} className={`message-bubble ${idx % 2 === 0 ? 'user-message' : 'received-message'}`}>
+                        <div key={idx} className={`message-bubble ${interaction.name === 'User' ? 'user-message' : 'received-message'}`}>
                           {interaction.message}
                         </div>
                       ))

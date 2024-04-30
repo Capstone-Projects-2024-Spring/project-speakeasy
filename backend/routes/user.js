@@ -26,12 +26,48 @@ router.route('/register').post(async (req, res) => {
           dailyTarget
       });
 
+      // Initialize chatbot history with a welcome message
+      const initialChatbotSession = {
+        interactions: [{
+            name: 'Chatbot',
+            message: 'Hello! what would you like to know?'
+        }],
+        timestamp: new Date()
+      };
+
+      // Initialize chatbot history with a welcome message
+      const initialTranslatorSession = {
+        interactions: [{
+            name: 'Chatbot',
+            message: 'Welcome to translator! Send me anything, and I will translate it back for you.'
+        }],
+        timestamp: new Date()
+      };
+
+      // Initialize chatbot history with a welcome message
+      const initialRoleplayingSession = {
+        interactions: [{
+            name: 'Chatbot',
+            message: 'Welcome to roleplaying! Let me know what you want to roleplay to get started.'
+        }],
+        timestamp: new Date()
+      };
+
+      // Initialize chatbot history with a welcome message
+      const initialVocabularySession = {
+        interactions: [{
+            name: 'Chatbot',
+            message: 'Welcome to Vocab Practice! Give me any vocabulary terms you want to start with.'
+        }],
+        timestamp: new Date()
+      };
+      
       // Create a history
       const newHistory = new History({
-        chatbot: [],
-        translator: [],
-        roleplaying: [],
-        vocabulary: []
+        chatbot: [initialChatbotSession],
+        translator: [initialTranslatorSession],
+        roleplaying: [initialRoleplayingSession],
+        vocabulary: [initialVocabularySession]
       });
 
       // Save the profile to the database
