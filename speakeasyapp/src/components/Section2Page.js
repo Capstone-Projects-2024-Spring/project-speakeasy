@@ -7,12 +7,72 @@ import Help from './assets/Help.png';
 import Book from './assets/Book.png';
 import User from './assets/User.png';
 import Settings from './assets/Settings.png';
-
-
-const sendMessageToBot = async (message, language, userID) => {
- 
-
   
+const Section2Page = () => {
+  const [messages, setMessages] = useState([{ text: "Welcome to translator from english", sender: "bot" }]);
+  const [input, setInput] = useState('');
+  let lastDisplayedDate = null;
+  const userID = localStorage.getItem('userID');
+
+  useEffect(() => {
+    if (userID)
+      fetchHistory(userID);
+    Axios.get(`http://localhost:3000/user/${userID}`)
+    .then(response => {
+        setUser(response.data); // Update the user state with the fetched data
+    })
+    .catch(error => {
+        console.error('Error fetching profile data:', error);
+    });
+  }, []);
+
+  const [user, setUser] = useState({
+    firstName: '',
+    lastName: '',
+    languages: [],
+    dailyTarget: 0,
+  });
+
+  const fetchHistory = async (userID) => {
+    const feature = 'translator';
+    try {
+      const response = await fetch(`http://localhost:3000/history/retrieve/${userID}/${feature}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch chat history');
+      }
+      const data = await response.json();
+      if (data && data.length > 0) {
+        setMessages(data);
+      } else {
+        console.error('No chat history available:', data);
+        setMessages([]); // This ensures the message "No chat history found" is shown
+      }
+    } catch (error) {
+      console.error('Error fetching chat history:', error);
+      setMessages([]); // Set to empty array on error to prevent .map() issues
+    }
+  };
+
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    if (input.trim()) {
+      await sendMessageToBot(input, userID);
+      setInput('');  // Clear the input after sending
+    }
+  };
+  
+  const handleLogout = () => {
+    localStorage.removeItem('userID');
+    // Redirect to login route
+    window.location.href = '/';
+  };
+
+  const sendMessageToBot = async (message, language, userID) => {
     // Prepend the instruction to the message for the AI model
     const modifiedMessage = `Translate in simple ${language}: ${message}`;
     
@@ -61,56 +121,6 @@ const sendMessageToBot = async (message, language, userID) => {
     }
   };
   
-const Section2Page = () => {
-  
-  const [user, setUser] = useState({
-    firstName: '',
-    lastName: '',
-    languages: [],
-    dailyTarget: 0,
-});
-const userID = localStorage.getItem('userID');
-
-useEffect(() => {
-    Axios.get(`http://localhost:3000/user/${userID}`)
-    .then(response => {
-        setUser(response.data); // Update the user state with the fetched data
-    })
-    .catch(error => {
-        console.error('Error fetching profile data:', error);
-    });
-}, [userID]);
-  const [messages, setMessages] = useState([{ text: "Welcome to translator from english", sender: "bot" }]);
-  const [input, setInput] = useState('');
-
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (input.trim()) {
-      const userMessage = { text: input, sender: "user" };
-      
-      // Immediately display the user's message
-      setMessages(prevMessages => [...prevMessages, userMessage]);
-      
-      // Send the message with the instruction to the backend
-      const response = await sendMessageToBot(input, user.languages[0], userID);
-      
-      // Now, display only the bot's response, not the prompt
-      const botMessage = response.find(m => m.sender === 'bot');
-      if (botMessage) {
-        setMessages(prevMessages => [...prevMessages, botMessage]);
-      }
-  
-      // Clear the input field
-      setInput('');
-    }
-  };
-  
-  const handleLogout = () => {
-    localStorage.removeItem('userID');
-    // Redirect to login route
-    window.location.href = '/';
-  };
-  
   return (
     <div className='mainpage-container'>
       <div className='white-rectangle-container'>
@@ -130,12 +140,29 @@ useEffect(() => {
         </div>
         <div className='section1page-container'>
           <div className='chat-area'>
-            <div className='messages-display'>
-              {messages.map((message, index) => (
-                <div key={index} className={`message-bubble ${message.sender === 'user' ? 'user-message' : 'received-message'}`}>
-                  {message.text}
-                </div>
-              ))}
+          <div className='messages-display'>
+              {messages.map((session, index) => {
+                const currentDate = new Date(session.timestamp);
+                const dateStr = currentDate.toDateString();
+                const timeStr = currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const displayTimestamp = lastDisplayedDate !== dateStr ? `${dateStr} ${timeStr}` : timeStr;
+                lastDisplayedDate = dateStr;  // Update lastDisplayedDate locally without causing re-render
+
+                return (
+                  <div key={index}>
+                    <h3 className="timestamp">{displayTimestamp}</h3> {/* Session timestamp above the chatbox */}
+                    {Array.isArray(session.interactions) ? (
+                      session.interactions.map((interaction, idx) => (
+                        <div key={idx} className={`message-bubble ${idx % 2 === 0 ? 'user-message' : 'received-message'}`}>
+                          {interaction.message}
+                        </div>
+                      ))
+                    ) : (
+                      <div>No interactions found in this session.</div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
             <form onSubmit={handleSendMessage} className='message-input-form'>
               <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Type your message here..." />

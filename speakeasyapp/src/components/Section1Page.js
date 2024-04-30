@@ -1,6 +1,7 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './styles/Section1Page.css';
+import Axios from 'axios';
 import Logo from './assets/Logo.png';
 import Help from './assets/Help.png';
 import Book from './assets/Book.png';
@@ -11,12 +12,26 @@ const Section1Page = () => {
   const [messages, setMessages] = useState([{ text: "Hello! what would you like to know?", sender: "bot" }]);
   const [input, setInput] = useState('');
   let lastDisplayedDate = null;
+  const userID = localStorage.getItem('userID');
 
   useEffect(() => {
-    const userID = localStorage.getItem('userID');
     if (userID)
       fetchHistory(userID);
+    Axios.get(`http://localhost:3000/user/${userID}`)
+    .then(response => {
+        setUser(response.data); // Update the user state with the fetched data
+    })
+    .catch(error => {
+        console.error('Error fetching profile data:', error);
+    });
   }, []);
+
+  const [user, setUser] = useState({
+    firstName: '',
+    lastName: '',
+    languages: [],
+    dailyTarget: 0,
+  });
 
   const fetchHistory = async (userID) => {
     const feature = 'chatbot';
@@ -45,7 +60,6 @@ const Section1Page = () => {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    const userID = localStorage.getItem('userID');
     if (input.trim()) {
       await sendMessageToBot(input, userID);
       setInput('');  // Clear the input after sending
