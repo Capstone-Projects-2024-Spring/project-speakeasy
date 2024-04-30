@@ -36,8 +36,11 @@ const MainPage = () => {
         // Calculate progress percentage
         if (loginTime) {
             const currentTime = new Date().getTime();
+            console.log((currentTime - parseInt(loginTime)));
             const timeDifference = (currentTime - parseInt(loginTime)) / 60000;
+            console.log((timeDifference / user.dailyTarget));
             const progress = (timeDifference / user.dailyTarget) * 100;
+
 
             console.log(progress);
             console.log(timeDifference)

@@ -22,7 +22,7 @@ export default function Flashcard({ flashcard }) {
     }, [spanish, english]); // Update effect dependencies to use spanish and english
 
     return (
-        <div className={`card ${flip ? 'flip' : ''}`} style={{ height: height }} onClick={() => setFlip(!flip)}>
+        <div className={`card ${flip ? 'flip' : ''}`} style={{ height: height }} onClick={() => setFlip(!flip)} data-testid="flashcard" >
         <div className="front" ref={frontEl}>
             {spanish} {/* Spanish word on the front */}
         </div>

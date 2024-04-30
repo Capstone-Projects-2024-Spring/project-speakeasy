@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom'; 
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom'; 
 import './styles/MainPage.css'; 
-import './styles/Settings.css'; 
+import './styles/Settings.css';
+import Axios from 'axios';
+
 
 import Logo from './assets/Logo.png'; 
 import Help from './assets/Help.png'; 
@@ -18,6 +19,25 @@ const SettingsPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [user, setUser] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        language: '',
+        dailyTarget: 0,
+      });
+    
+      const userID = localStorage.getItem('userID');
+    
+      useEffect(() => {
+        Axios.get(`http://localhost:3000/user/${userID}`)
+          .then(response => {
+            setUser(response.data);
+          })
+          .catch(error => {
+            console.error('Error fetching user data:', error);
+          });
+      }, [userID]);
 
     // Event handler functions to update state based on input changes
     const handleUsernameChange = (event) => {
@@ -63,7 +83,7 @@ const SettingsPage = () => {
         <div className='mainpage-container'> {/* Main container */}
             <div className='white-rectangle-container'> {/* Container for top section */}
                 <img src={Logo} alt="SpeakEasy" /> {/* Logo */}
-                <h1>Welcome, _________!</h1> {/* Welcome message */}
+                <h1>Welcome, {user.firstName || "Guest"}!</h1> {/* Welcome message */}
             </div>
             <div className='light-orange-rectangle'/>
             <div className='bottom-container'> {/* Container for bottom section */}
@@ -95,9 +115,10 @@ const SettingsPage = () => {
                         </div>
                         <form onSubmit={handleSubmit} className="update-form"> {/* Login form */}
                             <div className='field'> {/* Form field for name */}
-                                <label>Name:</label> {/* Label for name input */}
+                            <label htmlFor="name">Name:</label> {/* Label for name input */}
                                 <div className='input'>
                                     <input
+                                        id="name"
                                         type="text"
                                         value={name}
                                         onChange={handleNameChange}
@@ -106,9 +127,10 @@ const SettingsPage = () => {
                                 </div>
                             </div>
                             <div className='field'> {/* Form field for username */}
-                                <label>Username:</label> {/* Label for username input */}
+                            <label htmlFor="username">Username:</label> {/* Label for username input */}
                                 <div className='input'>
                                     <input
+                                        id="username"
                                         type="username"
                                         value={username}
                                         onChange={handleUsernameChange}
@@ -117,9 +139,10 @@ const SettingsPage = () => {
                                 </div>
                             </div>
                             <div className='field'> {/* Form field for email */}
-                                <label>Email:</label> {/* Label for email input */}
+                            <label htmlFor="email">Email:</label> {/* Label for email input */}
                                 <div className='input'>
                                     <input
+                                        id="email"
                                         type="email"
                                         value={email}
                                         onChange={handleEmailChange}
@@ -128,9 +151,10 @@ const SettingsPage = () => {
                                 </div>
                             </div>
                             <div className='field'> {/* Form field for password */}
-                                <label>Password:</label> {/* Label for password input */}
+                            <label htmlFor="password">Password:</label> {/* Label for password input */}
                                 <div className='input'>
                                     <input
+                                        id="password"
                                         type="password"
                                         value={password}
                                         onChange={handlePasswordChange}
@@ -139,9 +163,10 @@ const SettingsPage = () => {
                                 </div>
                             </div>
                             <div className='field'> {/* Form field for confirming password */}
-                                <label>Confirm Password:</label> {/* Label for confirming password input */}
+                            <label htmlFor="confirmPassword">Confirm Password:</label> {/* Label for confirming password input */}
                                 <div className='input'>
                                     <input
+                                        id="confirmPassword"
                                         type="password"
                                         value={confirmPassword}
                                         onChange={handleConfirmPasswordChange}

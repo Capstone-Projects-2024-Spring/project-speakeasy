@@ -14,6 +14,8 @@ const Signup = () => {
         confirmPassword: '',
     });
 
+    const [errorMessage, setErrorMessage] = useState('');
+
     // Event handler functions to update state based on input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -29,9 +31,11 @@ const Signup = () => {
 
         // Access properties from the user state object
         if (user.password !== user.confirmPassword) {
-            alert('Passwords do not match.'); // Update to use setErrorMessage
+            setErrorMessage('Passwords do not match.');
             return;
         }
+
+        setErrorMessage('');
 
         // Send to backend
         Axios.post("http://localhost:3000/user/register", {
@@ -61,6 +65,7 @@ const Signup = () => {
                 alert('An error occurred. Please try again.');
             }
         });
+
     };
 
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
@@ -68,10 +73,12 @@ const Signup = () => {
     return (
         <div className="signup-container">
             <h2>Sign Up</h2>
+            {errorMessage && <p className="error-message">{errorMessage}</p>}
             <form onSubmit={handleSubmit} className="signup-form">
                 <div>
-                    <label>First Name:</label>
+                <label htmlFor="firstName">First Name:</label>
                     <input
+                        id="firstName"
                         type="text"
                         name="firstName"
                         value={user.firstName}
@@ -80,8 +87,9 @@ const Signup = () => {
                     />
                 </div>
                 <div>
-                    <label>Last Name:</label>
+                <label htmlFor="lastName">Last Name:</label>
                     <input
+                        id="lastName"
                         type="text"
                         name="lastName"
                         value={user.lastName}
@@ -90,8 +98,9 @@ const Signup = () => {
                     />
                 </div>
                 <div>
-                    <label>Email:</label>
+                <label htmlFor="email">Email:</label>
                     <input
+                        id="email"
                         type="email"
                         name="email"
                         value={user.email}
@@ -100,8 +109,9 @@ const Signup = () => {
                     />
                 </div>
                 <div>
-                    <label>Password:</label>
+                <label htmlFor="password">Password:</label>
                     <input
+                        id="password"
                         type="password"
                         name="password"
                         value={user.password}
@@ -110,8 +120,9 @@ const Signup = () => {
                     />
                 </div>
                 <div>
-                    <label>Confirm Password:</label>
+                <label htmlFor="confirmPassword">Confirm Password:</label>
                     <input
+                        id="confirmPassword"
                         type="password"
                         name="confirmPassword"
                         value={user.confirmPassword}
@@ -120,6 +131,7 @@ const Signup = () => {
                     />
                 </div>
                 <button type="submit">Sign Up</button>
+
             </form>
             <div>
                 <p>Already have an account? <Link to="/">Login</Link></p>

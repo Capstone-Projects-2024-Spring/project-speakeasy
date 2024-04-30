@@ -9,13 +9,15 @@ const SignupProgression3 = () => {
     const [selectedDailyTarget, setSelectedDailyTarget] = useState('10'); // State to store selected time
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
     console.log("Submitting with Daily Target:", selectedDailyTarget);
+    const [errorMessage, setErrorMessage] = useState('');
+
 
     const handleSubmit = async (event) => {
         event.preventDefault(); // Prevent default form submission behavior
         const userID = localStorage.getItem('userID'); // Get the user ID from localStorage
 
         if (!userID) {
-            alert('User ID not found. Please sign in again.');
+            setErrorMessage('User ID not found. Please sign in again.');
             navigate('/'); // Redirect to the home page or sign in page
             return;
         }
@@ -30,7 +32,7 @@ const SignupProgression3 = () => {
         })
         .catch(error => {
             console.error('Failed to update daily target:', error);
-            alert('Failed to update daily target. Please try again.');
+            setErrorMessage('Failed to update daily target. Please try again.');
         });
     };
 
@@ -39,6 +41,7 @@ const SignupProgression3 = () => {
             <h2>How many minutes a day?</h2> {/* How Many Mins heading */}
             <form onSubmit={handleSubmit} className="how-many-mins-form"> {/* How Many Mins form */}
                 <div className='select-container'> 
+                    {errorMessage && <p className="error-message">{errorMessage}</p>}
                     <img src={Clock} alt="Time" /> {/* Clock icon */}
                     <select
                     value={selectedDailyTarget}
