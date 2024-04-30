@@ -1,0 +1,44 @@
+.root {
+  position: absolute;
+  left: 969px;
+  top: 1853px;
+  width: 898px;
+  height: 151px;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.rectangle17 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 50px;
+  background-color: #f7b567;
+}
+.johnIsCurrentlyOnA100DayStreak {
+  color: #000;
+  font-size: 40px;
+  font-family: Lato, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    'Liberation Sans', sans-serif;
+  position: absolute;
+  left: 20.6013%;
+  right: 6.7929%;
+  top: 34.4371%;
+  bottom: 33.7748%;
+  width: min-content;
+  height: min-content;
+  white-space: nowrap;
+  flex-direction: column;
+}
+.fire {
+  position: absolute;
+  left: 43px;
+  top: 26px;
+  width: 100px;
+  height: 100px;
+  background-image:/* webpackIgnore: true */ url('/assets/fire.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}

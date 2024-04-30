@@ -1,0 +1,27 @@
+/* About section */
+
+.about-container {
+    display: flex; /* Use flexbox layout for the about container */
+    align-items: center; /* Align items vertically in the container */
+    background-color: white; /* Set background color of the container to white */
+    width: 400px; /* Set fixed width of the container */
+    height: 100vh; /* Set height of the container to 100% of the viewport height */
+}
+
+.text-container {
+    flex: 1; /* Allow the text container to grow and fill available space */
+    text-align: center; /* Center align text inside the container */
+    padding: 20px; /* Add padding around the text container */
+}
+
+.orange-rectangle {
+    width: 20px; /* Set width of the rectangle */
+    height: 100%; /* Set height of the rectangle to 100% of the parent container */
+    background-color: #f7bc75; /* Set background color of the rectangle */
+    margin-left: 10px; /* Add left margin to the rectangle for spacing */
+}
+
+.logo img {
+    max-width: 200px; /* Set maximum width of the logo image */
+    height: auto; /* Maintain aspect ratio of the logo image */
+}
