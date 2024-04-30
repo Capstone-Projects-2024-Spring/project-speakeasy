@@ -9,7 +9,7 @@ import Book from './assets/Book.png';
 import User from './assets/User.png';
 import Settings from './assets/Settings.png';
 
-const sendMessageToBot = async (message, language) => {
+const sendMessageToBot = async (message, language, userID) => {
     // Prepend the instruction to the message for the AI model
     const modifiedMessage = `Create 10 simple one word vocabulary in ${language} with its English meaning only in format "${language} word - english word", numbered${message}`;
 
@@ -28,6 +28,27 @@ const sendMessageToBot = async (message, language) => {
         }
 
         const data = await response.json();
+        console.log('Data from server:', data);
+
+        // Ensure data.messages is defined and correctly structured
+        if (data.messages) {
+          const historyResponse = await fetch(`http://localhost:3000/history/add/${userID}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              vocabulary: data.messages.map(msg => ({ name: msg.sender === "user" ? "User" : "Chatbot", message: msg.text }))
+            })
+          });
+    
+            if (!historyResponse.ok)
+                throw new Error('Failed to update history');
+    
+            const historyData = await historyResponse.json();
+            console.log('History updated:', historyData);
+        }
+
         return data.messages;
     } catch (error) {
         console.error('Error sending message to bot:', error);
@@ -56,34 +77,34 @@ const sendMessageToBot = async (message, language) => {
         });
     }, [userID]);
 
-      const [messages, setMessages] = useState([{ text: "Welcome to Vocab Practice", sender: "bot" }]);
+      const [messages, setMessages] = useState([{ text: "Welcome to Vocab Practice! Give me any vocabulary terms you want to start with.", sender: "bot" }]);
       const [input, setInput] = useState('');
       const [flashcardsData, setFlashcardsData] = useState([]); // State to hold flashcards
 
       const handleSendMessage = async (e) => {
-        e.preventDefault();
-        if (input.trim()) {
-          const userMessage = { text: input, sender: "user" };
-      
-          // Immediately display the user's message
-          setMessages(prevMessages => [...prevMessages, userMessage]);
-      
-          // Send the message with the instruction to the backend
-          const response = await sendMessageToBot(input, user.languages[0]);
-      
-          // Now, display only the bot's response, not the prompt
-          const botMessage = response.find(m => m.sender === 'bot');
-          if (botMessage) {
-            setMessages(prevMessages => [...prevMessages, botMessage]);
-            const flashcards = botMessage.text.split('\n').map((item, index) => {
-              const [spanish, english] = item.split(' - ');
-              return { id: index, spanish: spanish.trim(), english: english.trim() };
-            });
-            setFlashcardsData(flashcards); // Set flashcardsData state
+          e.preventDefault();
+          if (input.trim()) {
+            const userMessage = { text: input, sender: "user" };
+
+            // Immediately display the user's message
+            setMessages(prevMessages => [...prevMessages, userMessage]);
+
+            // Send the message with the instruction to the backend
+              const response = await sendMessageToBot(input, user.languages[0]);
+
+            // Now, display only the bot's response, not the prompt
+            const botMessage = response.find(m => m.sender === 'bot');
+            if (botMessage) {
+                setMessages(prevMessages => [...prevMessages, botMessage]);
+                const flashcards = botMessage.text.split('\n').map(item => {
+                  const [spanish, english] = item.split(' - ');
+                  return { spanish: spanish.trim(), english: english.trim() };
+                });
+                setFlashcardsData(flashcards); // Set flashcardsData state
+            }
+            // Clear the input field
+            setInput('');
           }
-          // Clear the input field
-          setInput('');
-        }
       };
 
     const handleLogout = () => {

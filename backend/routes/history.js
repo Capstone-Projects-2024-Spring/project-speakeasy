@@ -41,14 +41,26 @@ router.post('/add/:userID', async (req, res) => {
 });
 
 // Endpoint to retrieve history for a specific user
-router.get('/user/:userId', async (req, res) => {
+router.get('/retrieve/:userID/:feature', async (req, res) => {
+    const { userID, feature } = req.params;
+    console.log("Fetching history for userID:", userID);
     try {
-        const histories = await History.find({ userId: req.params.userId });
-        if (!histories.length) {
-            return res.status(404).json({ message: 'No history found for this user' });
-        }
-        res.json(histories);
+        const user = await User.findById(userID);
+        if (!user)
+            return res.status(404).json({ message: 'User not found' });
+
+        const history = await History.findById(user.history);
+        if (!history)
+            return res.status(404).json({ message: 'History not found' });
+
+        // Ensure the feature exists in the history object
+        if (!history[feature])
+            return res.status(404).json({ message: `No history found for feature ${feature}` });
+
+        console.log("History found:", history[feature]);
+        res.json(history[feature]);  // Return only the specified feature history
     } catch (error) {
+        console.error('Error fetching history:', error);
         res.status(500).json({ message: 'Error fetching history', error: error.message });
     }
 });
