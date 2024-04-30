@@ -34,7 +34,7 @@ const Section3Page = () => {
   });
 
   const fetchHistory = async (userID) => {
-    const feature = 'translator';
+    const feature = 'roleplaying';
     try {
       const response = await fetch(`http://localhost:3000/history/retrieve/${userID}/${feature}`, {
         method: 'GET',
@@ -72,9 +72,9 @@ const Section3Page = () => {
     window.location.href = '/';
   };
 
-  const sendMessageToBot = async (message, language, userID) => {
+  const sendMessageToBot = async (message, userID, history) => {
     // Prepend the instruction to the message for the AI model
-    const modifiedMessage = `Respond to what I say in ${language} as if we are having a conversation ${message}  in the end have the english translations in parentheses`;
+    const modifiedMessage = `Respond to what I say in ${user.languages} as if we are having a conversation ${message}  in the end have the english translations in parentheses`;
     
     try {
       const response = await fetch('http://localhost:3000/api/chat', {
@@ -86,6 +86,9 @@ const Section3Page = () => {
         body: JSON.stringify({ modelType: "text_only", prompt: modifiedMessage }),
       });
   
+      // Fetch history again to update the chat display
+      await fetchHistory(userID);
+
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -101,10 +104,15 @@ const Section3Page = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            roleplaying: data.messages.map(msg => ({ name: msg.sender === "user" ? "User" : "Chatbot", message: msg.text }))
+            roleplaying: data.messages.map(msg => ({
+              name: msg.sender === "user" ? "User" : "Chatbot",
+              message: msg.sender === "user" ? message : msg.text }))
           })
         });
   
+        // Fetch history again to update the chat display
+        await fetchHistory(userID);
+
         if (!historyResponse.ok)
           throw new Error('Failed to update history');
   

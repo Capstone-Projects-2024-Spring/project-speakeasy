@@ -72,9 +72,9 @@ const Section2Page = () => {
     window.location.href = '/';
   };
 
-  const sendMessageToBot = async (message, language, userID) => {
+  const sendMessageToBot = async (message, userID) => {
     // Prepend the instruction to the message for the AI model
-    const modifiedMessage = `Translate in simple ${language}: ${message}`;
+    const modifiedMessage = `Translate in simple ${user.languages}: ${message}`;
     
     try {
       const response = await fetch('http://localhost:3000/api/chat', {
@@ -101,10 +101,15 @@ const Section2Page = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            translator: data.messages.map(msg => ({ name: msg.sender === "user" ? "User" : "Chatbot", message: msg.text }))
+            translator: data.messages.map(msg => ({
+              name: msg.sender === "user" ? "User" : "Chatbot",
+              message: msg.sender === "user" ? message : msg.text }))
           })
         });
   
+        // Fetch history again to update the chat display
+        await fetchHistory(userID);
+
         if (!historyResponse.ok)
           throw new Error('Failed to update history');
   

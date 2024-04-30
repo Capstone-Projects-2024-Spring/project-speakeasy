@@ -72,14 +72,14 @@ const Section1Page = () => {
     window.location.href = '/';
   };
 
-  const sendMessageToBot = async (message, userID, history) => {
+  const sendMessageToBot = async (message, userID) => {
     try {
       const response = await fetch('http://localhost:3000/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ modelType: "text_only", prompt: message, history }),
+        body: JSON.stringify({ modelType: "text_only", prompt: message}),
       });
   
       if (!response.ok) {
