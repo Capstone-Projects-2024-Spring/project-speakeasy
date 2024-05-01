@@ -133,7 +133,6 @@ const textOnly = async (prompt) => {
     safetySettings: aiConfig.gemini.safetySettings,
   });
 
-  // prompt is a single string
   try {
     const result = await model.generateContent(prompt);
     const chatResponse = result?.response?.text();
@@ -141,9 +140,16 @@ const textOnly = async (prompt) => {
     return { result: chatResponse };
   } catch (error) {
     console.error("textOnly | error", error);
-    return { Error: "Uh oh! Caught error while fetching AI response" };
+
+    if (error.message.includes("Candidate was blocked due to SAFETY")) {
+      return {
+        result: "I apologize, but the response generated was blocked due to safety concerns. Please try rephrasing your message or providing a different prompt.",
+      };
+    } else {
+      return { Error: "Uh oh! Caught error while fetching AI response" };
+    }
   }
-};
+};;
 
 // Import routers
 const profileRouter = require('./routes/profile');
