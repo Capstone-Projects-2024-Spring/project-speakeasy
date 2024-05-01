@@ -29,7 +29,7 @@ const sendMessageToBot = async (message, language, userID) => {
 
         const data = await response.json();
         console.log('Data from server:', data);
-
+/*
         // Ensure data.messages is defined and correctly structured
         if (data.messages) {
           const historyResponse = await fetch(`http://localhost:3000/history/add/${userID}`, {
@@ -48,7 +48,7 @@ const sendMessageToBot = async (message, language, userID) => {
             const historyData = await historyResponse.json();
             console.log('History updated:', historyData);
         }
-
+*/
         return data.messages;
     } catch (error) {
         console.error('Error sending message to bot:', error);
