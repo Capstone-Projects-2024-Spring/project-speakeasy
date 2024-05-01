@@ -32,10 +32,24 @@ connection.once('open', () => {
   console.log("MongoDB database connection established successfully");
 });
 
+const languageVoiceMap = {
+  'English': { languageCode: 'en-US', name: 'en-US-Standard-C' },
+  'Spanish': { languageCode: 'es-ES', name: 'es-ES-Standard-A' },
+  'French': { languageCode: 'fr-FR', name: 'fr-FR-Standard-A' },
+  'German': { languageCode: 'de-DE', name: 'de-DE-Standard-A' },
+  'Italian': { languageCode: 'it-IT', name: 'it-IT-Standard-A'}
+  // Add more language-voice mappings as needed
+};
+
 app.post("/synthesize", async(req, res) => {
   const text = req.body.text
   const apiKey = process.env.TTS_API_KEY
+  const language = req.body.language
+  console.log('Selected Language:', language)
   const endpoint =`https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=${apiKey}`;
+  const voice = languageVoiceMap[language] || languageVoiceMap['English'];
+  console.log('Selected Voice:', voice)
+
   const payload = {
     "audioConfig": {
       "audioEncoding": "LINEAR16",
@@ -48,13 +62,15 @@ app.post("/synthesize", async(req, res) => {
     "input": {
       "text": text
     },
-    "voice": {
-      "languageCode": "en-US",
-      "name": "en-US-Studio-O"
-    }
+    "voice": voice
   }
-  const response = await axios.post(endpoint, payload)
-  res.json(response.data)
+  try {
+    const response = await axios.post(endpoint, payload);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error synthesizing speech:', error);
+    res.status(500).json({ error: 'Failed to synthesize speech' });
+  }
 })
 
 
