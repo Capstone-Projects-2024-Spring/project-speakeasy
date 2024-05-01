@@ -14,6 +14,26 @@ const Section2Page = () => {
   let lastDisplayedDate = null;
   const userID = localStorage.getItem('userID');
 
+  const [currentlySpeaking, setCurrentlySpeaking] = useState(null);
+
+  const handleSpeak = async (text) => {
+    try {
+      const response = await Axios.post('http://localhost:3000/synthesize', { 
+        text: text,
+        language: user.languages[0]
+      });
+      const audioContent = response.data.audioContent;
+      const audio = new Audio(`data:audio/wav;base64,${audioContent}`);
+      setCurrentlySpeaking(audio);
+      audio.play();
+      audio.onended = () => setCurrentlySpeaking(null);
+    } catch (error) {
+        console.error('Error synthesizing speech:', error);
+    } 
+  };
+
+
+
   useEffect(() => {
     if (userID)
       fetchHistory(userID);
@@ -132,34 +152,59 @@ const Section2Page = () => {
         <img src={Logo} alt="SpeakEasy" />
         <h1>Translator</h1>
       </div>
-      <div className='light-orange-rectangle'/>
+      <div className='light-orange-rectangle' />
       <div className='bottom-container'>
         <div className='navbar-container bottom-section'>
           <ul>
-            <li><img src={Book} alt="Learn" /><Link to="/mainpage">Learn</Link></li>
-            <li><img src={User} alt="Profile" /><Link to="/profile">Profile</Link></li>
-            <li><img src={Settings} alt="Settings" /><Link to="/settings">Settings</Link></li>
-            <li><img src={Help} alt="Help" /><Link to="/help">Help</Link></li>
-            <li><button onClick={handleLogout}>Log Out</button></li>
+            <li>
+              <img src={Book} alt="Learn" />
+              <Link to="/mainpage">Learn</Link>
+            </li>
+            <li>
+              <img src={User} alt="Profile" />
+              <Link to="/profile">Profile</Link>
+            </li>
+            <li>
+              <img src={Settings} alt="Settings" />
+              <Link to="/settings">Settings</Link>
+            </li>
+            <li>
+              <img src={Help} alt="Help" />
+              <Link to="/help">Help</Link>
+            </li>
+            <li>
+              <button onClick={handleLogout}>Log Out</button>
+            </li>
           </ul>
         </div>
         <div className='section1page-container'>
           <div className='chat-area'>
-          <div className='messages-display'>
+            <div className='messages-display'>
               {messages.map((session, index) => {
                 const currentDate = new Date(session.timestamp);
                 const dateStr = currentDate.toDateString();
                 const timeStr = currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 const displayTimestamp = lastDisplayedDate !== dateStr ? `${dateStr} ${timeStr}` : timeStr;
-                lastDisplayedDate = dateStr;  // Update lastDisplayedDate locally without causing re-render
-
+                lastDisplayedDate = dateStr;
+  
                 return (
                   <div key={index}>
-                    <h3 className="timestamp">{displayTimestamp}</h3> {/* Session timestamp above the chatbox */}
+                    <h3 className="timestamp">{displayTimestamp}</h3>
                     {Array.isArray(session.interactions) ? (
                       session.interactions.map((interaction, idx) => (
                         <div key={idx} className={`message-bubble ${interaction.name === 'User' ? 'user-message' : 'received-message'}`}>
-                          {interaction.message}
+                          <div className="message-content">
+                            {interaction.message}
+                          </div>
+                          {interaction.name !== 'User' && (
+                            <div className="tts-controls">
+                              {currentlySpeaking && currentlySpeaking.src === interaction.message ? (
+                                <button onClick={() => currentlySpeaking.pause()}>Stop</button>
+                              ) : (
+                                <button onClick={() => handleSpeak(interaction.message)}>Play</button>
+                              )}
+                            </div>
+                          )}
                         </div>
                       ))
                     ) : (
@@ -170,7 +215,12 @@ const Section2Page = () => {
               })}
             </div>
             <form onSubmit={handleSendMessage} className='message-input-form'>
-              <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Type your message here..." />
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Type your message here..."
+              />
               <button type="submit">Send</button>
             </form>
           </div>
