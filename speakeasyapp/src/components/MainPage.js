@@ -59,7 +59,7 @@ const MainPage = () => {
         <div className='mainpage-container'> {/* Main container */}
             <div className='white-rectangle-container'> {/* Container for top section */}
                 <img src={Logo} alt="SpeakEasy" /> {/* Logo */}
-                <h1>Welcome, {user.firstName || "Guest"}!</h1> {/* Welcome message */}
+                <h1>Welcome, {user.firstName}!</h1> {/* Welcome message */}
             </div>
             <div className='light-orange-rectangle'/>
             <div className='bottom-container'> {/* Container for bottom section */}
