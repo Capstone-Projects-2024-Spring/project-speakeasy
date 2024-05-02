@@ -36,11 +36,15 @@ const Profile = () => {
     const languageToFlag = {
         Spanish: "spain.png",
         French: "france.png",
-        English: "united-kingdom.png",
-        Chinese: "china.png",
         Italian: "italy.png",
         German: "germany.png",
-        // Add more mappings as necessary
+        Arabic: 'saudi-arabia.png',
+        Mandarin: 'china.png',
+        Hindi: 'india.png',
+        Russian: 'russian-federation.png',
+        Korean: 'south-korea.png',
+        Japanese: 'japan.png',
+        Portuguese: 'portugal.png',
     };
 
     const flagSrc = `/Flags/${languageToFlag[user.languages[0]] || 'default.png'}`;

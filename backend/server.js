@@ -37,8 +37,14 @@ const languageVoiceMap = {
   'Spanish': { languageCode: 'es-ES', name: 'es-ES-Standard-A' },
   'French': { languageCode: 'fr-FR', name: 'fr-FR-Standard-A' },
   'German': { languageCode: 'de-DE', name: 'de-DE-Standard-A' },
-  'Italian': { languageCode: 'it-IT', name: 'it-IT-Standard-A'}
-  // Add more language-voice mappings as needed
+  'Italian': { languageCode: 'it-IT', name: 'it-IT-Standard-A'},
+  'Arabic': { languageCode: 'ar-SA', name: 'ar-XA-Standard-A' },
+  'Mandarin': { languageCode: 'cmn-CN', name: 'cmn-CN-Standard-A' },
+  'Hindi': { languageCode: 'hi-IN', name: 'hi-IN-Standard-A' },
+  'Russian': { languageCode: 'ru-RU', name: 'ru-RU-Standard-A' },
+  'Korean': { languageCode: 'ko-KR', name: 'ko-KR-Standard-A' },
+  'Japanese': { languageCode: 'ja-JP', name: 'ja-JP-Standard-A' },
+  'Portuguese': { languageCode: 'pt-PT', name: 'pt-PT-Standard-A' }
 };
 
 app.post("/synthesize", async(req, res) => {

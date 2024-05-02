@@ -38,6 +38,13 @@ const SettingsManageCourses = () => {
       French: 'france.png',
       Italian: 'italy.png',
       German: 'germany.png',
+      Arabic: 'saudi-arabia.png',
+      Mandarin: 'china.png',
+      Hindi: 'india.png',
+      Russian: 'russian-federation.png',
+      Korean: 'south-korea.png',
+      Japanese: 'japan.png',
+      Portuguese: 'portugal.png',
     };
 
     const flagSrc = languageToFlag[currentLanguage] || 'default.png';
@@ -123,6 +130,13 @@ const SettingsManageCourses = () => {
                 <option value="French">French</option>
                 <option value="Italian">Italian</option>
                 <option value="German">German</option>
+                <option value="Arabic">Arabic</option>
+                <option value="Mandarin">Mandarin</option>
+                <option value="Hindi">Hindi</option> 
+                <option value="Russian">Russian</option>
+                <option value="Korean">Korean</option> 
+                <option value="Japanese">Japanese</option>
+                <option value="Portuguese">Portuguese</option> 
               </select>
             </div>
             <button className="edit-daily-goal-button" type="submit" onClick={handleSubmit}>Update Language</button>
