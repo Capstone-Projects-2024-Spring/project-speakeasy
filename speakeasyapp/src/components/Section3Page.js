@@ -61,7 +61,7 @@ const Section3Page = () => {
   const [user, setUser] = useState({
     firstName: '',
     lastName: '',
-    languages: ['English'],
+    languages: [''],
     dailyTarget: 0,
   });
 
@@ -243,10 +243,12 @@ const Section3Page = () => {
   
                 return (
                   <div key={index}>
-                    <h3 className="timestamp">{displayTimestamp}</h3>
                     {Array.isArray(session.interactions) ? (
                       session.interactions.map((interaction, idx) => (
                         <div key={idx} className={`message-bubble ${interaction.name === 'User' ? 'user-message' : 'received-message'}`}>
+                          {interaction.name === 'User' && (
+                            <h3 className="timestamp">{displayTimestamp}</h3>
+                          )}
                           <div className="message-content">
                             {interaction.message}
                           </div>
