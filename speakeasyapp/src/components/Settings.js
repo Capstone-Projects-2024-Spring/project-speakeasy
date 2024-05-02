@@ -15,17 +15,12 @@ import Settings from './assets/Settings.png';
 const SettingsPage = () => {
     // State variables & their setter functions using useState hook
     const [name, setName] = useState('');
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [user, setUser] = useState({
         firstName: '',
         lastName: '',
-        email: '',
-        language: '',
-        dailyTarget: 0,
-      });
+    });
     
       const userID = localStorage.getItem('userID');
     
@@ -33,23 +28,17 @@ const SettingsPage = () => {
         Axios.get(`http://localhost:3000/user/${userID}`)
           .then(response => {
             setUser(response.data);
+            setName(`${response.data.firstName} ${response.data.lastName}`);
           })
           .catch(error => {
             console.error('Error fetching user data:', error);
           });
       }, [userID]);
 
-    // Event handler functions to update state based on input changes
-    const handleUsernameChange = (event) => {
-        setUsername(event.target.value);
-    };
+    // Event handler functions to update state based on input change 
     
     const handleNameChange = (event) => {
         setName(event.target.value);
-    };
-
-    const handleEmailChange = (event) => {
-        setEmail(event.target.value);
     };
 
     const handlePasswordChange = (event) => {
@@ -63,12 +52,25 @@ const SettingsPage = () => {
     // Event handler function to handle form submission
     const handleSubmit = (event) => {
         event.preventDefault(); // Prevent default form submission behavior
-        // Log form data to the console
-        console.log('Name:', name);
-        console.log('Username:', username);
-        console.log('Email:', email);
-        console.log('Password:', password);
-        console.log('Confirm Password:', confirmPassword);
+        if (password !== confirmPassword) {
+            alert('Passwords do not match');
+            return;
+        }
+        const [firstName, lastName] = name.split(' ');
+        Axios.put(`http://localhost:3000/user/${userID}/update`, {
+            firstName,
+            lastName,
+            password,
+        })
+        .then(response => {
+            console.log('Profile updated successfully:', response.data);
+            setUser(response.data.user.profile);
+            alert('Profile updated successfully');
+        })
+        .catch(error => {
+            console.error('Error updating profile:', error);
+            alert('Error updating profile');
+        });
     };
 
     const navigate = useNavigate(); // Assign the `useNavigate` hook to the variable `navigate`
@@ -113,7 +115,7 @@ const SettingsPage = () => {
                         <div className='account'>
                             <h2>Account</h2>
                         </div>
-                        <form onSubmit={handleSubmit} className="update-form"> {/* Login form */}
+                        <form onSubmit={handleSubmit} className="update-form">
                             <div className='field'> {/* Form field for name */}
                             <label htmlFor="name">Name:</label> {/* Label for name input */}
                                 <div className='input'>
@@ -124,30 +126,6 @@ const SettingsPage = () => {
                                         onChange={handleNameChange}
                                         required
                                     /> {/* Input field for name */}
-                                </div>
-                            </div>
-                            <div className='field'> {/* Form field for username */}
-                            <label htmlFor="username">Username:</label> {/* Label for username input */}
-                                <div className='input'>
-                                    <input
-                                        id="username"
-                                        type="username"
-                                        value={username}
-                                        onChange={handleUsernameChange}
-                                        required
-                                    /> {/* Input field for email */}
-                                </div>
-                            </div>
-                            <div className='field'> {/* Form field for email */}
-                            <label htmlFor="email">Email:</label> {/* Label for email input */}
-                                <div className='input'>
-                                    <input
-                                        id="email"
-                                        type="email"
-                                        value={email}
-                                        onChange={handleEmailChange}
-                                        required
-                                    /> {/* Input field for email */}
                                 </div>
                             </div>
                             <div className='field'> {/* Form field for password */}
@@ -174,8 +152,8 @@ const SettingsPage = () => {
                                     /> {/* Input field for confirming password */}
                                 </div>
                             </div>
+                            <button className='update-button' type="submit">Update</button> {/* Update button */}
                         </form>
-                        <button className='update-button' type="submit"onClick={() => navigate('/settings')}>Update</button> {/* Update button */}
                     </div>
                     <div className='settings-buttons-container'> {/* Container for settings buttons */}
                         <button className='settings-buttons' type="submit"onClick={() => navigate('/settings')}>Account</button> {/* Account button */}

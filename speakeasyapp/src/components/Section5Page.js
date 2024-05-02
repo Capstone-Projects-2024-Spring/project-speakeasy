@@ -13,7 +13,7 @@ const sendMessageToBot = async (message,  language) => {
   const modifiedMessage = message.replace(/\?/g, '');
 
   const fullMessage = `
-    The ${language} test should have 5 question multiple choice assessments that asks for translations with 3 options.
+    The ${language} test will always have 5 question multiple choice assessments that asks for translations with 3 options.
     Each questions should start and end with "**". 
     Here's an example: "Translate this sentence into ${language}: I am studying ${language}". 
     Do not use any "?" in the questions.

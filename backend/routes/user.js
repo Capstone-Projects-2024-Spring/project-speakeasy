@@ -143,6 +143,7 @@ router.route('/:userID').get(async (req, res) => {
 router.route('/:userID/update').put(async (req, res) => {
   try {
     const { userID } = req.params;
+    const { firstName, lastName, password } = req.body;
     const { languages, dailyTarget } = req.body;
 
     // Find the user in the database by their ID
@@ -153,12 +154,22 @@ router.route('/:userID/update').put(async (req, res) => {
 
     if (user.profile) {
       const profile = user.profile;
+      // Update the first name if provided
+      if (firstName) profile.firstName = firstName;
+      // Update the last name if provided
+      if (lastName) profile.lastName = lastName;
       // Update the language if provided
       if (languages) profile.languages = languages;
       // Update the daily time target if provided
       if (dailyTarget) profile.dailyTarget = dailyTarget;
       await profile.save();
-      res.send({ message: 'Languages updated successfully', user });
+
+      if (password) {
+        user.password = password;
+      }
+      await user.save();
+  
+      res.send({ message: 'Profile updated successfully', user });
     } else {
       res.status(404).json({ message: 'Profile not found for this user' });
     }
