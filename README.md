@@ -35,6 +35,46 @@ SpeakEasy aims to distinguish itself from current language learning apps by offe
 SpeakEasy requires a skilled development team proficient in JavaScript, AI, and web development to implement the MERN stack (MongoDB, Express.js, React.js, Node.js) architecture. Access to Google’s Gemini Pro API is crucial for enabling advanced natural language processing capabilities. Additionally, the project requires cloud hosting services for the database and the application, ensuring reliable and scalable performance. These resources are critical for building a responsive, intelligent, and user-friendly language learning chatbot. 
 
  
+## How to Run SpeakEasy
+
+1. Fork your own copy of our GitHub Repositiory
+2. In VS Code select 'Clone Git Repository' and then select your forked copy of `project-speakeasy`
+3. Open the Terminal and navigate to the `backend` directory:
+   ```
+   cd backend
+   ```
+   Then, install the dependencies:
+   ```
+   npm install
+   ```
+4. Create a `.env` file in the `backend` directory containing the following variables:
+   ```
+   ATLAS_URI=<your-mongodb-atlas-uri>
+   JWT_SECRET=<your-jwt-secret>
+   GEMINI_API_KEY=<your-gemini-api-key>
+   GEMINI_API_URL=<gemini-api-url>
+   TTS_API_KEY=<your-text-to-speech-api-key>
+   GOOGLE_APPLICATION_CREDENTIALS=<path-to-your-google-credentials-file>
+   ```
+5. While still in the `backend` directory, start the server:
+   ```
+   node server
+   ```
+   You should now be connected to MongoDB.
+6. Create another Terminal and navigate to the `speakeasyapp` directory:
+   ```
+   cd speakeasyapp
+   ```
+   Then, install the dependencies:
+   ```
+   npm install
+   ```
+7. Start the development server:
+   ```
+   npm start
+   ```
+   When prompted to launch on a different port, type 'Y' and hit enter.
+   
 
 ## Collaborators
 
