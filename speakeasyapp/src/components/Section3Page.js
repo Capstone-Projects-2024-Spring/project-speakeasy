@@ -12,6 +12,8 @@ const Section3Page = () => {
   const [messages, setMessages] = useState([{ text: "Welcome to roleplaying! Let me know what you want to roleplay to get started.", sender: "bot" }]);
   const [input, setInput] = useState('');
   const [currentlySpeaking, setCurrentlySpeaking] = useState(null);
+  const [roleplayCharacter, setRoleplayCharacter] = useState(localStorage.getItem('roleplayCharacter') || '');
+  const [roleChanged, setRoleChanged] = useState(false); // Flag to indicate role change
   let lastDisplayedDate = null;
   const userID = localStorage.getItem('userID');
   const handleSpeak = async (text) => {
@@ -43,8 +45,6 @@ const Section3Page = () => {
       console.error('Error synthesizing speech:', error);
     }
   };
-
-
 
   useEffect(() => {
     if (userID)
@@ -93,22 +93,51 @@ const Section3Page = () => {
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (input.trim()) {
-      await sendMessageToBot(input, userID);
+      await sendMessageToBot(input, userID, roleChanged);
       setInput('');  // Clear the input after sending
+    }
+  };
+
+  const handleRoleplayChange = (e) => {
+    setRoleplayCharacter(e.target.value); // Assuming you have a state for this
+  };
+
+  const handleRoleplaySubmit = async (e) => {
+    e.preventDefault();
+    if (roleplayCharacter.trim()) {  // Ensure that the input is not empty or just spaces
+      console.log("Roleplay character set to:", roleplayCharacter);
+      localStorage.setItem('roleplayCharacter', roleplayCharacter); // Save to local storage
+      setRoleChanged(true);  // Flag that the role has changed
+    } else {
+      alert("Please enter a valid character name.");  // Feedback for empty input
     }
   };
   
   const handleLogout = () => {
     localStorage.removeItem('userID');
+    localStorage.removeItem('roleplayCharacter');
     // Redirect to login route
     window.location.href = '/';
   };
-
+  
   const sendMessageToBot = async (message, userID, history) => {
     try {
-      // Fetch the last few messages as context
-      const history = messages.flatMap(session => session.interactions.map(interaction => interaction.message)).slice(-5).join('\n');
-      const prompt = `Given the recent conversation for context: \n${history}\n\n roleplay as the character talking to me but in ${user.languages}, and respond to the last message from the user: ${message} Do not use the context if I ask you to roleplay as something else`;
+      let prompt;
+      if (roleChanged) {
+        // Start new roleplay without previous context
+        prompt = `Roleplay as ${roleplayCharacter} and respond in ${user.languages} to the last user message: "${message}". Also, do not show the roleplay character's name at the start.`;
+        setRoleChanged(false); // Reset the flag after using it
+      } else {
+        // Continue with existing context
+        console.log(roleplayCharacter)
+        const history = messages.flatMap(session => session.interactions.map(interaction => interaction.message)).slice(-5).join('\n');
+        prompt = `
+          Recent conversation context:
+          ${history}
+
+          Instructions:
+          Roleplay as ${roleplayCharacter} and respond in ${user.languages} to the last user message: "${message}". Also, do not show the roleplay character's name at the start. Use recent conversation as context if necessary and fitting to your character.`;
+      }
 
       const response = await fetch('http://localhost:3000/api/chat', {
         method: 'POST',
@@ -192,6 +221,15 @@ const Section3Page = () => {
               <button onClick={handleLogout}>Log Out</button>
             </li>
           </ul>
+          <form onSubmit={handleRoleplaySubmit} className='roleplay-form'>
+            <input
+              type="text"
+              value={roleplayCharacter}
+              onChange={handleRoleplayChange}
+              placeholder="Enter roleplay character..."
+            />
+            <button type="submit">Set Roleplay Character</button>
+          </form>
         </div>
         <div className='section1page-container'>
           <div className='chat-area'>

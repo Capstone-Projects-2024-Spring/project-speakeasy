@@ -89,10 +89,9 @@
     font-size: 0.75em; /* Smaller font size */
     color: #666; /* Lighter text color for less emphasis */
     margin-bottom: 5px; /* Space between timestamp and message */
-    position: absolute; /* Position absolutely within user-message */
+    position: relative; /* Position absolutely within user-message */
+    right: 10px;
 }
-
-
 
 /* Styles for the tail of the speech bubbles */
 .message-bubble::after {
