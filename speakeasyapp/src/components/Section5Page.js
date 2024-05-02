@@ -2,20 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './styles/Section1Page.css';
 import Assessment from './Assessment.js';
-
+import Axios from 'axios';
 import Logo from './assets/Logo.png';
 import Help from './assets/Help.png';
 import Book from './assets/Book.png';
 import User from './assets/User.png';
 import Settings from './assets/Settings.png';
 
-const sendMessageToBot = async (message) => {
+const sendMessageToBot = async (message,  language) => {
   const modifiedMessage = message.replace(/\?/g, '');
 
   const fullMessage = `
-    The Spanish test should have 5 question multiple choice assessments that asks for translations with 3 options.
+    The ${language} test should have 5 question multiple choice assessments that asks for translations with 3 options.
     Each questions should start and end with "**". 
-    Here's an example: "Translate this sentence into Spanish: I am studying Spanish". 
+    Here's an example: "Translate this sentence into ${language}: I am studying ${language}". 
     Do not use any "?" in the questions.
     Do not number the questions.
     Have each option start with a letter like this "A."
@@ -56,10 +56,31 @@ const Section5Page = () => {
   const [selectedOption, setSelectedOption] = useState('');
   const [correctAnswer, setCorrectAnswer] = useState('');
 
+  const [user, setUser] = useState({
+    firstName: '',
+    lastName: '',
+    languages: [],
+    dailyTarget: 0,
+  });
+
+  const userID = localStorage.getItem('userID');
+
+  useEffect(() => {
+    Axios.get(`http://localhost:3000/user/${userID}`)
+      .then(response => {
+        setUser(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching user data:', error);
+      });
+  }, [userID]);
+
   useEffect(() => {
     // When the component mounts, start the assessment by sending a message to the bot
-    sendMessageToBot("Create the assessment");
-  }, []);
+    if (user.languages.length > 0) {
+      sendMessageToBot("Create the assessment", user.languages[0]);
+    }
+  }, [user.languages]);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -71,7 +92,7 @@ const Section5Page = () => {
       setAssessmentFinished(false);
 
       // Send the user's response to the bot
-      const response = await sendMessageToBot(input);
+      const response = await sendMessageToBot(input, user.languages[0]);
 
       // Process the bot's response
       if (response && response.length > 0) {
