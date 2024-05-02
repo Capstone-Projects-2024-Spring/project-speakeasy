@@ -85,6 +85,10 @@ body {
     cursor: pointer; /* Set cursor to pointer on hover */
 }
 
+.Progress {
+    margin-right: 10px;
+}
+
 /* Lesson section */
 
 .lesson-container {

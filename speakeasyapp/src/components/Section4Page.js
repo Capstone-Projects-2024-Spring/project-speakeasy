@@ -138,8 +138,8 @@ const sendMessageToBot = async (message, language, userID) => {
                               {message.text}
                             </div>
                         ))}
+                        <FlashcardList flashcards={flashcardsData} /> {/* Flashcard component */}
                     </div>
-                    <FlashcardList flashcards={flashcardsData} /> {/* Flashcard component */}
                     <form onSubmit={handleSendMessage} className='message-input-form'>
                         <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Type your message here..." />
                         <button type="submit">Send</button>

@@ -1,0 +1,28 @@
+.assessment-container {
+    margin-top: 20px;
+    overflow-y: auto; /* Add overflow-y to make the assessment scrollable */
+}
+  
+.assessment-question {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+  
+.assessment-option {
+    margin-bottom: 10px;
+}
+  
+.assessment-submit {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+  
+.assessment-submit:hover {
+    background-color: #0056b3;
+}
