@@ -14,9 +14,9 @@ const About = () => {
                 <h3>Chat naturally.</h3> {/* Header with text */}
                 <h3>Anywhere really.</h3> {/* Header with text */}
             </div>
-            <div className="orange-rectangle"/> {/* Render rectangle element */}
+            <div className="orange-rectangle" data-testid="orange-rectangle" /> {/* Render rectangle element */}
         </div>
     );
 };
 
-export default About; 
+export default About;

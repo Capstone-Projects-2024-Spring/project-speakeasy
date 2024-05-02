@@ -26,12 +26,48 @@ router.route('/register').post(async (req, res) => {
           dailyTarget
       });
 
+      // Initialize chatbot history with a welcome message
+      const initialChatbotSession = {
+        interactions: [{
+            name: 'Chatbot',
+            message: 'Hello! what would you like to know?'
+        }],
+        timestamp: new Date()
+      };
+
+      // Initialize chatbot history with a welcome message
+      const initialTranslatorSession = {
+        interactions: [{
+            name: 'Chatbot',
+            message: 'Welcome to translator! Send me anything, and I will translate it back for you.'
+        }],
+        timestamp: new Date()
+      };
+
+      // Initialize chatbot history with a welcome message
+      const initialRoleplayingSession = {
+        interactions: [{
+            name: 'Chatbot',
+            message: 'Welcome to roleplaying! Let me know what you want to roleplay to get started.'
+        }],
+        timestamp: new Date()
+      };
+
+      // Initialize chatbot history with a welcome message
+      const initialVocabularySession = {
+        interactions: [{
+            name: 'Chatbot',
+            message: 'Welcome to Vocab Practice! Give me any vocabulary terms you want to start with.'
+        }],
+        timestamp: new Date()
+      };
+      
       // Create a history
       const newHistory = new History({
-        chatbot: [],
-        translator: [],
-        roleplaying: [],
-        vocabulary: []
+        chatbot: [initialChatbotSession],
+        translator: [initialTranslatorSession],
+        roleplaying: [initialRoleplayingSession],
+        vocabulary: [initialVocabularySession]
       });
 
       // Save the profile to the database
@@ -106,44 +142,30 @@ router.route('/:userID').get(async (req, res) => {
 
 router.route('/:userID/update').put(async (req, res) => {
   try {
-      const { userID } = req.params;
-      const { languages, dailyTarget } = req.body;
+    const { userID } = req.params;
+    const { languages, dailyTarget } = req.body;
 
-      // Find the user in the database by their ID
-      const user = await User.findById(userID).populate('profile');
+    // Find the user in the database by their ID
+    const user = await User.findById(userID).populate('profile');
 
-      if (!user)
-        return res.status(404).json({ message: 'User not found' });
+    if (!user)
+      return res.status(404).json({ message: 'User not found' });
 
-      if (user.profile) {
-          const profile = user.profile;
-          // Update the language if provided
-          if (languages) profile.languages = languages;
-          // Update the daily time target if provided
-          if (dailyTarget) profile.dailyTarget = dailyTarget;
-          await profile.save();
-          res.send({ message: 'Languages updated successfully', user });
-      } else {
-          res.status(404).json({ message: 'Profile not found for this user' });
-      }
+    if (user.profile) {
+      const profile = user.profile;
+      // Update the language if provided
+      if (languages) profile.languages = languages;
+      // Update the daily time target if provided
+      if (dailyTarget) profile.dailyTarget = dailyTarget;
+      await profile.save();
+      res.send({ message: 'Languages updated successfully', user });
+    } else {
+      res.status(404).json({ message: 'Profile not found for this user' });
+    }
   } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Error fetching profile data' });
+    console.error(err);
+    res.status(500).json({ message: 'Error fetching profile data' });
   }
 });
-
-// History route file
-router.get('/:userId/history', async (req, res) => {
-  try {
-      const user = await User.findById(req.params.userId).populate('history');
-      if (!user) {
-          return res.status(404).json({ message: 'User not found' });
-      }
-      res.json({ profile: user.profile, history: user.history });
-  } catch (error) {
-      res.status(500).json({ message: 'Error fetching user profile and history', error: error.message });
-  }
-});
-
 
 module.exports = router;

@@ -32,6 +32,49 @@ connection.once('open', () => {
   console.log("MongoDB database connection established successfully");
 });
 
+const languageVoiceMap = {
+  'English': { languageCode: 'en-US', name: 'en-US-Standard-C' },
+  'Spanish': { languageCode: 'es-ES', name: 'es-ES-Standard-A' },
+  'French': { languageCode: 'fr-FR', name: 'fr-FR-Standard-A' },
+  'German': { languageCode: 'de-DE', name: 'de-DE-Standard-A' },
+  'Italian': { languageCode: 'it-IT', name: 'it-IT-Standard-A'}
+  // Add more language-voice mappings as needed
+};
+
+app.post("/synthesize", async(req, res) => {
+  const text = req.body.text
+  const apiKey = process.env.TTS_API_KEY
+  const language = req.body.language
+  console.log('Selected Language:', language)
+  const endpoint =`https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=${apiKey}`;
+  const voice = languageVoiceMap[language] || languageVoiceMap['English'];
+  console.log('Selected Voice:', voice)
+
+  const payload = {
+    "audioConfig": {
+      "audioEncoding": "LINEAR16",
+      "effectsProfileId": [
+        "small-bluetooth-speaker-class-device"
+      ],
+      "pitch": 0,
+      "speakingRate": 1
+    },
+    "input": {
+      "text": text
+    },
+    "voice": voice
+  }
+  try {
+    const response = await axios.post(endpoint, payload);
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error synthesizing speech:', error);
+    res.status(500).json({ error: 'Failed to synthesize speech' });
+  }
+})
+
+
+
 const aiConfig = {
   gemini: {
     textOnlyModel: "gemini-pro",
@@ -90,7 +133,6 @@ const textOnly = async (prompt) => {
     safetySettings: aiConfig.gemini.safetySettings,
   });
 
-  // prompt is a single string
   try {
     const result = await model.generateContent(prompt);
     const chatResponse = result?.response?.text();
@@ -98,9 +140,16 @@ const textOnly = async (prompt) => {
     return { result: chatResponse };
   } catch (error) {
     console.error("textOnly | error", error);
-    return { Error: "Uh oh! Caught error while fetching AI response" };
+
+    if (error.message.includes("Candidate was blocked due to SAFETY")) {
+      return {
+        result: "I apologize, but the response generated was blocked due to safety concerns. Please try rephrasing your message or providing a different prompt.",
+      };
+    } else {
+      return { Error: "Uh oh! Caught error while fetching AI response" };
+    }
   }
-};
+};;
 
 // Import routers
 const profileRouter = require('./routes/profile');

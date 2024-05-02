@@ -36,8 +36,14 @@ const MainPage = () => {
         // Calculate progress percentage
         if (loginTime) {
             const currentTime = new Date().getTime();
+            console.log((currentTime - parseInt(loginTime)));
             const timeDifference = (currentTime - parseInt(loginTime)) / 60000;
+            console.log((timeDifference / user.dailyTarget));
             const progress = (timeDifference / user.dailyTarget) * 100;
+
+
+            console.log(progress);
+            console.log(timeDifference)
 
             setProgressPercentage(progress);
         }
@@ -75,9 +81,9 @@ const MainPage = () => {
                             <img src={Help} alt="Help" /> {/* Help icon */}
                             <Link to="/help">Help</Link> {/* Help link */}
                         </li>
-                        <li className="Progress section"> 
-                            <p className="Progress">Progress</p>
-                            <progress className="ProgressBar" value={progressPercentage} max="100"/>
+                            <p>Daily Goal:</p>
+                        <li> 
+                            <progress value={progressPercentage} max="100"/>
                         </li>
                         <li>
                             <button onClick={handleLogout}>Log Out</button> {/* Logout button */}
