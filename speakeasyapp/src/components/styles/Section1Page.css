@@ -85,12 +85,13 @@
 }
 /* Style for timestamp above messages */
 .timestamp {
-    text-align: right;
+    text-align: left;
     font-size: 0.75em; /* Smaller font size */
     color: #666; /* Lighter text color for less emphasis */
-    margin-bottom: 5px; /* Space between timestamp and message */
-    position: relative; /* Position absolutely within user-message */
-    right: 10px;
+    margin-right: 5px; /* Space between timestamp and message */
+    position: absolute; /* Position absolutely within user-message */
+    left: -40%;
+    top: -5%;
 }
 
 /* Styles for the tail of the speech bubbles */

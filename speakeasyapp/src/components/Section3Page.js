@@ -61,7 +61,7 @@ const Section3Page = () => {
   const [user, setUser] = useState({
     firstName: '',
     lastName: '',
-    languages: ['English'],
+    languages: [''],
     dailyTarget: 0,
   });
 
@@ -125,19 +125,31 @@ const Section3Page = () => {
       let prompt;
       if (roleChanged) {
         // Start new roleplay without previous context
-        prompt = `Roleplay as ${roleplayCharacter} and respond in ${user.languages} to the last user message: "${message}". Also, do not show the roleplay character's name at the start.`;
+        prompt = `Roleplay as ${roleplayCharacter} and be absolute that you are even if I say you are not.
+          Respond in ${user.languages} to the last user message: "${message}".
+          Also, do not show the roleplay character's name at the start.
+          Add the English translation under every sentence in parentheses.
+          Most, importantly, do not repeat back what I say.`;
         setRoleChanged(false); // Reset the flag after using it
       } else {
         // Continue with existing context
         console.log(roleplayCharacter)
-        const history = messages.flatMap(session => session.interactions.map(interaction => interaction.message)).slice(-5).join('\n');
+        const history = messages.flatMap(session => session.interactions.map(interaction => 
+          `${interaction.name === 'User' ? 'User' : roleplayCharacter} said: "${interaction.message}"\n`
+        )).slice(-10).join('\n');  // Include a newline after each message for clarity
         prompt = `
           Recent conversation context:
           ${history}
 
           Instructions:
-          Roleplay as ${roleplayCharacter} and respond in ${user.languages} to the last user message: "${message}". Also, do not show the roleplay character's name at the start. Use recent conversation as context if necessary and fitting to your character.`;
+          Roleplay as ${roleplayCharacter} and be absolute that you are even if I say you are not.
+          Respond in ${user.languages} to the last user message: "${message}".
+          Also, do not show the roleplay character's name at the start.
+          Add the English translation after every sentence in parentheses.
+          Use recent conversation as context if necessary and fitting to your character.
+          Most, importantly, do not repeat back what I say.`;
       }
+      console.log(prompt);
 
       const response = await fetch('http://localhost:3000/api/chat', {
         method: 'POST',
@@ -243,10 +255,12 @@ const Section3Page = () => {
   
                 return (
                   <div key={index}>
-                    <h3 className="timestamp">{displayTimestamp}</h3>
                     {Array.isArray(session.interactions) ? (
                       session.interactions.map((interaction, idx) => (
                         <div key={idx} className={`message-bubble ${interaction.name === 'User' ? 'user-message' : 'received-message'}`}>
+                          {interaction.name === 'User' && (
+                            <h3 className="timestamp">{displayTimestamp}</h3>
+                          )}
                           <div className="message-content">
                             {interaction.message}
                           </div>
