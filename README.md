@@ -74,7 +74,37 @@ SpeakEasy requires a skilled development team proficient in JavaScript, AI, and 
    npm start
    ```
    When prompted to launch on a different port, type 'Y' and hit enter.
-   
+
+## Coverage Report Generation
+
+1. `cd` into `speakeasyapp/src/components`
+   ```
+   cd speakeasyapp/src/components
+   ```
+2. Run coverage test
+   ```
+   npm test -- --coverage
+   ```
+3. Generated reports can be found in `speakeasyapp/coverage`
+
+## Features
+1) Login/Signup Pages 
+2) Basic Translator 
+3) Roleplay scenarios 
+4) Cultural insights
+5) Vocab practice with Flashcards
+6) Progress Tracking
+7) Text to Speech
+8) Interactive Assessments (WIP)
+
+
+## Known Bugs
+- Assessments sometimes will only generate 1 or 3 questions instead of the intended 5
+- Assessments sometimes wont generate any content at all
+- Hitting the Text-to-Speech 'Play' Button multiple times will cause the voice to play over itself
+- Roleplay will sometimes display the inline translation twice
+- Gemini will sometimes just repeat the question you asked it
+- Changing your language will cause all playable saved history to be spoken in the new language instead of the original
 
 ## Collaborators
 
